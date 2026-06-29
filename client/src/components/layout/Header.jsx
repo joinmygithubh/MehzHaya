@@ -46,7 +46,7 @@ const Header = ({ minimal }) => {
     <header className="sticky top-0 z-40 border-b border-gold/20 bg-white/90 backdrop-blur-md dark:bg-emerald-950/90">
       <div className="container-px flex items-center justify-between gap-3 py-3 sm:gap-4 sm:py-4">
         {/* Logo */}
-        <Logo className="h-11 sm:h-14" />
+        <Logo className="h-14 sm:h-16 lg:h-[72px]" />
 
         {/* Desktop nav (laptop / desktop ≥1024) */}
         {!minimal && (
