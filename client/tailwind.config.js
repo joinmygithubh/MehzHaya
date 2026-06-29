@@ -4,6 +4,12 @@ export default {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
+      screens: {
+        // Mobile-first breakpoints aligned to target devices
+        xs: "375px", // small phones
+        // sm:640 md:768 (tablet) lg:1024 (laptop) xl:1280 are Tailwind defaults
+        "3xl": "1440px", // large desktops
+      },
       colors: {
         emerald: {
           DEFAULT: "#064e3b",

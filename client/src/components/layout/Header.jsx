@@ -222,7 +222,7 @@ const Header = ({ minimal }) => {
       </AnimatePresence>
 
       <style>{`
-        .icon-btn { position: relative; padding: 0.4rem; border-radius: 9999px; transition: all .2s; }
+        .icon-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem; border-radius: 9999px; transition: all .2s; }
         .icon-btn:hover { color: #d4af37; background: rgba(6,78,59,0.06); }
         .mobile-link { display:block; padding:0.6rem 0; font-weight:500; border-bottom:1px solid rgba(0,0,0,0.06); }
       `}</style>

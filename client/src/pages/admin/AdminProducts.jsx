@@ -64,7 +64,7 @@ const AdminProducts = () => {
       </div>
 
       <div className="card overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[760px] text-sm">
           <thead className="border-b border-gray-100 bg-beige/50 text-left dark:border-emerald-800 dark:bg-emerald-900/40">
             <tr>
               <th className="p-3">Product</th>

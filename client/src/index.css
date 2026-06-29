@@ -30,7 +30,7 @@
 
 @layer components {
   .container-px {
-    @apply px-4 sm:px-6 lg:px-10 xl:px-16;
+    @apply mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-10 xl:px-16;
   }
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed sm:px-6 sm:py-3 sm:text-base;
@@ -75,4 +75,48 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+
+/* ============================================================
+   Explicit responsive breakpoints (mobile-first)
+   Mobile 320–767 · Tablet 768–1023 · Laptop 1024–1439 · Desktop 1440+
+   ============================================================ */
+
+/* Touch-friendly tap targets on touch/coarse-pointer devices */
+@media (pointer: coarse) {
+  .btn,
+  button:not(:disabled),
+  a[class*="btn"] {
+    min-height: 44px;
+  }
+}
+
+/* Mobile devices: 320px – 767px */
+@media (max-width: 767px) {
+  .section-title {
+    font-size: 1.6rem;
+    line-height: 1.25;
+  }
+  /* larger, easier-to-tap form fields on phones */
+  .input {
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+  }
+  /* keep icon buttons a comfortable size */
+  .icon-btn {
+    min-width: 42px;
+    min-height: 42px;
+  }
+}
+
+/* Tablets: 768px – 1023px (handled by md: utilities; no overrides needed) */
+
+/* Laptops: 1024px – 1439px (handled by lg:/xl: utilities) */
+
+/* Large desktops: 1440px and up — gently scale typography */
+@media (min-width: 1440px) {
+  html {
+    font-size: 17px;
+  }
 }
