@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { FiPhone, FiMapPin, FiMail, FiClock, FiSend } from "react-icons/fi";
+import { FaWhatsapp } from "react-icons/fa";
 
 import SEO from "../components/common/SEO";
 import Breadcrumb from "../components/common/Breadcrumb";
 import { STORE } from "../utils/constants";
+import { whatsappLink } from "../utils/helpers";
 
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -25,6 +27,13 @@ const Contact = () => {
       ],
     },
     { Icon: FiPhone, title: "Call Us", lines: [STORE.phone], href: `tel:${STORE.phone}` },
+    {
+      Icon: FaWhatsapp,
+      title: "Book on WhatsApp",
+      lines: [STORE.phone],
+      href: whatsappLink("Hello MehzHaya! 🌸 I'd like to book / enquire about your products."),
+      external: true,
+    },
     { Icon: FiMail, title: "Email Us", lines: [STORE.email], href: `mailto:${STORE.email}` },
     { Icon: FiClock, title: "Working Hours", lines: ["Mon – Sat: 10am – 8pm", "Sunday: Closed"] },
   ];
@@ -43,7 +52,7 @@ const Contact = () => {
         </div>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {info.map(({ Icon, title, lines, href }) => (
+          {info.map(({ Icon, title, lines, href, external }) => (
             <div key={title} className="card p-6 text-center">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-900 text-gold">
                 <Icon size={24} />
@@ -53,7 +62,12 @@ const Contact = () => {
               </h3>
               {lines.map((l, i) =>
                 href ? (
-                  <a key={i} href={href} className="mt-1 block text-sm text-gray-600 hover:text-gold dark:text-beige-light/70">
+                  <a
+                    key={i}
+                    href={href}
+                    {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="mt-1 block text-sm text-gray-600 hover:text-gold dark:text-beige-light/70"
+                  >
                     {l}
                   </a>
                 ) : (

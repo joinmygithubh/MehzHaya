@@ -13,7 +13,7 @@ import {
   FiShield,
   FiRefreshCw,
 } from "react-icons/fi";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaWhatsapp } from "react-icons/fa";
 
 import SEO from "../components/common/SEO";
 import Breadcrumb from "../components/common/Breadcrumb";
@@ -25,7 +25,7 @@ import { fetchProduct } from "../redux/slices/productSlice";
 import { addToCart } from "../redux/slices/cartSlice";
 import { toggleWishlist } from "../redux/slices/wishlistSlice";
 import { addRecentlyViewed } from "../redux/slices/uiSlice";
-import { formatPrice, finalPrice, productImage } from "../utils/helpers";
+import { formatPrice, finalPrice, productImage, whatsappLink } from "../utils/helpers";
 import { COLOR_HEX } from "../utils/constants";
 
 const ProductDetail = () => {
@@ -295,6 +295,21 @@ const ProductDetail = () => {
                 <FiShare2 />
               </button>
             </div>
+
+            {/* Book on WhatsApp */}
+            <a
+              href={whatsappLink(
+                `Hello MehzHaya! 🌸 I'd like to book "${product.name}" (SKU: ${product.sku})` +
+                  `${color ? `, Color: ${color}` : ""}${size ? `, Size: ${size}` : ""}.\n${
+                    typeof window !== "undefined" ? window.location.href : ""
+                  }`
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] py-3 font-medium text-white transition hover:brightness-95"
+            >
+              <FaWhatsapp size={20} /> Book on WhatsApp
+            </a>
 
             {/* Trust badges */}
             <div className="mt-8 grid grid-cols-3 gap-3 border-t border-gray-100 pt-6 text-center dark:border-emerald-800">

@@ -1,17 +1,14 @@
 import { FaWhatsapp } from "react-icons/fa";
-import { STORE } from "../../utils/constants";
+import { whatsappLink } from "../../utils/helpers";
 
 /**
  * Floating "Book on WhatsApp" button.
  * Opens a WhatsApp chat with the store number and a pre-filled message.
  */
 const WhatsAppButton = () => {
-  // India country code (91) + store number
-  const number = `91${STORE.phone}`;
-  const message = encodeURIComponent(
+  const href = whatsappLink(
     "Hello MehzHaya! 🌸 I'd like to book / enquire about your products."
   );
-  const href = `https://wa.me/${number}?text=${message}`;
 
   return (
     <a

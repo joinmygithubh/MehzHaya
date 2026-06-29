@@ -8,7 +8,9 @@ import {
   FiTwitter,
   FiYoutube,
 } from "react-icons/fi";
+import { FaWhatsapp } from "react-icons/fa";
 import { STORE, CATEGORY_GROUPS } from "../../utils/constants";
+import { whatsappLink } from "../../utils/helpers";
 import Newsletter from "../home/Newsletter";
 
 const Footer = () => (
@@ -91,6 +93,17 @@ const Footer = () => (
             <FiPhone className="text-gold" />
             <a href={`tel:${STORE.phone}`} className="hover:text-gold">
               {STORE.phone}
+            </a>
+          </li>
+          <li className="flex items-center gap-2">
+            <FaWhatsapp className="text-gold" />
+            <a
+              href={whatsappLink("Hello MehzHaya! 🌸 I'd like to book / enquire about your products.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gold"
+            >
+              Book on WhatsApp
             </a>
           </li>
           <li className="flex items-center gap-2">

@@ -1,4 +1,6 @@
 /** Format a number as INR currency. */
+import { STORE } from "./constants";
+
 export const formatPrice = (amount) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -27,3 +29,12 @@ export const debounce = (fn, delay = 350) => {
     timer = setTimeout(() => fn(...args), delay);
   };
 };
+
+/**
+ * Build a WhatsApp click-to-chat link for the store number.
+ * @param {string} message optional pre-filled message
+ */
+export const whatsappLink = (message = "") =>
+  `https://wa.me/91${STORE.phone}${
+    message ? `?text=${encodeURIComponent(message)}` : ""
+  }`;
