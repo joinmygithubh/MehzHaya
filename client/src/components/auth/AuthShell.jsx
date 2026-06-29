@@ -1,5 +1,5 @@
+import { Link } from "react-router-dom";
 import { STORE } from "../../utils/constants";
-import Logo from "../common/Logo";
 
 /** Shared two-column shell for auth pages. */
 const AuthShell = ({ title, subtitle, children, footer }) => (
@@ -25,9 +25,12 @@ const AuthShell = ({ title, subtitle, children, footer }) => (
     {/* Form side */}
     <div className="flex items-center justify-center px-6 py-12 sm:px-12">
       <div className="w-full max-w-md">
-        <div className="mb-8 flex justify-center">
-          <Logo className="h-14 sm:h-16" />
-        </div>
+        <Link
+          to="/"
+          className="mb-8 block text-center font-serif text-3xl font-bold text-emerald-900 dark:text-gold"
+        >
+          MehzHaya
+        </Link>
         <h1 className="font-serif text-3xl font-semibold text-emerald-900 dark:text-gold">
           {title}
         </h1>
