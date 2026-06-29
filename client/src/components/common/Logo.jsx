@@ -3,19 +3,31 @@ import { Link } from "react-router-dom";
 import { STORE } from "../../utils/constants";
 
 /**
- * Brand logo.
+ * Brand logo with graceful image fallbacks.
  *
- * Renders the image at `/logo.png` (place your file in `client/public/logo.png`).
- * If the image is missing or fails to load, it gracefully falls back to a
- * styled text wordmark so the header never breaks.
+ * Image assets (place in `client/public/`):
+ *   - logo.png       → full logo (emblem + wordmark). Used on auth pages.
+ *   - logo-icon.png  → emblem only (crescent + figure), ideally transparent PNG.
+ *                      Used in the header beside the "MehzHaya" wordmark.
+ *
+ * If an image is missing/fails to load, it gracefully falls back to a styled
+ * text wordmark so the UI never breaks.
  *
  * Props:
  *  - to:        link target (default "/"). Pass null to render without a link.
- *  - className: sizing class for the image height (default "h-12 sm:h-14").
- *  - variant:   "default" (for light backgrounds) | "light" (text wordmark for dark backgrounds)
- *  - showText:  also show the wordmark next to the image (default false)
+ *  - className: image height class (default "h-12 sm:h-14").
+ *  - variant:   "default" (light bg) | "light" (text wordmark for dark bg).
+ *  - icon:      use the emblem-only image (/logo-icon.png) instead of /logo.png.
+ *  - showText:  render the "MehzHaya" wordmark beside the image (default false).
  */
-const Logo = ({ to = "/", className = "h-12 sm:h-14", variant = "default", showText = false }) => {
+const Logo = ({
+  to = "/",
+  className = "h-12 sm:h-14",
+  variant = "default",
+  icon = false,
+  showText = false,
+}) => {
+  const src = icon ? "/logo-icon.png" : "/logo.png";
   const [imgOk, setImgOk] = useState(true);
 
   const TextMark = (
@@ -29,7 +41,9 @@ const Logo = ({ to = "/", className = "h-12 sm:h-14", variant = "default", showT
       </span>
       <span
         className={`text-[10px] tracking-[0.25em] ${
-          variant === "light" ? "text-beige-light/70" : "text-gold-dark dark:text-beige-light/70"
+          variant === "light"
+            ? "text-beige-light/70"
+            : "text-gold-dark dark:text-beige-light/70"
         }`}
       >
         {STORE.tagline.toUpperCase()}
@@ -37,20 +51,28 @@ const Logo = ({ to = "/", className = "h-12 sm:h-14", variant = "default", showT
     </span>
   );
 
-  const content =
-    imgOk && variant !== "light" ? (
-      <span className="flex items-center gap-2">
+  let content;
+  if (variant === "light") {
+    // dark backgrounds → always use the text wordmark
+    content = TextMark;
+  } else if (imgOk) {
+    content = (
+      <span className="flex items-center gap-2.5">
         <img
-          src="/logo.png"
+          src={src}
           alt="MehzHaya"
           onError={() => setImgOk(false)}
-          className={`${className} w-auto object-contain rounded-md dark:bg-white/90 dark:p-1`}
+          className={`${className} w-auto object-contain ${
+            icon ? "" : "rounded-md dark:bg-white/90 dark:p-1"
+          }`}
         />
         {showText && TextMark}
       </span>
-    ) : (
-      TextMark
     );
+  } else {
+    // image missing → fall back to the wordmark
+    content = TextMark;
+  }
 
   if (!to) return content;
   return (
