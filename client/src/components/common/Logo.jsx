@@ -27,7 +27,7 @@ const Logo = ({
   icon = false,
   showText = false,
 }) => {
-  const src = icon ? "/logo-icon.png" : "/logo.png";
+  const src = icon ? "/logo-icon.svg" : "/logo.svg";
   const [imgOk, setImgOk] = useState(true);
 
   const TextMark = (
