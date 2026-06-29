@@ -2,9 +2,9 @@
  * Branded HTML email templates for MehzHaya.
  * Palette derived from the brand logo: espresso brown, camel gold, cream.
  */
-const BROWN = "#382b20";
-const CAMEL = "#c19a5b";
-const CREAM = "#efe5d6";
+const BROWN = "#064e3b";
+const CAMEL = "#d4af37";
+const CREAM = "#f5f5dc";
 
 const logoUrl = () => `${process.env.CLIENT_URL || ""}/logo.jpg`;
 
@@ -15,7 +15,7 @@ const wrapper = (content) => `
     <p style="color:${CAMEL};margin:10px 0 0;font-size:12px;letter-spacing:3px">ELEGANCE IN MODESTY</p>
   </div>
   <div style="padding:32px;color:#333;line-height:1.6">${content}</div>
-  <div style="background:${CREAM};padding:16px;text-align:center;color:#5b4636;font-size:12px">
+  <div style="background:${CREAM};padding:16px;text-align:center;color:#555;font-size:12px">
     <p style="margin:0">Shyam Colony Part-1, Faridabad, Haryana – 121003</p>
     <p style="margin:4px 0 0">Call us: 8700695794</p>
     <p style="margin:8px 0 0">© ${new Date().getFullYear()} MehzHaya. All rights reserved.</p>

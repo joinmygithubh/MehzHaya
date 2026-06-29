@@ -11,46 +11,30 @@ export default {
         "3xl": "1440px", // large desktops
       },
       colors: {
-        /* NOTE: brand palette derived from the MehzHaya logo.
-           Names are kept (emerald/gold/beige) so existing classes adopt the
-           new brand colors automatically:
-             emerald → warm espresso brown (primary / dark surfaces)
-             gold    → camel gold (crescent accent)
-             beige   → cream (light backgrounds)
-           plus blush (abaya) & sage (leaves) as supporting accents. */
         emerald: {
-          DEFAULT: "#5b4636",
-          50: "#f7f2ec",
-          100: "#ece1d2",
-          200: "#dcc7ad",
-          300: "#c7a883",
-          400: "#ad8860",
-          500: "#8f6c4a",
-          600: "#735439",
-          700: "#5b4636",
-          800: "#46362a",
-          900: "#382b20",
-          950: "#241a12",
+          DEFAULT: "#064e3b",
+          50: "#ecfdf5",
+          100: "#d1fae5",
+          200: "#a7f3d0",
+          400: "#34d399",
+          500: "#10b981",
+          600: "#059669",
+          700: "#047857",
+          800: "#065f46",
+          900: "#064e3b",
+          950: "#022c22",
         },
         gold: {
-          DEFAULT: "#c19a5b",
-          light: "#dcbd87",
-          dark: "#8f6f37",
+          DEFAULT: "#d4af37",
+          light: "#e6c75a",
+          dark: "#b8941f",
         },
         beige: {
-          DEFAULT: "#efe5d6",
-          light: "#faf6ef",
-          dark: "#e5d6c2",
+          DEFAULT: "#f5f5dc",
+          light: "#faf8f0",
+          dark: "#e8e4d0",
         },
-        blush: {
-          DEFAULT: "#e6c7bd",
-          dark: "#cf9f93",
-        },
-        sage: {
-          DEFAULT: "#9aa07c",
-          dark: "#7f8663",
-        },
-        ink: "#352a20",
+        ink: "#1a1a1a",
       },
       fontFamily: {
         serif: ['"Cormorant Garamond"', "serif"],
@@ -58,12 +42,12 @@ export default {
       },
       boxShadow: {
         soft: "0 8px 30px rgba(0,0,0,0.08)",
-        gold: "0 4px 20px rgba(193,154,91,0.30)",
-        glass: "0 8px 32px rgba(91,70,54,0.15)",
+        gold: "0 4px 20px rgba(212,175,55,0.25)",
+        glass: "0 8px 32px rgba(6,78,59,0.12)",
       },
       backgroundImage: {
         "hero-pattern":
-          "linear-gradient(135deg, rgba(56,43,32,0.85) 0%, rgba(56,43,32,0.4) 100%)",
+          "linear-gradient(135deg, rgba(6,78,59,0.85) 0%, rgba(6,78,59,0.4) 100%)",
       },
       keyframes: {
         "fade-up": {
