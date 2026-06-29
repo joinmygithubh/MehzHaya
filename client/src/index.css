@@ -66,6 +66,17 @@
     @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/40 to-transparent;
     content: "";
   }
+  /* Header / drawer helpers — kept in the components layer so Tailwind
+     responsive utilities (hidden, lg:hidden, sm:inline-flex) always win. */
+  .icon-btn {
+    @apply relative inline-flex items-center justify-center rounded-full p-2 text-emerald-900 transition-colors hover:bg-emerald-900/5 hover:text-gold dark:text-beige-light;
+  }
+  .mobile-link {
+    @apply block border-b border-black/5 py-2.5 font-medium text-emerald-900 dark:border-white/10 dark:text-beige-light;
+  }
+  .drawer-chip {
+    @apply inline-flex items-center gap-1.5 rounded-lg border border-emerald-900/20 px-2.5 py-2 text-xs text-emerald-900 transition hover:border-gold dark:border-emerald-700 dark:text-beige-light;
+  }
 }
 
 /* Hide scrollbar utility for carousels */

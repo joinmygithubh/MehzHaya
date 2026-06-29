@@ -252,9 +252,13 @@ const Header = ({ minimal }) => {
               </Link>
               {Object.entries(CATEGORY_GROUPS).map(([group, items]) => (
                 <div key={group} className="mb-3">
-                  <p className="mb-1 mt-3 font-serif text-lg font-semibold text-emerald-900 dark:text-gold">
+                  <Link
+                    to={`/shop?group=${encodeURIComponent(group)}`}
+                    onClick={closeDrawer}
+                    className="mb-1 mt-3 block font-serif text-lg font-semibold text-emerald-900 dark:text-gold"
+                  >
                     {group}
-                  </p>
+                  </Link>
                   {items.map((item) => (
                     <Link
                       key={item}
@@ -286,13 +290,6 @@ const Header = ({ minimal }) => {
           </>
         )}
       </AnimatePresence>
-
-      <style>{`
-        .icon-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem; border-radius: 9999px; transition: all .2s; }
-        .icon-btn:hover { color: #d4af37; background: rgba(6,78,59,0.06); }
-        .mobile-link { display:block; padding:0.6rem 0; font-weight:500; border-bottom:1px solid rgba(0,0,0,0.06); }
-        .drawer-chip { display:inline-flex; align-items:center; gap:0.4rem; border:1px solid rgba(6,78,59,0.2); border-radius:0.5rem; padding:0.5rem 0.6rem; font-size:0.8rem; }
-      `}</style>
     </header>
   );
 };
