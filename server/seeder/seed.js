@@ -36,28 +36,37 @@ const importData = async () => {
   ]);
 
   // ----- Admin user -----
-  const adminEmail = process.env.ADMIN_EMAIL || "admin@mehzhaya.com";
-  let admin = await User.findOne({ email: adminEmail });
+  const adminEmail = (process.env.ADMIN_EMAIL || "admin@mehzhaya.com").toLowerCase();
+  const adminPassword = process.env.ADMIN_PASSWORD || "Admin@12345";
+  let admin = await User.findOne({ email: adminEmail }).select("+password");
   if (!admin) {
-    admin = await User.create({
+    admin = new User({
       name: process.env.ADMIN_NAME || "MehzHaya Admin",
       email: adminEmail,
-      password: process.env.ADMIN_PASSWORD || "Admin@12345",
+      password: adminPassword,
       role: "admin",
       isEmailVerified: true,
     });
+    await admin.save();
     log(`👤 Admin created: ${adminEmail}`, "32");
   } else {
-    log(`👤 Admin already exists: ${adminEmail}`, "33");
+    // Always reset role + password so the documented credentials are guaranteed to work
+    admin.password = adminPassword; // re-hashed by pre-save hook
+    admin.role = "admin";
+    admin.isEmailVerified = true;
+    await admin.save();
+    log(`👤 Admin password reset: ${adminEmail}`, "33");
   }
 
   // ----- Demo customer -----
   const demoEmail = "customer@mehzhaya.com";
-  if (!(await User.findOne({ email: demoEmail }))) {
-    await User.create({
+  const demoPassword = "Customer@123";
+  let demo = await User.findOne({ email: demoEmail }).select("+password");
+  if (!demo) {
+    demo = new User({
       name: "Aisha Khan",
       email: demoEmail,
-      password: "Customer@123",
+      password: demoPassword,
       isEmailVerified: true,
       phone: "8700695794",
       addresses: [
@@ -74,7 +83,12 @@ const importData = async () => {
         },
       ],
     });
-    log(`👤 Demo customer created: ${demoEmail} / Customer@123`, "32");
+    await demo.save();
+    log(`👤 Demo customer created: ${demoEmail} / ${demoPassword}`, "32");
+  } else {
+    demo.password = demoPassword; // re-hashed by pre-save hook
+    await demo.save();
+    log(`👤 Demo customer password reset: ${demoEmail} / ${demoPassword}`, "33");
   }
 
   // ----- Categories -----
