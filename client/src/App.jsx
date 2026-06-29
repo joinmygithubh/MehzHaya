@@ -51,6 +51,14 @@ const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
 function App() {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((s) => s.auth);
+  const { theme } = useSelector((s) => s.ui);
+
+  // Apply the active theme to <html> whenever it changes (live light/dark toggle)
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "dark") root.classList.add("dark");
+    else root.classList.remove("dark");
+  }, [theme]);
 
   useEffect(() => {
     if (isAuthenticated) {
