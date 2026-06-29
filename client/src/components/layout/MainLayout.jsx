@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import AnnouncementBar from "./AnnouncementBar";
+import WhatsAppButton from "../common/WhatsAppButton";
 
 const MainLayout = ({ minimal = false }) => {
   return (
@@ -12,6 +13,7 @@ const MainLayout = ({ minimal = false }) => {
         <Outlet />
       </main>
       {!minimal && <Footer />}
+      {!minimal && <WhatsAppButton />}
     </div>
   );
 };
