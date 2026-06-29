@@ -43,8 +43,13 @@ const AdminLayout = () => {
         }`}
       >
         <div className="flex items-center justify-between border-b border-gold/20 p-5">
-          <Link to="/admin" className="font-serif text-xl font-bold text-gold">
-            MehzHaya Admin
+          <Link to="/admin" className="flex items-center gap-2">
+            <img
+              src="/logo.jpg"
+              alt="MehzHaya"
+              className="h-10 w-10 rounded-lg bg-white object-contain p-0.5"
+            />
+            <span className="font-serif text-lg font-bold text-gold">MehzHaya</span>
           </Link>
           <button onClick={() => setOpen(false)} className="lg:hidden">
             <FiX size={22} />

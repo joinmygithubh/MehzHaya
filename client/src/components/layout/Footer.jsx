@@ -12,6 +12,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { STORE, CATEGORY_GROUPS } from "../../utils/constants";
 import { whatsappLink } from "../../utils/helpers";
 import Newsletter from "../home/Newsletter";
+import Logo from "../common/Logo";
 
 const Footer = () => (
   <footer className="mt-16 bg-emerald-950 text-beige-light">
@@ -19,8 +20,8 @@ const Footer = () => (
     <div className="container-px grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
       {/* Brand */}
       <div>
-        <h3 className="font-serif text-2xl font-bold text-gold">MehzHaya</h3>
-        <p className="mt-1 text-xs tracking-[0.2em] text-beige-light/60">
+        <Logo to={null} className="h-16" plate />
+        <p className="mt-3 text-xs tracking-[0.2em] text-beige-light/60">
           {STORE.tagline.toUpperCase()}
         </p>
         <p className="mt-4 text-sm text-beige-light/70">

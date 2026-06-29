@@ -17,7 +17,7 @@ const pick = (arr, n) => {
 const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 const lorem =
-  "Crafted with premium care for the modern modest wardrobe. Soft, breathable and beautifully draped for all-day elegance. A MehzHaya signature piece — Elegance in Every Fold.";
+  "Crafted with premium care for the modern modest wardrobe. Soft, breathable and beautifully draped for all-day elegance. A MehzHaya signature piece — Elegance in Modesty.";
 
 let skuCounter = 1000;
 const nextSku = (prefix) => `MH-${prefix}-${++skuCounter}`;

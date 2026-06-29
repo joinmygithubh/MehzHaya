@@ -1,6 +1,6 @@
 export const STORE = {
   name: "MehzHaya",
-  tagline: "Elegance in Every Fold",
+  tagline: "Elegance in Modesty",
   phone: "8700695794",
   email: "support@mehzhaya.com",
   address: {

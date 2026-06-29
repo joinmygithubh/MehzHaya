@@ -155,7 +155,7 @@ const importData = async () => {
   // ----- Banners -----
   await Banner.create([
     {
-      title: "Elegance in Every Fold",
+      title: "Elegance in Modesty",
       subtitle: "Discover our premium hijab collection",
       image: { url: "https://images.unsplash.com/photo-1611601322175-ef8ec8c85f01?w=1600&q=80" },
       link: "/shop?group=Hijabs",

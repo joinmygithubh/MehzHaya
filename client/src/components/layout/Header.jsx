@@ -15,10 +15,11 @@ import {
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { STORE, CATEGORY_GROUPS } from "../../utils/constants";
+import { CATEGORY_GROUPS } from "../../utils/constants";
 import { toggleTheme } from "../../redux/slices/uiSlice";
 import { logout } from "../../redux/slices/authSlice";
 import SearchBar from "./SearchBar";
+import Logo from "../common/Logo";
 
 const Header = ({ minimal }) => {
   const dispatch = useDispatch();
@@ -45,14 +46,7 @@ const Header = ({ minimal }) => {
     <header className="sticky top-0 z-40 border-b border-gold/20 bg-white/90 backdrop-blur-md dark:bg-emerald-950/90">
       <div className="container-px flex items-center justify-between gap-3 py-3 sm:gap-4 sm:py-4">
         {/* Logo */}
-        <Link to="/" className="flex shrink-0 flex-col leading-none">
-          <span className="font-serif text-xl font-bold text-emerald-900 dark:text-gold sm:text-2xl lg:text-3xl">
-            MehzHaya
-          </span>
-          <span className="text-[8px] tracking-[0.15em] text-gold-dark dark:text-beige-light/70 sm:text-[10px] sm:tracking-[0.25em]">
-            {STORE.tagline.toUpperCase()}
-          </span>
-        </Link>
+        <Logo className="h-11 sm:h-14" />
 
         {/* Desktop nav (laptop / desktop ≥1024) */}
         {!minimal && (
