@@ -5,12 +5,23 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
   body {
     @apply bg-beige-light text-ink font-sans antialiased dark:bg-emerald-950 dark:text-beige-light;
+    /* Prevent accidental horizontal scroll without breaking the sticky header.
+       `clip` (unlike `hidden`) does not create a scroll container. */
+    overflow-x: clip;
+  }
+  /* Media never overflows its container */
+  img, svg, video, canvas {
+    max-width: 100%;
+    height: auto;
   }
   h1, h2, h3, h4 {
     @apply font-serif;
+    /* Avoid long words breaking the layout on narrow screens */
+    overflow-wrap: break-word;
   }
   ::selection {
     @apply bg-gold/30;
@@ -22,7 +33,7 @@
     @apply px-4 sm:px-6 lg:px-10 xl:px-16;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed sm:px-6 sm:py-3 sm:text-base;
   }
   .btn-primary {
     @apply btn bg-emerald-900 text-gold hover:bg-emerald-800 hover:shadow-gold;

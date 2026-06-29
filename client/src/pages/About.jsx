@@ -29,7 +29,7 @@ const About = () => {
         />
         <div className="absolute inset-0 bg-emerald-950/70" />
         <div className="container-px relative py-24 text-center">
-          <h1 className="font-serif text-5xl font-bold text-beige-light">
+          <h1 className="font-serif text-4xl font-bold text-beige-light sm:text-5xl">
             Our Story
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-beige-light/80">
