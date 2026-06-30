@@ -1,7 +1,7 @@
 /**
  * Procedural product generator for MehzHaya.
- * Produces 250+ realistic products across all categories with prices,
- * discounts, colors, sizes, materials, stock and marketing flags.
+ * Produces 350+ realistic products across all categories (210+ hijabs & niqabs)
+ * with prices, discounts, colors, sizes, materials, stock and marketing flags.
  */
 import { buildGallery } from "./imagePool.js";
 
@@ -67,19 +67,19 @@ const colorName = (c) => c;
 export const buildProducts = () => {
   let all = [];
 
-  /* ---------------- HIJABS (110) ---------------- */
+  /* ---------------- HIJABS (150) ---------------- */
   const hijabTypes = [
-    { cat: "Jersey Hijab", mat: "Jersey", n: 12, pr: [299, 699] },
-    { cat: "Chiffon Hijab", mat: "Chiffon", n: 12, pr: [249, 599] },
-    { cat: "Cotton Hijab", mat: "Cotton", n: 10, pr: [199, 499] },
-    { cat: "Silk Hijab", mat: "Silk", n: 10, pr: [699, 1499] },
-    { cat: "Modal Hijab", mat: "Modal", n: 10, pr: [399, 899] },
-    { cat: "Satin Hijab", mat: "Satin", n: 10, pr: [349, 799] },
-    { cat: "Crinkle Hijab", mat: "Crinkle", n: 10, pr: [299, 649] },
-    { cat: "Premium Hijab", mat: "Modal", n: 10, pr: [899, 1999] },
-    { cat: "Instant Hijab", mat: "Jersey", n: 9, pr: [349, 749] },
-    { cat: "Sports Hijab", mat: "Polyester", n: 8, pr: [399, 899] },
-    { cat: "Printed Hijab", mat: "Georgette", n: 9, pr: [349, 799] },
+    { cat: "Jersey Hijab", mat: "Jersey", n: 16, pr: [299, 699] },
+    { cat: "Chiffon Hijab", mat: "Chiffon", n: 16, pr: [249, 599] },
+    { cat: "Cotton Hijab", mat: "Cotton", n: 14, pr: [199, 499] },
+    { cat: "Silk Hijab", mat: "Silk", n: 14, pr: [699, 1499] },
+    { cat: "Modal Hijab", mat: "Modal", n: 14, pr: [399, 899] },
+    { cat: "Satin Hijab", mat: "Satin", n: 14, pr: [349, 799] },
+    { cat: "Crinkle Hijab", mat: "Crinkle", n: 12, pr: [299, 649] },
+    { cat: "Premium Hijab", mat: "Modal", n: 14, pr: [899, 1999] },
+    { cat: "Instant Hijab", mat: "Jersey", n: 12, pr: [349, 749] },
+    { cat: "Sports Hijab", mat: "Polyester", n: 10, pr: [399, 899] },
+    { cat: "Printed Hijab", mat: "Georgette", n: 14, pr: [349, 799] },
   ];
   hijabTypes.forEach(({ cat, mat, n, pr }) => {
     all = all.concat(
@@ -91,22 +91,28 @@ export const buildProducts = () => {
         material: mat,
         sizes: ["Free Size"],
         priceRange: pr,
-        namer: (i, c) => `${colorName(c)} ${cat} ${["Premium", "Classic", "Luxe", "Everyday", "Signature"][i % 5]}`,
+        namer: (i, c) =>
+          `${colorName(c)} ${cat} ${
+            ["Premium", "Classic", "Luxe", "Everyday", "Signature", "Soft", "Luxury", "Essential"][i % 8]
+          }`,
       })
     );
   });
 
-  /* ---------------- NIQABS (32) ---------------- */
+  /* ---------------- NIQABS (60) ---------------- */
   all = all.concat(
     generate({
-      count: 32,
+      count: 60,
       prefix: "NQ",
       group: "Islamic Wear",
       categoryName: "Niqab",
       material: "Chiffon",
       sizes: ["Free Size"],
       priceRange: [199, 699],
-      namer: (i, c) => `${colorName(c)} ${["One Layer", "Two Layer", "Three Layer", "Half", "Bandana Style", "Tie Back", "Pull On"][i % 7]} Niqab`,
+      namer: (i, c) =>
+        `${colorName(c)} ${
+          ["One Layer", "Two Layer", "Three Layer", "Half", "Bandana Style", "Tie Back", "Pull On", "Saudi Style", "Butterfly", "Breathable"][i % 10]
+        } Niqab`,
     })
   );
 
