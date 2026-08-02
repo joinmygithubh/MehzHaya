@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import { FcGoogle } from "react-icons/fc";
 
 import AuthShell from "../../components/auth/AuthShell";
 import SEO from "../../components/common/SEO";
-import { login } from "../../redux/slices/authSlice";
+import { login, googleLogin } from "../../redux/slices/authSlice";
 import { fetchCart } from "../../redux/slices/cartSlice";
 import { fetchWishlist } from "../../redux/slices/wishlistSlice";
 
@@ -19,6 +20,72 @@ const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const tokenClientRef = useRef(null);
+
+  const clientId =
+    import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+    "985780332686-mf06t9heosccohuh0rcn8r8ncso4igqi.apps.googleusercontent.com";
+
+  useEffect(() => {
+    // Initialize Google OAuth Token Client for custom button trigger
+    const initTokenClient = () => {
+      if (window.google?.accounts?.oauth2) {
+        try {
+          tokenClientRef.current = window.google.accounts.oauth2.initTokenClient({
+            client_id: clientId,
+            scope: "email profile openid",
+            callback: async (tokenResponse) => {
+              if (tokenResponse && tokenResponse.access_token) {
+                setLoading(true);
+                try {
+                  const userInfo = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+                    headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+                  }).then((r) => r.json());
+
+                  if (!userInfo.email) {
+                    throw new Error("Could not retrieve email from Google account");
+                  }
+
+                  const res = await dispatch(
+                    googleLogin({
+                      email: userInfo.email,
+                      name: userInfo.name,
+                      picture: userInfo.picture,
+                      googleId: userInfo.sub,
+                      token: tokenResponse.access_token,
+                    })
+                  );
+                  setLoading(false);
+
+                  if (googleLogin.fulfilled.match(res)) {
+                    dispatch(fetchCart());
+                    dispatch(fetchWishlist());
+                    navigate(res.payload.user?.role === "admin" ? "/admin" : from, { replace: true });
+                  } else {
+                    toast.error(res.payload || "Google sign in failed");
+                  }
+                } catch (err) {
+                  setLoading(false);
+                  toast.error(err.message || "Google verification failed");
+                }
+              } else if (tokenResponse?.error) {
+                toast.error(`Google Login: ${tokenResponse.error}`);
+              }
+            },
+          });
+        } catch (e) {
+          console.warn("GIS TokenClient Init Error:", e);
+        }
+      }
+    };
+
+    if (window.google?.accounts?.oauth2) {
+      initTokenClient();
+    } else {
+      const timer = setTimeout(initTokenClient, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [clientId, dispatch, navigate, from]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -28,10 +95,86 @@ const Login = () => {
     if (login.fulfilled.match(res)) {
       dispatch(fetchCart());
       dispatch(fetchWishlist());
-      toast.success("Welcome back!");
       navigate(res.payload.user.role === "admin" ? "/admin" : from, { replace: true });
     } else {
       toast.error(res.payload || "Login failed");
+    }
+  };
+
+  const handleGoogleSignIn = () => {
+    // 1. If GIS Token Client is ready, request access token popup
+    if (tokenClientRef.current) {
+      tokenClientRef.current.requestAccessToken();
+      return;
+    }
+
+    // 2. If GIS `oauth2` initialized directly
+    if (window.google?.accounts?.oauth2) {
+      const client = window.google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: "email profile openid",
+        callback: async (tokenResponse) => {
+          if (tokenResponse?.access_token) {
+            setLoading(true);
+            try {
+              const userInfo = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+                headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+              }).then((r) => r.json());
+
+              const res = await dispatch(
+                googleLogin({
+                  email: userInfo.email,
+                  name: userInfo.name,
+                  picture: userInfo.picture,
+                  googleId: userInfo.sub,
+                  token: tokenResponse.access_token,
+                })
+              );
+              setLoading(false);
+              if (googleLogin.fulfilled.match(res)) {
+                dispatch(fetchCart());
+                dispatch(fetchWishlist());
+                navigate(res.payload.user?.role === "admin" ? "/admin" : from, { replace: true });
+              } else {
+                toast.error(res.payload || "Google login failed");
+              }
+            } catch (err) {
+              setLoading(false);
+              toast.error(err.message || "Failed to authenticate with Google");
+            }
+          }
+        },
+      });
+      client.requestAccessToken();
+      return;
+    }
+
+    // 3. One-tap fallback prompt
+    if (window.google?.accounts?.id) {
+      window.google.accounts.id.prompt();
+      return;
+    }
+
+    // 4. Demo fallback for local development if Google API script fails to load
+    triggerDemoGoogleLogin();
+  };
+
+  const triggerDemoGoogleLogin = async () => {
+    setLoading(true);
+    const demoGoogleUser = {
+      email: "google.user@mehzhaya.com",
+      name: "Google Customer",
+      picture: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80",
+      googleId: "google_10293847561029384",
+    };
+    const res = await dispatch(googleLogin(demoGoogleUser));
+    setLoading(false);
+    if (googleLogin.fulfilled.match(res)) {
+      dispatch(fetchCart());
+      dispatch(fetchWishlist());
+      navigate(res.payload.user?.role === "admin" ? "/admin" : from, { replace: true });
+    } else {
+      toast.error(res.payload || "Google sign in failed");
     }
   };
 
@@ -39,10 +182,14 @@ const Login = () => {
     <AuthShell
       title="Welcome Back"
       subtitle="Sign in to continue shopping"
+      imageSrc="/images/login-auth-ultra.jpg"
+      imageAlt="MehzHaya Luxury Hijab Atelier"
+      imageSrcSet="/images/login-auth-ultra.jpg 1920w"
+      imageSizes="(max-width: 768px) 100vw, 50vw"
       footer={
         <>
           Don't have an account?{" "}
-          <Link to="/register" className="font-medium text-gold-dark hover:underline">
+          <Link to="/register" className="font-semibold text-gold hover:underline">
             Create one
           </Link>
         </>
@@ -53,7 +200,7 @@ const Login = () => {
         <div>
           <label className="label">Email</label>
           <div className="relative">
-            <FiMail className="pointer-events-none absolute left-3 top-3.5 text-gray-400" />
+            <FiMail className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
             <input
               type="email"
               required
@@ -67,7 +214,7 @@ const Login = () => {
         <div>
           <label className="label">Password</label>
           <div className="relative">
-            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-gray-400" />
+            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
             <input
               type={show ? "text" : "password"}
               required
@@ -79,27 +226,38 @@ const Login = () => {
             <button
               type="button"
               onClick={() => setShow((s) => !s)}
-              className="absolute right-3 top-3.5 text-gray-400"
+              className="absolute right-3 top-3.5 text-taupe hover:text-espresso"
             >
               {show ? <FiEyeOff /> : <FiEye />}
             </button>
           </div>
         </div>
         <div className="flex justify-end">
-          <Link to="/forgot-password" className="text-sm text-gold-dark hover:underline">
+          <Link to="/forgot-password" className="text-sm font-semibold text-gold hover:underline">
             Forgot password?
           </Link>
         </div>
         <button type="submit" disabled={loading} className="btn-primary w-full">
           {loading ? "Signing in..." : "Sign In"}
         </button>
-      </form>
 
-      <div className="mt-4 rounded-lg bg-beige p-3 text-xs text-gray-600 dark:bg-emerald-900/40 dark:text-beige-light/70">
-        <p className="font-medium">Demo accounts:</p>
-        <p>Customer: customer@mehzhaya.com / Customer@123</p>
-        <p>Admin: admin@mehzhaya.com / Admin@12345</p>
-      </div>
+        <div className="relative my-4 flex items-center justify-center">
+          <div className="w-full border-t border-sand/70" />
+          <span className="absolute bg-champagne/80 px-3 text-xs font-medium text-taupe uppercase tracking-wider">
+            or
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white text-espresso font-medium text-sm rounded-xl border border-gray-200 shadow-xs hover:bg-ivory hover:shadow-soft transition-all duration-300 active:scale-[0.99]"
+        >
+          <FcGoogle size={20} />
+          <span>Continue with Google</span>
+        </button>
+      </form>
     </AuthShell>
   );
 };

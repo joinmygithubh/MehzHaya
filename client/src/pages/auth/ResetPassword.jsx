@@ -43,7 +43,7 @@ const ResetPassword = () => {
       title="Reset Password"
       subtitle="Enter your new password"
       footer={
-        <Link to="/login" className="font-medium text-gold-dark hover:underline">
+        <Link to="/login" className="font-semibold text-gold hover:underline">
           Back to login
         </Link>
       }
@@ -53,7 +53,7 @@ const ResetPassword = () => {
         <div>
           <label className="label">New Password</label>
           <div className="relative">
-            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-gray-400" />
+            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
             <input
               type={show ? "text" : "password"}
               required
@@ -62,7 +62,7 @@ const ResetPassword = () => {
               className="input px-10"
               placeholder="At least 6 characters"
             />
-            <button type="button" onClick={() => setShow((s) => !s)} className="absolute right-3 top-3.5 text-gray-400">
+            <button type="button" onClick={() => setShow((s) => !s)} className="absolute right-3 top-3.5 text-taupe hover:text-espresso">
               {show ? <FiEyeOff /> : <FiEye />}
             </button>
           </div>
@@ -70,7 +70,7 @@ const ResetPassword = () => {
         <div>
           <label className="label">Confirm Password</label>
           <div className="relative">
-            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-gray-400" />
+            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
             <input
               type={show ? "text" : "password"}
               required

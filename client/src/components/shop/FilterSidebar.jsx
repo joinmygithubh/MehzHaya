@@ -2,8 +2,8 @@ import { FiX } from "react-icons/fi";
 import { CATEGORY_GROUPS, COLORS, MATERIALS, COLOR_HEX } from "../../utils/constants";
 
 const Section = ({ title, children }) => (
-  <div className="border-b border-gray-100 py-4 dark:border-emerald-800">
-    <h4 className="mb-3 font-semibold text-emerald-900 dark:text-gold">{title}</h4>
+  <div className="border-b border-sand/60 py-4">
+    <h4 className="mb-3 font-serif text-base font-semibold text-espresso">{title}</h4>
     {children}
   </div>
 );
@@ -11,18 +11,18 @@ const Section = ({ title, children }) => (
 const FilterSidebar = ({ filters, setFilter, clearFilters, onClose }) => {
   return (
     <div className="h-full overflow-y-auto">
-      <div className="flex items-center justify-between lg:hidden">
-        <h3 className="font-serif text-xl">Filters</h3>
-        <button onClick={onClose} className="p-1">
+      <div className="flex items-center justify-between lg:hidden pb-3 border-b border-sand">
+        <h3 className="font-serif text-xl font-semibold text-espresso">Filters</h3>
+        <button onClick={onClose} className="p-1 text-espresso hover:text-gold">
           <FiX size={22} />
         </button>
       </div>
 
-      <div className="mb-2 flex items-center justify-between">
-        <span className="text-sm text-gray-500">Refine results</span>
+      <div className="my-3 flex items-center justify-between">
+        <span className="text-xs uppercase tracking-wider font-semibold text-taupe">Refine results</span>
         <button
           onClick={clearFilters}
-          className="text-xs font-medium text-gold-dark hover:underline"
+          className="text-xs font-semibold text-gold hover:underline"
         >
           Clear all
         </button>
@@ -34,21 +34,21 @@ const FilterSidebar = ({ filters, setFilter, clearFilters, onClose }) => {
           <div key={group} className="mb-3">
             <button
               onClick={() => setFilter("group", filters.group === group ? "" : group)}
-              className={`text-sm font-medium ${
-                filters.group === group ? "text-gold" : "text-emerald-900 dark:text-beige-light"
+              className={`text-sm font-semibold transition-colors ${
+                filters.group === group ? "text-gold" : "text-espresso hover:text-gold"
               }`}
             >
               {group}
             </button>
-            <div className="mt-1 space-y-1 pl-3">
+            <div className="mt-1.5 space-y-1.5 pl-3">
               {items.map((cat) => (
-                <label key={cat} className="flex cursor-pointer items-center gap-2 text-sm text-gray-600 dark:text-beige-light/70">
+                <label key={cat} className="flex cursor-pointer items-center gap-2 text-sm text-taupe hover:text-espresso">
                   <input
                     type="radio"
                     name="category"
                     checked={filters.category === cat}
                     onChange={() => setFilter("category", cat)}
-                    className="accent-emerald-900"
+                    className="accent-[#B8935A]"
                   />
                   {cat}
                 </label>
@@ -66,15 +66,15 @@ const FilterSidebar = ({ filters, setFilter, clearFilters, onClose }) => {
             placeholder="Min"
             value={filters.minPrice}
             onChange={(e) => setFilter("minPrice", e.target.value)}
-            className="input py-2"
+            className="input py-2 text-sm"
           />
-          <span>–</span>
+          <span className="text-sand font-bold">–</span>
           <input
             type="number"
             placeholder="Max"
             value={filters.maxPrice}
             onChange={(e) => setFilter("maxPrice", e.target.value)}
-            className="input py-2"
+            className="input py-2 text-sm"
           />
         </div>
       </Section>
@@ -88,7 +88,7 @@ const FilterSidebar = ({ filters, setFilter, clearFilters, onClose }) => {
               title={c}
               onClick={() => setFilter("color", filters.color === c ? "" : c)}
               className={`h-7 w-7 rounded-full border-2 transition ${
-                filters.color === c ? "border-gold scale-110" : "border-gray-200"
+                filters.color === c ? "border-gold scale-110 shadow-xs" : "border-sand/70"
               }`}
               style={{ backgroundColor: COLOR_HEX[c] }}
             />
@@ -103,10 +103,10 @@ const FilterSidebar = ({ filters, setFilter, clearFilters, onClose }) => {
             <button
               key={m}
               onClick={() => setFilter("material", filters.material === m ? "" : m)}
-              className={`rounded-full border px-3 py-1 text-xs transition ${
+              className={`rounded-xl border px-3 py-1 text-xs font-medium transition ${
                 filters.material === m
-                  ? "border-emerald-900 bg-emerald-900 text-gold"
-                  : "border-gray-300 text-gray-600 dark:text-beige-light/70"
+                  ? "border-gold bg-gold text-espresso font-semibold shadow-xs"
+                  : "border-sand text-taupe hover:border-gold hover:text-espresso"
               }`}
             >
               {m}
@@ -118,28 +118,28 @@ const FilterSidebar = ({ filters, setFilter, clearFilters, onClose }) => {
       {/* Rating */}
       <Section title="Rating">
         {[4, 3, 2, 1].map((r) => (
-          <label key={r} className="flex cursor-pointer items-center gap-2 py-1 text-sm">
+          <label key={r} className="flex cursor-pointer items-center gap-2 py-1 text-sm text-taupe hover:text-espresso">
             <input
               type="radio"
               name="rating"
               checked={Number(filters.rating) === r}
               onChange={() => setFilter("rating", String(r))}
-              className="accent-emerald-900"
+              className="accent-[#B8935A]"
             />
             <span className="text-gold">{"★".repeat(r)}{"☆".repeat(5 - r)}</span>
-            <span className="text-gray-500">& up</span>
+            <span className="text-taupe">& up</span>
           </label>
         ))}
       </Section>
 
       {/* Availability */}
       <Section title="Availability">
-        <label className="flex cursor-pointer items-center gap-2 py-1 text-sm">
+        <label className="flex cursor-pointer items-center gap-2 py-1 text-sm text-taupe hover:text-espresso">
           <input
             type="checkbox"
             checked={filters.availability === "in"}
             onChange={(e) => setFilter("availability", e.target.checked ? "in" : "")}
-            className="accent-emerald-900"
+            className="accent-[#B8935A]"
           />
           In stock only
         </label>

@@ -2,12 +2,12 @@ import { Helmet } from "react-helmet-async";
 
 const SEO = ({ title, description }) => (
   <Helmet>
-    <title>{title ? `${title} | MehzHaya` : "MehzHaya | Elegance in Modesty"}</title>
+    <title>{title ? `${title} | MehzHaya` : "MehzHaya | Timeless Hijabs for the Modern You"}</title>
     <meta
       name="description"
       content={
         description ||
-        "MehzHaya - Premium Hijabs, Niqabs, Abayas & Islamic Fashion. Elegance in Modesty."
+        "MehzHaya - Premium Hijabs, Niqabs, Abayas & Islamic Fashion. Timeless Hijabs for the Modern You."
       }
     />
   </Helmet>

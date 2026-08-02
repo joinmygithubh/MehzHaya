@@ -32,6 +32,16 @@ export const login = createAsyncThunk("auth/login", async (data, thunk) => {
   }
 });
 
+export const googleLogin = createAsyncThunk("auth/googleLogin", async (data, thunk) => {
+  try {
+    const res = await api.post("/auth/google", data);
+    persist(res.data.user, res.data.token);
+    return res.data;
+  } catch (e) {
+    return thunk.rejectWithValue(e.message);
+  }
+});
+
 export const loadUser = createAsyncThunk("auth/loadUser", async (_, thunk) => {
   try {
     const res = await api.get("/auth/me");
@@ -41,13 +51,21 @@ export const loadUser = createAsyncThunk("auth/loadUser", async (_, thunk) => {
   }
 });
 
-export const logout = createAsyncThunk("auth/logout", async () => {
+export const logout = createAsyncThunk("auth/logout", async (_, thunk) => {
   try {
     await api.get("/auth/logout");
+  } catch (e) {
+    console.warn("Logout API warning:", e.message);
+  }
+
+  clearPersist();
+  try {
+    sessionStorage.clear();
   } catch {
     /* ignore */
   }
-  clearPersist();
+
+  thunk.dispatch(clearAuth());
 });
 
 export const updateProfile = createAsyncThunk(
@@ -72,6 +90,18 @@ const authSlice = createSlice({
     error: null,
   },
   reducers: {
+    clearAuth: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.loading = false;
+      state.error = null;
+      clearPersist();
+      try {
+        sessionStorage.clear();
+      } catch {
+        /* ignore */
+      }
+    },
     setUser: (state, action) => {
       state.user = action.payload;
       state.isAuthenticated = !!action.payload;
@@ -94,6 +124,12 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.isAuthenticated = true;
     };
+    const resetUser = (state) => {
+      state.loading = false;
+      state.user = null;
+      state.isAuthenticated = false;
+      state.error = null;
+    };
 
     builder
       .addCase(register.pending, pending)
@@ -102,23 +138,22 @@ const authSlice = createSlice({
       .addCase(login.pending, pending)
       .addCase(login.fulfilled, authed)
       .addCase(login.rejected, rejected)
+      .addCase(googleLogin.pending, pending)
+      .addCase(googleLogin.fulfilled, authed)
+      .addCase(googleLogin.rejected, rejected)
       .addCase(loadUser.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuthenticated = true;
       })
-      .addCase(loadUser.rejected, (state) => {
-        state.user = null;
-        state.isAuthenticated = false;
-      })
-      .addCase(logout.fulfilled, (state) => {
-        state.user = null;
-        state.isAuthenticated = false;
-      })
+      .addCase(loadUser.rejected, resetUser)
+      .addCase(logout.pending, resetUser)
+      .addCase(logout.fulfilled, resetUser)
+      .addCase(logout.rejected, resetUser)
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.user = action.payload;
       });
   },
 });
 
-export const { setUser, clearError } = authSlice.actions;
+export const { setUser, clearError, clearAuth } = authSlice.actions;
 export default authSlice.reducer;

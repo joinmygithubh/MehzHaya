@@ -38,21 +38,21 @@ const Profile = () => {
   };
 
   return (
-    <div className="card p-8">
-      <h1 className="font-serif text-2xl font-semibold text-emerald-900 dark:text-gold">
+    <div className="card p-8 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+      <h1 className="font-serif text-2xl font-semibold text-espresso">
         My Profile
       </h1>
-      <p className="mt-1 text-sm text-gray-500">Manage your personal information</p>
+      <p className="mt-1 text-sm text-taupe">Manage your personal information</p>
 
       {!user?.isEmailVerified && (
-        <div className="mt-4 flex items-center justify-between rounded-lg bg-orange-50 p-4 text-sm dark:bg-emerald-900/40">
-          <span className="text-orange-700 dark:text-orange-300">
+        <div className="mt-4 flex items-center justify-between rounded-xl bg-blush/60 border border-sand/70 p-4 text-sm">
+          <span className="text-espresso font-medium">
             Please verify your email address.
           </span>
           <button
             onClick={resendVerification}
             disabled={resending}
-            className="font-medium text-gold-dark hover:underline"
+            className="font-semibold text-gold hover:underline"
           >
             {resending ? "Sending..." : "Resend link"}
           </button>

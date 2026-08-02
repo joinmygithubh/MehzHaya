@@ -12,7 +12,7 @@ const RatingStars = ({ value = 0, size = 14, count }) => {
     <span className="inline-flex items-center gap-0.5">
       {stars}
       {count !== undefined && (
-        <span className="ml-1 text-xs text-gray-500 dark:text-beige-light/60">
+        <span className="ml-1 text-xs text-taupe">
           ({count})
         </span>
       )}

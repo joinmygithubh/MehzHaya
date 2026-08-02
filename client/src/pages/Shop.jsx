@@ -127,10 +127,10 @@ const Shop = () => {
           <div className="flex-1">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h1 className="font-serif text-3xl font-semibold text-emerald-900 dark:text-gold">
+                <h1 className="font-serif text-3xl font-semibold text-espresso">
                   {heading}
                 </h1>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-taupe mt-1">
                   {totalProducts} products found
                 </p>
               </div>
@@ -146,7 +146,7 @@ const Shop = () => {
                 <select
                   value={sort}
                   onChange={(e) => handleSort(e.target.value)}
-                  className="input w-auto py-2"
+                  className="input w-auto py-2 text-sm"
                 >
                   {SORT_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>
@@ -155,16 +155,16 @@ const Shop = () => {
                   ))}
                 </select>
 
-                <div className="hidden items-center gap-1 rounded-lg border border-gray-300 p-1 sm:flex">
+                <div className="hidden items-center gap-1 rounded-xl border border-sand p-1 sm:flex bg-ivory">
                   <button
                     onClick={() => setView("grid")}
-                    className={`rounded p-1.5 ${view === "grid" ? "bg-emerald-900 text-gold" : ""}`}
+                    className={`rounded-lg p-1.5 transition ${view === "grid" ? "bg-gold text-espresso shadow-xs" : "text-taupe hover:text-espresso"}`}
                   >
                     <FiGrid size={18} />
                   </button>
                   <button
                     onClick={() => setView("list")}
-                    className={`rounded p-1.5 ${view === "list" ? "bg-emerald-900 text-gold" : ""}`}
+                    className={`rounded-lg p-1.5 transition ${view === "list" ? "bg-gold text-espresso shadow-xs" : "text-taupe hover:text-espresso"}`}
                   >
                     <FiList size={18} />
                   </button>
@@ -177,7 +177,7 @@ const Shop = () => {
             {/* Infinite scroll sentinel */}
             <div ref={loaderRef} className="h-10" />
             {page >= totalPages && items.length > 0 && (
-              <p className="py-8 text-center text-sm text-gray-400">
+              <p className="py-8 text-center text-sm text-taupe">
                 You've reached the end ✦
               </p>
             )}
@@ -189,10 +189,10 @@ const Shop = () => {
       {showFilters && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-espresso/40 backdrop-blur-xs"
             onClick={() => setShowFilters(false)}
           />
-          <div className="absolute left-0 top-0 h-full w-80 max-w-[85%] overflow-y-auto bg-white p-5 dark:bg-emerald-950">
+          <div className="absolute left-0 top-0 h-full w-80 max-w-[85%] overflow-y-auto bg-ivory border-r border-sand p-5 shadow-soft">
             <FilterSidebar
               filters={filters}
               setFilter={setFilter}

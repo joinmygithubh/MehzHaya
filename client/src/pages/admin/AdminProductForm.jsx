@@ -124,16 +124,16 @@ const AdminProductForm = () => {
 
   return (
     <div>
-      <Link to="/admin/products" className="mb-4 inline-flex items-center gap-1 text-sm text-gold-dark hover:underline">
+      <Link to="/admin/products" className="mb-4 inline-flex items-center gap-1 text-sm font-semibold text-gold hover:underline">
         <FiArrowLeft /> Back to products
       </Link>
-      <h1 className="mb-6 font-serif text-2xl font-semibold text-emerald-900 dark:text-gold">
+      <h1 className="mb-6 font-serif text-2xl font-semibold text-espresso">
         {isEdit ? "Edit Product" : "Add New Product"}
       </h1>
 
       <form onSubmit={submit} className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-4 lg:col-span-2">
-          <div className="card space-y-4 p-6">
+          <div className="card space-y-4 p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
             <Input label="Product Name *" value={form.name} onChange={field("name")} required />
             <div className="grid gap-4 sm:grid-cols-2">
               <Input label="SKU *" value={form.sku} onChange={field("sku")} required placeholder="MH-HJ-001" />
@@ -158,21 +158,21 @@ const AdminProductForm = () => {
           </div>
 
           {/* Images */}
-          <div className="card p-6">
+          <div className="card p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
             <label className="label">Product Images</label>
             <div className="mt-2 flex flex-wrap gap-3">
               {imageUrls.map((url, i) => (
                 <div key={i} className="relative h-24 w-20">
-                  <img src={url} alt="" className="h-full w-full rounded-lg object-cover" />
-                  <button type="button" onClick={() => setImageUrls(imageUrls.filter((_, j) => j !== i))} className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white">
+                  <img src={url} alt="" className="h-full w-full rounded-xl object-cover bg-champagne border border-sand/60" />
+                  <button type="button" onClick={() => setImageUrls(imageUrls.filter((_, j) => j !== i))} className="absolute -right-2 -top-2 rounded-full bg-terracotta p-1 text-ivory">
                     <FiX size={12} />
                   </button>
                 </div>
               ))}
               {files.map((f, i) => (
                 <div key={i} className="relative h-24 w-20">
-                  <img src={URL.createObjectURL(f)} alt="" className="h-full w-full rounded-lg object-cover" />
-                  <button type="button" onClick={() => setFiles(files.filter((_, j) => j !== i))} className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white">
+                  <img src={URL.createObjectURL(f)} alt="" className="h-full w-full rounded-xl object-cover bg-champagne border border-sand/60" />
+                  <button type="button" onClick={() => setFiles(files.filter((_, j) => j !== i))} className="absolute -right-2 -top-2 rounded-full bg-terracotta p-1 text-ivory">
                     <FiX size={12} />
                   </button>
                 </div>
@@ -191,7 +191,7 @@ const AdminProductForm = () => {
               </button>
             </div>
 
-            <label className="mt-3 flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 py-4 text-sm text-gray-500 hover:border-gold">
+            <label className="mt-3 flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-sand/80 bg-ivory/50 py-4 text-sm text-taupe hover:border-gold hover:text-espresso transition-all">
               <FiUploadCloud /> Upload images (Cloudinary)
               <input
                 type="file"
@@ -206,7 +206,7 @@ const AdminProductForm = () => {
 
         {/* Side */}
         <div className="space-y-4">
-          <div className="card space-y-4 p-6">
+          <div className="card space-y-4 p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
             <div className="grid grid-cols-2 gap-4">
               <Input label="Price (₹) *" type="number" value={form.price} onChange={field("price")} required />
               <Input label="Discount (%)" type="number" value={form.discount} onChange={field("discount")} />
@@ -221,12 +221,12 @@ const AdminProductForm = () => {
             </div>
           </div>
 
-          <div className="card p-6">
+          <div className="card p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
             <label className="label">Colors</label>
             <div className="flex flex-wrap gap-2">
               {COLORS.map((c) => (
                 <button key={c} type="button" onClick={() => toggle(colors, setColors, c)}
-                  className={`rounded-full border px-3 py-1 text-xs ${colors.includes(c) ? "border-emerald-900 bg-emerald-900 text-gold" : "border-gray-300"}`}>
+                  className={`rounded-full border px-3 py-1 text-xs font-medium transition ${colors.includes(c) ? "border-gold bg-gold text-espresso font-semibold shadow-xs" : "border-sand text-taupe hover:border-gold hover:text-espresso"}`}>
                   {c}
                 </button>
               ))}
@@ -235,14 +235,14 @@ const AdminProductForm = () => {
             <div className="flex flex-wrap gap-2">
               {SIZES.map((s) => (
                 <button key={s} type="button" onClick={() => toggle(sizes, setSizes, s)}
-                  className={`rounded-full border px-3 py-1 text-xs ${sizes.includes(s) ? "border-emerald-900 bg-emerald-900 text-gold" : "border-gray-300"}`}>
+                  className={`rounded-full border px-3 py-1 text-xs font-medium transition ${sizes.includes(s) ? "border-gold bg-gold text-espresso font-semibold shadow-xs" : "border-sand text-taupe hover:border-gold hover:text-espresso"}`}>
                   {s}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="card space-y-2 p-6">
+          <div className="card space-y-2 p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
             <label className="label">Marketing Flags</label>
             {[
               ["isFeatured", "Featured"],
@@ -252,8 +252,8 @@ const AdminProductForm = () => {
               ["isFlashSale", "Flash Sale"],
               ["isActive", "Active (visible)"],
             ].map(([key, label]) => (
-              <label key={key} className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={form[key]} onChange={field(key)} className="accent-emerald-900" />
+              <label key={key} className="flex items-center gap-2 text-sm text-espresso">
+                <input type="checkbox" checked={form[key]} onChange={field(key)} className="accent-[#B8935A]" />
                 {label}
               </label>
             ))}

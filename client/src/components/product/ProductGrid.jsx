@@ -15,10 +15,10 @@ const ProductGrid = ({ products = [], loading, skeletonCount = 8, view = "grid" 
   if (!loading && products.length === 0) {
     return (
       <div className="py-20 text-center">
-        <p className="font-serif text-2xl text-emerald-900 dark:text-gold">
+        <p className="font-serif text-2xl font-semibold text-espresso">
           No products found
         </p>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-taupe">
           Try adjusting your filters or search terms.
         </p>
       </div>

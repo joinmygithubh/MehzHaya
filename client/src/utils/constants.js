@@ -1,8 +1,8 @@
 export const STORE = {
   name: "MehzHaya",
-  tagline: "Elegance in Modesty",
+  tagline: "Timeless Hijabs for the Modern You",
   phone: "8700695794",
-  email: "support@mehzhaya.com",
+  email: "mehzhaya@gmail.com",
   address: {
     line1: "Shyam Colony Part-1",
     city: "Faridabad",

@@ -21,6 +21,7 @@ import couponRoutes from "./routes/couponRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import bannerRoutes from "./routes/bannerRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
 
@@ -42,11 +43,19 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-// Rate limiting on auth routes
+// Global Rate limiting on all API routes
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // 1000 requests per IP per 15 minutes
+  message: { success: false, message: "Too many requests, please try again later." },
+});
+app.use("/api/v1", apiLimiter);
+
+// Strict Rate limiting on auth routes
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-  message: { success: false, message: "Too many requests, please try again later." },
+  message: { success: false, message: "Too many authentication requests, please try again later." },
 });
 
 // Health check
@@ -67,6 +76,7 @@ app.use("/api/v1/coupons", couponRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/banners", bannerRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/contact", contactRoutes);
 
 // Errors
 app.use(notFound);

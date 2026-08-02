@@ -10,20 +10,27 @@ import Testimonials from "../components/home/Testimonials";
 import InstagramGallery from "../components/home/InstagramGallery";
 import { fetchHomeSections } from "../redux/slices/productSlice";
 
+import { FiTruck, FiAward, FiShield, FiRotateCcw } from "react-icons/fi";
+
 const FeatureStrip = () => (
-  <div className="border-y border-gold/10 bg-white dark:bg-emerald-900/30">
-    <div className="container-px grid grid-cols-2 gap-6 py-8 text-center sm:grid-cols-4">
+  <div className="border-y border-sand/60 bg-champagne/40">
+    <div className="container-px grid grid-cols-1 gap-6 py-6 sm:grid-cols-2 lg:grid-cols-4">
       {[
-        { t: "Free Shipping", s: "On orders above ₹999" },
-        { t: "Premium Quality", s: "Handpicked fabrics" },
-        { t: "Easy Returns", s: "7-day return policy" },
-        { t: "Secure Payments", s: "Razorpay & COD" },
+        { Icon: FiTruck, t: "Free Shipping", s: "On orders above ₹999" },
+        { Icon: FiAward, t: "Premium Quality", s: "Finest fabric, perfect comfort" },
+        { Icon: FiShield, t: "Secure Payments", s: "100% safe & trusted" },
+        { Icon: FiRotateCcw, t: "Easy Returns", s: "Hassle free returns" },
       ].map((f) => (
-        <div key={f.t}>
-          <p className="font-serif text-lg font-semibold text-emerald-900 dark:text-gold">
-            {f.t}
-          </p>
-          <p className="text-xs text-gray-500 dark:text-beige-light/60">{f.s}</p>
+        <div key={f.t} className="flex items-center justify-center gap-3.5 text-left">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-sand bg-ivory text-gold shadow-xs">
+            <f.Icon size={18} />
+          </div>
+          <div>
+            <p className="font-serif text-base font-semibold text-espresso">
+              {f.t}
+            </p>
+            <p className="text-xs text-taupe mt-0.5">{f.s}</p>
+          </div>
         </div>
       ))}
     </div>

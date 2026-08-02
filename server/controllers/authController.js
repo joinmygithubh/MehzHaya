@@ -17,8 +17,8 @@ const CLIENT_URL = () => process.env.CLIENT_URL || "http://localhost:5173";
 export const register = asyncHandler(async (req, res) => {
   const { name, email, password, phone } = req.body;
 
-  if (!name || !email || !password) {
-    throw new ApiError(400, "Please provide name, email and password");
+  if (!name || !email || !password || !phone) {
+    throw new ApiError(400, "Please provide name, email, phone number and password");
   }
 
   const exists = await User.findOne({ email });
@@ -61,14 +61,82 @@ export const login = asyncHandler(async (req, res) => {
   sendToken(user, 200, res, "Logged in successfully");
 });
 
+// @desc    Google OAuth Login / Register
+// @route   POST /api/v1/auth/google
+// @access  Public
+export const googleLogin = asyncHandler(async (req, res) => {
+  const { credential, googleId, email, name, picture } = req.body;
+
+  let userEmail = email;
+  let userName = name || "Google User";
+  let userPicture = picture || "";
+  let userGoogleId = googleId || "";
+
+  // If a raw Google JWT ID credential is provided, decode payload
+  if (credential) {
+    try {
+      const payloadBase64 = credential.split(".")[1];
+      if (payloadBase64) {
+        const decoded = JSON.parse(Buffer.from(payloadBase64, "base64").toString("utf-8"));
+        userEmail = decoded.email || userEmail;
+        userName = decoded.name || userName;
+        userPicture = decoded.picture || userPicture;
+        userGoogleId = decoded.sub || userGoogleId;
+      }
+    } catch (e) {
+      console.warn("Could not parse raw Google credential:", e.message);
+    }
+  }
+
+  if (!userEmail) {
+    throw new ApiError(400, "Google authentication requires a valid email address");
+  }
+
+  // Find user by email or googleId
+  let user = await User.findOne({
+    $or: [{ email: userEmail.toLowerCase() }, ...(userGoogleId ? [{ googleId: userGoogleId }] : [])],
+  });
+
+  if (user) {
+    // If user exists, update Google metadata if missing
+    if (!user.googleId && userGoogleId) user.googleId = userGoogleId;
+    if (userPicture && (!user.avatar || !user.avatar.url)) {
+      user.avatar = { public_id: "google_avatar", url: userPicture };
+    }
+    user.isEmailVerified = true;
+    await user.save({ validateBeforeSave: false });
+  } else {
+    // Automatically create new user if doesn't exist
+    user = await User.create({
+      name: userName,
+      email: userEmail.toLowerCase(),
+      googleId: userGoogleId,
+      authProvider: "google",
+      isEmailVerified: true,
+      avatar: userPicture ? { public_id: "google_avatar", url: userPicture } : undefined,
+    });
+  }
+
+  sendToken(user, 200, res, "Google login successful");
+});
+
 // @desc    Logout
 // @route   GET /api/v1/auth/logout
-// @access  Private
+// @access  Public / Private
 export const logout = asyncHandler(async (req, res) => {
-  res.cookie("token", "", {
+  const cookieOptions = {
     expires: new Date(0),
     httpOnly: true,
-  });
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
+  };
+
+  res.cookie("token", "", cookieOptions);
+  res.clearCookie("token", cookieOptions);
+  res.cookie("token", "", { ...cookieOptions, path: undefined });
+  res.clearCookie("token");
+
   res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 

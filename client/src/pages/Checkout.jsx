@@ -56,7 +56,7 @@ const Checkout = () => {
     return (
       <div className="container-px py-20 text-center">
         <SEO title="Checkout" />
-        <p className="font-serif text-2xl text-emerald-900 dark:text-gold">
+        <p className="font-serif text-2xl font-semibold text-espresso">
           Your cart is empty
         </p>
         <button onClick={() => navigate("/shop")} className="btn-primary mt-6">
@@ -118,7 +118,7 @@ const Checkout = () => {
           email: user.email,
           contact: shippingAddress.phone,
         },
-        theme: { color: "#064e3b" },
+        theme: { color: "#B8935A" },
         handler: async (response) => {
           try {
             await api.post("/payment/verify", response);
@@ -170,16 +170,16 @@ const Checkout = () => {
             <div key={s} className="flex flex-1 items-center">
               <div className="flex flex-col items-center">
                 <div
-                  className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold ${
-                    i <= step ? "bg-emerald-900 text-gold" : "bg-gray-200 text-gray-400"
+                  className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold transition ${
+                    i <= step ? "bg-gold text-espresso shadow-xs" : "bg-sand/40 text-taupe"
                   }`}
                 >
                   {i < step ? <FiCheck /> : i + 1}
                 </div>
-                <span className="mt-1 text-xs font-medium">{s}</span>
+                <span className={`mt-1 text-xs font-medium ${i <= step ? "text-espresso" : "text-taupe"}`}>{s}</span>
               </div>
               {i < steps.length - 1 && (
-                <div className={`mx-2 h-0.5 flex-1 ${i < step ? "bg-emerald-900" : "bg-gray-200"}`} />
+                <div className={`mx-2 h-0.5 flex-1 ${i < step ? "bg-gold" : "bg-sand/40"}`} />
               )}
             </div>
           ))}
@@ -189,9 +189,9 @@ const Checkout = () => {
           <div className="lg:col-span-2">
             {/* Step 0: Shipping */}
             {step === 0 && (
-              <div className="card p-6">
-                <h2 className="mb-4 flex items-center gap-2 font-serif text-xl font-semibold text-emerald-900 dark:text-gold">
-                  <FiMapPin /> Shipping Address
+              <div className="card p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+                <h2 className="mb-4 flex items-center gap-2 font-serif text-xl font-semibold text-espresso">
+                  <FiMapPin className="text-gold" /> Shipping Address
                 </h2>
 
                 {user?.addresses?.length > 0 && !useNew && (
@@ -199,25 +199,25 @@ const Checkout = () => {
                     {user.addresses.map((a) => (
                       <label
                         key={a._id}
-                        className={`flex cursor-pointer gap-3 rounded-lg border p-4 ${
-                          selectedAddr === a._id ? "border-gold bg-gold/5" : "border-gray-200"
+                        className={`flex cursor-pointer gap-3 rounded-xl border p-4 transition ${
+                          selectedAddr === a._id ? "border-gold bg-champagne/50 shadow-xs" : "border-sand/70 bg-ivory"
                         }`}
                       >
                         <input
                           type="radio"
                           checked={selectedAddr === a._id}
                           onChange={() => setSelectedAddr(a._id)}
-                          className="mt-1 accent-emerald-900"
+                          className="mt-1 accent-[#B8935A]"
                         />
                         <div className="text-sm">
-                          <p className="font-medium">{a.fullName} · {a.phone}</p>
-                          <p className="text-gray-500">
+                          <p className="font-semibold text-espresso">{a.fullName} · {a.phone}</p>
+                          <p className="text-taupe">
                             {a.line1}, {a.line2 && `${a.line2}, `}{a.city}, {a.state} – {a.postalCode}
                           </p>
                         </div>
                       </label>
                     ))}
-                    <button onClick={() => setUseNew(true)} className="flex items-center gap-1 text-sm text-gold-dark hover:underline">
+                    <button onClick={() => setUseNew(true)} className="flex items-center gap-1 text-sm font-semibold text-gold hover:underline">
                       <FiPlus /> Add a new address
                     </button>
                   </div>
@@ -238,7 +238,7 @@ const Checkout = () => {
                     <Input label="Postal Code *" value={address.postalCode} onChange={field("postalCode")} />
                     <Input label="Country" value={address.country} onChange={field("country")} />
                     {user?.addresses?.length > 0 && (
-                      <button onClick={() => setUseNew(false)} className="text-left text-sm text-gold-dark hover:underline">
+                      <button onClick={() => setUseNew(false)} className="text-left text-sm font-semibold text-gold hover:underline">
                         Use a saved address instead
                       </button>
                     )}
@@ -253,9 +253,9 @@ const Checkout = () => {
 
             {/* Step 1: Payment */}
             {step === 1 && (
-              <div className="card p-6">
-                <h2 className="mb-4 flex items-center gap-2 font-serif text-xl font-semibold text-emerald-900 dark:text-gold">
-                  <FiCreditCard /> Payment Method
+              <div className="card p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+                <h2 className="mb-4 flex items-center gap-2 font-serif text-xl font-semibold text-espresso">
+                  <FiCreditCard className="text-gold" /> Payment Method
                 </h2>
                 <div className="space-y-3">
                   <PayOption
@@ -286,35 +286,35 @@ const Checkout = () => {
 
             {/* Step 2: Review */}
             {step === 2 && (
-              <div className="card p-6">
-                <h2 className="mb-4 font-serif text-xl font-semibold text-emerald-900 dark:text-gold">
+              <div className="card p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+                <h2 className="mb-4 font-serif text-xl font-semibold text-espresso">
                   Review Your Order
                 </h2>
 
-                <div className="mb-4 rounded-lg bg-beige p-4 text-sm dark:bg-emerald-900/40">
-                  <p className="font-medium">Ship to:</p>
-                  <p className="text-gray-600 dark:text-beige-light/70">
+                <div className="mb-4 rounded-xl bg-ivory border border-sand/70 p-4 text-sm">
+                  <p className="font-semibold text-espresso">Ship to:</p>
+                  <p className="text-taupe mt-1">
                     {shipping.fullName}, {shipping.phone}
                     <br />
                     {shipping.line1}, {shipping.line2 && `${shipping.line2}, `}
                     {shipping.city}, {shipping.state} – {shipping.postalCode}
                   </p>
-                  <p className="mt-2 font-medium">Payment: <span className="font-normal">{paymentMethod}</span></p>
+                  <p className="mt-2 font-semibold text-espresso">Payment: <span className="font-normal text-taupe">{paymentMethod}</span></p>
                 </div>
 
                 <div className="space-y-3">
                   {items.map((item) => (
                     <div key={item._id} className="flex items-center gap-3">
-                      <img src={item.image} alt="" className="h-14 w-12 rounded object-cover" />
+                      <img src={item.image} alt="" className="h-14 w-12 rounded-lg object-cover bg-champagne" />
                       <div className="flex-1 text-sm">
-                        <p className="font-medium">{item.name}</p>
-                        <p className="text-gray-500">
+                        <p className="font-serif font-semibold text-espresso">{item.name}</p>
+                        <p className="text-taupe text-xs">
                           Qty: {item.quantity}
                           {item.color && ` · ${item.color}`}
                           {item.size && ` · ${item.size}`}
                         </p>
                       </div>
-                      <span className="text-sm font-semibold">
+                      <span className="text-sm font-semibold text-espresso">
                         {formatPrice(item.price * item.quantity)}
                       </span>
                     </div>
@@ -335,20 +335,20 @@ const Checkout = () => {
 
           {/* Summary */}
           <div className="h-fit lg:sticky lg:top-28">
-            <div className="card p-6">
-              <h2 className="mb-4 font-serif text-xl font-semibold text-emerald-900 dark:text-gold">
+            <div className="card p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+              <h2 className="mb-4 font-serif text-xl font-semibold text-espresso">
                 Order Summary
               </h2>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2.5 text-sm">
                 <Row label={`Subtotal (${summary.totalItems} items)`} value={formatPrice(summary.itemsPrice)} />
                 {summary.discount > 0 && <Row label="Discount" value={`- ${formatPrice(summary.discount)}`} green />}
                 <Row label="Shipping" value={summary.shippingPrice === 0 ? "FREE" : formatPrice(summary.shippingPrice)} />
-                <div className="flex justify-between border-t border-gray-100 pt-3 text-lg font-bold text-emerald-900 dark:border-emerald-800 dark:text-gold">
+                <div className="flex justify-between border-t border-sand/60 pt-3 text-lg font-bold text-espresso">
                   <span>Total</span>
-                  <span>{formatPrice(summary.totalPrice)}</span>
+                  <span className="text-gold">{formatPrice(summary.totalPrice)}</span>
                 </div>
               </div>
-              <p className="mt-4 text-center text-xs text-gray-400">
+              <p className="mt-4 text-center text-xs text-taupe">
                 📞 Need help? Call {STORE.phone}
               </p>
             </div>
@@ -368,26 +368,26 @@ const Input = ({ label, ...props }) => (
 
 const Row = ({ label, value, green }) => (
   <div className="flex justify-between">
-    <span className="text-gray-500 dark:text-beige-light/60">{label}</span>
-    <span className={green ? "text-green-600" : ""}>{value}</span>
+    <span className="text-taupe">{label}</span>
+    <span className={green ? "text-sage font-semibold" : "text-espresso font-medium"}>{value}</span>
   </div>
 );
 
 const PayOption = ({ selected, onClick, icon, title, desc }) => (
   <button
     onClick={onClick}
-    className={`flex w-full items-center gap-4 rounded-lg border p-4 text-left transition ${
-      selected ? "border-gold bg-gold/5" : "border-gray-200"
+    className={`flex w-full items-center gap-4 rounded-xl border p-4 text-left transition ${
+      selected ? "border-gold bg-champagne/50 shadow-xs" : "border-sand/70 bg-ivory"
     }`}
   >
-    <span className="text-xl text-emerald-900 dark:text-gold">{icon}</span>
+    <span className="text-xl text-gold">{icon}</span>
     <div className="flex-1">
-      <p className="font-medium">{title}</p>
-      <p className="text-xs text-gray-500">{desc}</p>
+      <p className="font-serif font-semibold text-espresso">{title}</p>
+      <p className="text-xs text-taupe">{desc}</p>
     </div>
     <span
       className={`flex h-5 w-5 items-center justify-center rounded-full border ${
-        selected ? "border-gold bg-gold text-white" : "border-gray-300"
+        selected ? "border-gold bg-gold text-espresso font-bold" : "border-sand"
       }`}
     >
       {selected && <FiCheck size={12} />}

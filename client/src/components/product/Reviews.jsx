@@ -36,14 +36,15 @@ const Reviews = ({ productId, initialReviews = [], onRatingChange }) => {
 
   return (
     <div className="mt-12">
-      <h2 className="section-title mb-6 text-2xl">
+      <h2 className="section-title mb-2 text-2xl">
         Customer Reviews ({reviews.length})
       </h2>
+      <div className="gold-divider mb-6" />
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Write review */}
-        <form onSubmit={submit} className="card h-fit p-6 lg:col-span-1">
-          <h3 className="mb-3 font-semibold text-emerald-900 dark:text-gold">
+        <form onSubmit={submit} className="card h-fit p-6 lg:col-span-1 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+          <h3 className="mb-3 font-serif text-lg font-semibold text-espresso">
             Write a Review
           </h3>
           <div className="mb-3 flex gap-1">
@@ -58,7 +59,7 @@ const Reviews = ({ productId, initialReviews = [], onRatingChange }) => {
                 <FaStar
                   size={26}
                   className={
-                    star <= (hover || rating) ? "text-gold" : "text-gray-300"
+                    star <= (hover || rating) ? "text-gold" : "text-sand"
                   }
                 />
               </button>
@@ -80,34 +81,34 @@ const Reviews = ({ productId, initialReviews = [], onRatingChange }) => {
         {/* List */}
         <div className="space-y-4 lg:col-span-2">
           {reviews.length === 0 ? (
-            <p className="py-8 text-center text-gray-400">
+            <p className="py-8 text-center text-taupe font-sans">
               No reviews yet. Be the first to review!
             </p>
           ) : (
             reviews.map((r, i) => (
-              <div key={i} className="card p-5">
+              <div key={i} className="card p-5 bg-champagne/40 border border-sand/70 rounded-xl shadow-soft">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-900 font-semibold text-gold">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold font-serif font-semibold text-espresso shadow-xs">
                       {r.name?.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-medium text-emerald-900 dark:text-beige-light">
+                      <p className="font-serif font-semibold text-espresso">
                         {r.name}
                         {user?.name === r.name && (
-                          <span className="ml-2 text-xs text-gold">(You)</span>
+                          <span className="ml-2 text-xs text-gold font-sans font-medium">(You)</span>
                         )}
                       </p>
                       <RatingStars value={r.rating} size={12} />
                     </div>
                   </div>
                   {r.createdAt && (
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-taupe font-sans">
                       {new Date(r.createdAt).toLocaleDateString()}
                     </span>
                   )}
                 </div>
-                <p className="mt-3 text-sm text-gray-600 dark:text-beige-light/80">
+                <p className="mt-3 text-sm text-taupe font-sans leading-relaxed">
                   {r.comment}
                 </p>
               </div>

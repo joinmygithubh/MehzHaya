@@ -17,7 +17,7 @@ const pick = (arr, n) => {
 const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 const lorem =
-  "Crafted with premium care for the modern modest wardrobe. Soft, breathable and beautifully draped for all-day elegance. A MehzHaya signature piece — Elegance in Modesty.";
+  "Crafted with premium care for the modern modest wardrobe. Soft, breathable and beautifully draped for all-day elegance. A MehzHaya signature piece — Timeless Hijabs for the Modern You.";
 
 let skuCounter = 1000;
 const nextSku = (prefix) => `MH-${prefix}-${++skuCounter}`;
@@ -47,7 +47,7 @@ const generate = ({ count, prefix, group, categoryName, namer, material, sizes, 
       colors,
       sizes,
       stock: rand(0, 120),
-      images: buildGallery(group, sku, i),
+      images: buildGallery(categoryName, sku, i),
       ratings: Math.round((rand(35, 50) / 10) * 10) / 10,
       numReviews: rand(0, 240),
       sold: rand(0, 500),

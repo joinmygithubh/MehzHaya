@@ -60,7 +60,7 @@ const AdminCategories = () => {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-semibold text-emerald-900 dark:text-gold">
+        <h1 className="font-serif text-2xl font-semibold text-espresso">
           Categories ({categories.length})
         </h1>
         <button onClick={() => setShowForm(true)} className="btn-primary px-4 py-2 text-sm">
@@ -70,15 +70,15 @@ const AdminCategories = () => {
 
       {GROUPS.map((group) => (
         <div key={group} className="mb-6">
-          <h2 className="mb-3 font-serif text-lg font-semibold text-gold-dark">{group}</h2>
+          <h2 className="mb-3 font-serif text-lg font-semibold text-gold">{group}</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {(grouped[group] || []).map((c) => (
-              <div key={c._id} className="card flex items-center justify-between p-4">
+              <div key={c._id} className="card flex items-center justify-between p-4 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
                 <div>
-                  <p className="font-medium text-emerald-900 dark:text-gold">{c.name}</p>
-                  <p className="text-xs text-gray-400">{c.productCount} products</p>
+                  <p className="font-serif font-semibold text-espresso">{c.name}</p>
+                  <p className="text-xs text-taupe">{c.productCount} products</p>
                 </div>
-                <button onClick={() => remove(c._id)} className="rounded p-2 text-red-500 hover:bg-red-50 dark:hover:bg-emerald-800">
+                <button onClick={() => remove(c._id)} className="rounded-lg p-2 text-terracotta hover:bg-blush/60 transition-colors">
                   <FiTrash2 size={16} />
                 </button>
               </div>
@@ -89,11 +89,11 @@ const AdminCategories = () => {
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setShowForm(false)} />
-          <div className="card relative z-10 w-full max-w-md p-6">
+          <div className="absolute inset-0 bg-espresso/40 backdrop-blur-xs" onClick={() => setShowForm(false)} />
+          <div className="card relative z-10 w-full max-w-md p-6 bg-ivory border border-sand rounded-2xl shadow-soft">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-serif text-xl font-semibold text-emerald-900 dark:text-gold">Add Category</h2>
-              <button onClick={() => setShowForm(false)}><FiX size={22} /></button>
+              <h2 className="font-serif text-xl font-semibold text-espresso">Add Category</h2>
+              <button onClick={() => setShowForm(false)} className="text-taupe hover:text-espresso"><FiX size={22} /></button>
             </div>
             <form onSubmit={create} className="space-y-4">
               <div>

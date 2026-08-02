@@ -2,8 +2,9 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FiUser, FiPackage, FiMapPin, FiLock, FiHeart, FiLogOut } from "react-icons/fi";
 
+import { toast } from "react-toastify";
 import SEO from "../../components/common/SEO";
-import { logout } from "../../redux/slices/authSlice";
+import { logout, clearAuth } from "../../redux/slices/authSlice";
 
 const links = [
   { to: "/account", label: "Profile", icon: FiUser, end: true },
@@ -18,9 +19,23 @@ const DashboardLayout = () => {
   const navigate = useNavigate();
   const { user } = useSelector((s) => s.auth);
 
-  const handleLogout = async () => {
+  const handleLogout = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    try {
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.disableAutoSelect();
+      }
+    } catch (err) {
+      console.warn("GIS disableAutoSelect error:", err);
+    }
+
     await dispatch(logout());
-    navigate("/");
+    dispatch(clearAuth());
+
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -29,36 +44,36 @@ const DashboardLayout = () => {
       <div className="grid gap-8 lg:grid-cols-4">
         {/* Sidebar */}
         <aside className="lg:col-span-1">
-          <div className="card p-6 text-center">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-900 text-2xl font-bold text-gold">
+          <div className="card p-6 text-center bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gold text-2xl font-semibold font-serif text-espresso shadow-xs">
               {user?.avatar?.url ? (
                 <img src={user.avatar.url} alt="" className="h-full w-full rounded-full object-cover" />
               ) : (
                 user?.name?.charAt(0).toUpperCase()
               )}
             </div>
-            <h3 className="mt-3 font-serif text-lg font-semibold text-emerald-900 dark:text-gold">
+            <h3 className="mt-3 font-serif text-lg font-semibold text-espresso">
               {user?.name}
             </h3>
-            <p className="text-xs text-gray-500">{user?.email}</p>
+            <p className="text-xs text-taupe">{user?.email}</p>
             {!user?.isEmailVerified && (
-              <span className="mt-2 inline-block rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-medium text-orange-600">
+              <span className="mt-2 inline-block rounded-full border border-terracotta/40 bg-blush px-2.5 py-0.5 text-[10px] font-semibold text-terracotta uppercase tracking-wider">
                 Email not verified
               </span>
             )}
           </div>
 
-          <nav className="card mt-4 overflow-hidden p-2">
+          <nav className="card mt-4 overflow-hidden p-2 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft space-y-1">
             {links.map(({ to, label, icon: Icon, end }) => (
               <NavLink
                 key={to}
                 to={to}
                 end={end}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-4 py-3 text-sm transition ${
+                  `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
                     isActive
-                      ? "bg-emerald-900 text-gold"
-                      : "text-gray-600 hover:bg-beige dark:text-beige-light/70 dark:hover:bg-emerald-800"
+                      ? "bg-gold text-espresso font-semibold shadow-xs"
+                      : "text-taupe hover:bg-champagne/80 hover:text-espresso"
                   }`
                 }
               >
@@ -67,7 +82,7 @@ const DashboardLayout = () => {
             ))}
             <button
               onClick={handleLogout}
-              className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-emerald-800"
+              className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-terracotta hover:bg-blush/60 transition-colors"
             >
               <FiLogOut size={18} /> Logout
             </button>

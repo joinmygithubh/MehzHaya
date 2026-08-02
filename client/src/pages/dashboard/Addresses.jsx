@@ -31,7 +31,9 @@ const Addresses = () => {
   const load = async () => {
     try {
       const { data } = await api.get("/users/addresses");
-      setAddresses(data.addresses);
+      setAddresses(data.addresses || []);
+    } catch (err) {
+      toast.error(err.message || "Failed to load addresses");
     } finally {
       setLoading(false);
     }
@@ -49,33 +51,70 @@ const Addresses = () => {
 
   const openEdit = (addr) => {
     setEditing(addr._id);
-    setForm(addr);
+    setForm({
+      label: addr.label || "Home",
+      fullName: addr.fullName || "",
+      phone: addr.phone || "",
+      line1: addr.line1 || "",
+      line2: addr.line2 || "",
+      city: addr.city || "",
+      state: addr.state || "",
+      postalCode: addr.postalCode || "",
+      country: addr.country || "India",
+      isDefault: Boolean(addr.isDefault),
+    });
     setShowForm(true);
   };
 
   const save = async (e) => {
     e.preventDefault();
     try {
-      if (editing) await api.put(`/users/addresses/${editing}`, form);
-      else await api.post("/users/addresses", form);
-      toast.success(editing ? "Address updated" : "Address added");
+      const payload = {
+        label: form.label || "Home",
+        fullName: form.fullName,
+        phone: form.phone,
+        line1: form.line1,
+        line2: form.line2 || "",
+        city: form.city,
+        state: form.state,
+        postalCode: form.postalCode,
+        country: form.country || "India",
+        isDefault: Boolean(form.isDefault),
+      };
+
+      let res;
+      if (editing) {
+        res = await api.put(`/users/addresses/${editing}`, payload);
+      } else {
+        res = await api.post("/users/addresses", payload);
+      }
+
+      if (res.data?.addresses) {
+        setAddresses(res.data.addresses);
+      }
+      toast.success(editing ? "Address updated successfully" : "Address added successfully");
       setShowForm(false);
-      await load();
+      setEditing(null);
+      setForm(empty);
       dispatch(loadUser());
     } catch (err) {
-      toast.error(err.message);
+      toast.error(err.message || "Failed to save address");
     }
   };
 
   const remove = async (id) => {
     if (!window.confirm("Delete this address?")) return;
     try {
-      await api.delete(`/users/addresses/${id}`);
-      toast.success("Address removed");
-      await load();
+      const res = await api.delete(`/users/addresses/${id}`);
+      if (res.data?.addresses) {
+        setAddresses(res.data.addresses);
+      } else {
+        await load();
+      }
+      toast.success("Address removed successfully");
       dispatch(loadUser());
     } catch (err) {
-      toast.error(err.message);
+      toast.error(err.message || "Failed to delete address");
     }
   };
 
@@ -87,7 +126,7 @@ const Addresses = () => {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-semibold text-emerald-900 dark:text-gold">
+        <h1 className="font-serif text-2xl font-semibold text-espresso">
           Saved Addresses
         </h1>
         <button onClick={openNew} className="btn-primary px-4 py-2 text-sm">
@@ -96,30 +135,30 @@ const Addresses = () => {
       </div>
 
       {addresses.length === 0 ? (
-        <div className="card p-12 text-center">
-          <FiMapPin className="mx-auto text-5xl text-gold/40" />
-          <p className="mt-4 text-gray-500">No saved addresses yet.</p>
+        <div className="card p-12 text-center bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+          <FiMapPin className="mx-auto text-5xl text-gold/60" />
+          <p className="mt-4 text-taupe font-sans">No saved addresses yet.</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {addresses.map((a) => (
-            <div key={a._id} className="card relative p-5">
+            <div key={a._id} className="card relative p-5 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
               {a.isDefault && (
-                <span className="absolute right-3 top-3 rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-medium text-gold-dark">
+                <span className="absolute right-3 top-3 rounded-full border border-gold bg-ivory px-2.5 py-0.5 text-[10px] font-semibold text-gold uppercase tracking-wider">
                   Default
                 </span>
               )}
-              <p className="font-medium text-emerald-900 dark:text-gold">{a.label}</p>
-              <p className="mt-1 text-sm text-gray-600 dark:text-beige-light/70">
+              <p className="font-serif text-base font-semibold text-espresso">{a.label}</p>
+              <p className="mt-1 text-sm text-taupe font-sans leading-relaxed">
                 {a.fullName} · {a.phone}<br />
                 {a.line1}, {a.line2 && `${a.line2}, `}{a.city}<br />
                 {a.state} – {a.postalCode}, {a.country}
               </p>
               <div className="mt-3 flex gap-3">
-                <button onClick={() => openEdit(a)} className="flex items-center gap-1 text-xs text-gold-dark hover:underline">
+                <button onClick={() => openEdit(a)} className="flex items-center gap-1 text-xs font-semibold text-gold hover:underline">
                   <FiEdit2 size={12} /> Edit
                 </button>
-                <button onClick={() => remove(a._id)} className="flex items-center gap-1 text-xs text-red-500 hover:underline">
+                <button onClick={() => remove(a._id)} className="flex items-center gap-1 text-xs font-semibold text-terracotta hover:underline">
                   <FiTrash2 size={12} /> Delete
                 </button>
               </div>
@@ -131,13 +170,13 @@ const Addresses = () => {
       {/* Modal */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setShowForm(false)} />
-          <div className="card relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto p-6">
+          <div className="absolute inset-0 bg-espresso/40 backdrop-blur-xs" onClick={() => setShowForm(false)} />
+          <div className="card relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto p-6 bg-ivory border border-sand rounded-2xl shadow-soft">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-serif text-xl font-semibold text-emerald-900 dark:text-gold">
+              <h2 className="font-serif text-xl font-semibold text-espresso">
                 {editing ? "Edit Address" : "Add Address"}
               </h2>
-              <button onClick={() => setShowForm(false)}><FiX size={22} /></button>
+              <button onClick={() => setShowForm(false)} className="text-taupe hover:text-espresso"><FiX size={22} /></button>
             </div>
             <form onSubmit={save} className="grid gap-4 sm:grid-cols-2">
               <Input label="Label" value={form.label} onChange={field("label")} />
@@ -152,8 +191,8 @@ const Addresses = () => {
               </div>
               <Input label="City *" value={form.city} onChange={field("city")} required />
               <Input label="State *" value={form.state} onChange={field("state")} required />
-              <label className="flex items-center gap-2 text-sm sm:col-span-2">
-                <input type="checkbox" checked={form.isDefault} onChange={field("isDefault")} className="accent-emerald-900" />
+              <label className="flex items-center gap-2 text-sm sm:col-span-2 text-espresso">
+                <input type="checkbox" checked={form.isDefault} onChange={field("isDefault")} className="accent-[#B8935A]" />
                 Set as default address
               </label>
               <div className="sm:col-span-2">

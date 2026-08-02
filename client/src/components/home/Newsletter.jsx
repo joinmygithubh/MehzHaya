@@ -13,13 +13,13 @@ const Newsletter = () => {
   };
 
   return (
-    <div className="border-b border-gold/10 bg-emerald-900">
+    <div className="border-b border-sand bg-champagne">
       <div className="container-px flex flex-col items-center gap-6 py-10 text-center lg:flex-row lg:justify-between lg:text-left">
         <div>
           <h3 className="font-serif text-2xl font-semibold text-gold">
             Join the MehzHaya Family
           </h3>
-          <p className="mt-1 text-sm text-beige-light/70">
+          <p className="mt-1 text-sm text-taupe">
             Subscribe for exclusive offers, new arrivals & styling tips.
           </p>
         </div>
@@ -30,9 +30,9 @@ const Newsletter = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
-            className="flex-1 rounded-full border border-gold/30 bg-emerald-950/50 px-5 py-3 text-sm text-beige-light outline-none placeholder:text-beige-light/40 focus:border-gold"
+            className="flex-1 rounded-xl border border-sand bg-ivory px-5 py-3 text-sm text-espresso outline-none placeholder:text-taupe/60 focus:border-gold focus:ring-2 focus:ring-gold/20"
           />
-          <button type="submit" className="btn-gold whitespace-nowrap">
+          <button type="submit" className="btn-primary whitespace-nowrap">
             <FiSend /> Subscribe
           </button>
         </form>

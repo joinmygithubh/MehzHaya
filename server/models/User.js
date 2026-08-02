@@ -37,10 +37,12 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Please enter a password"],
+      required: false,
       minlength: [6, "Password must be at least 6 characters"],
       select: false,
     },
+    googleId: { type: String, default: "" },
+    authProvider: { type: String, enum: ["local", "google"], default: "local" },
     phone: { type: String, default: "" },
     avatar: {
       public_id: { type: String, default: "" },

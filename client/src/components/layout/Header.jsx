@@ -15,9 +15,11 @@ import {
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { toast } from "react-toastify";
+
 import { CATEGORY_GROUPS } from "../../utils/constants";
 import { toggleTheme } from "../../redux/slices/uiSlice";
-import { logout } from "../../redux/slices/authSlice";
+import { logout, clearAuth } from "../../redux/slices/authSlice";
 import SearchBar from "./SearchBar";
 import Logo from "../common/Logo";
 
@@ -35,18 +37,33 @@ const Header = ({ minimal }) => {
 
   const closeDrawer = () => setMobileOpen(false);
 
-  const handleLogout = async () => {
-    await dispatch(logout());
+  const handleLogout = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setUserMenu(false);
     setMobileOpen(false);
-    navigate("/");
+
+    try {
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.disableAutoSelect();
+      }
+    } catch (err) {
+      console.warn("GIS disableAutoSelect error:", err);
+    }
+
+    await dispatch(logout());
+    dispatch(clearAuth());
+
+    navigate("/login", { replace: true });
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-gold/20 bg-white/90 backdrop-blur-md dark:bg-emerald-950/90">
+    <header className="sticky top-0 z-40 border-b border-sand/80 bg-ivory">
       <div className="container-px flex items-center justify-between gap-3 py-3 sm:gap-4 sm:py-4">
         {/* Logo */}
-        <Logo className="h-14 sm:h-16 lg:h-[72px]" />
+        <Logo className="h-12 sm:h-14 lg:h-[64px]" />
 
         {/* Desktop nav (laptop / desktop ≥1024) */}
         {!minimal && (
@@ -59,6 +76,9 @@ const Header = ({ minimal }) => {
             ))}
             <NavLink to="/shop" className={navClass}>
               Shop All
+            </NavLink>
+            <NavLink to="/about" className={navClass}>
+              About Us
             </NavLink>
             <NavLink to="/contact" className={navClass}>
               Contact
@@ -74,15 +94,6 @@ const Header = ({ minimal }) => {
             className="icon-btn"
           >
             <FiSearch size={20} />
-          </button>
-
-          {/* Theme toggle — hidden on the smallest screens (available in the drawer) */}
-          <button
-            aria-label="Toggle theme"
-            onClick={() => dispatch(toggleTheme())}
-            className="icon-btn hidden sm:inline-flex"
-          >
-            {theme === "light" ? <FiMoon size={20} /> : <FiSun size={20} />}
           </button>
 
           {/* Wishlist — hidden on the smallest screens (available in the drawer) */}
@@ -122,12 +133,12 @@ const Header = ({ minimal }) => {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 8 }}
-                  className="absolute right-0 mt-2 w-52 overflow-hidden rounded-xl border border-gold/20 bg-white shadow-soft dark:bg-emerald-900"
+                  className="absolute right-0 mt-2 w-52 overflow-hidden rounded-xl border border-sand bg-ivory shadow-soft"
                   onMouseLeave={() => setUserMenu(false)}
                 >
-                  <div className="border-b border-gray-100 px-4 py-3 dark:border-emerald-800">
-                    <p className="truncate font-medium">{user?.name}</p>
-                    <p className="truncate text-xs text-gray-500 dark:text-beige-light/60">
+                  <div className="border-b border-sand/60 px-4 py-3">
+                    <p className="truncate font-medium text-espresso">{user?.name}</p>
+                    <p className="truncate text-xs text-taupe">
                       {user?.email}
                     </p>
                   </div>
@@ -144,7 +155,7 @@ const Header = ({ minimal }) => {
                   )}
                   <button
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-emerald-800"
+                    className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-terracotta hover:bg-blush/40"
                   >
                     <FiLogOut /> Logout
                   </button>
@@ -177,7 +188,7 @@ const Header = ({ minimal }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/40 lg:hidden"
+              className="fixed inset-0 z-50 bg-espresso/40 backdrop-blur-xs lg:hidden"
               onClick={closeDrawer}
             />
             <motion.aside
@@ -185,22 +196,20 @@ const Header = ({ minimal }) => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween" }}
-              className="fixed right-0 top-0 z-50 flex h-full w-80 max-w-[85%] flex-col overflow-y-auto bg-white p-6 dark:bg-emerald-950 lg:hidden"
+              className="fixed right-0 top-0 z-50 flex h-full w-80 max-w-[85%] flex-col overflow-y-auto bg-ivory p-6 shadow-soft lg:hidden"
             >
-              <div className="mb-4 flex items-center justify-between">
-                <span className="font-serif text-xl font-bold text-emerald-900 dark:text-gold">
-                  Menu
-                </span>
+              <div className="mb-4 flex items-center justify-between border-b border-sand/40 pb-3">
+                <Logo className="h-8" />
                 <button onClick={closeDrawer} className="icon-btn" aria-label="Close menu">
                   <FiX size={22} />
                 </button>
               </div>
 
               {/* Account / quick actions */}
-              <div className="mb-4 border-b border-gray-100 pb-4 dark:border-emerald-800">
+              <div className="mb-4 border-b border-sand pb-4">
                 {isAuthenticated ? (
                   <>
-                    <p className="text-sm font-medium text-emerald-900 dark:text-gold">
+                    <p className="text-sm font-medium text-espresso">
                       Hello, {user?.name?.split(" ")[0]} 👋
                     </p>
                     <div className="mt-2 grid grid-cols-2 gap-2">
@@ -218,6 +227,9 @@ const Header = ({ minimal }) => {
                           <FiGrid size={15} /> Admin
                         </Link>
                       )}
+                      <button onClick={handleLogout} className="drawer-chip text-terracotta hover:bg-blush/40">
+                        <FiLogOut size={15} /> Logout
+                      </button>
                     </div>
                   </>
                 ) : (
@@ -230,14 +242,6 @@ const Header = ({ minimal }) => {
                     </Link>
                   </div>
                 )}
-
-                <button
-                  onClick={() => dispatch(toggleTheme())}
-                  className="drawer-chip mt-2 w-full justify-center"
-                >
-                  {theme === "light" ? <FiMoon size={15} /> : <FiSun size={15} />}
-                  {theme === "light" ? "Dark mode" : "Light mode"}
-                </button>
               </div>
 
               {/* Navigation */}
@@ -249,7 +253,7 @@ const Header = ({ minimal }) => {
                   <Link
                     to={`/shop?group=${encodeURIComponent(group)}`}
                     onClick={closeDrawer}
-                    className="mb-1 mt-3 block font-serif text-lg font-semibold text-emerald-900 dark:text-gold"
+                    className="mb-1 mt-3 block font-serif text-lg font-semibold text-espresso hover:text-gold hover:underline hover:underline-offset-4 hover:decoration-gold/80"
                   >
                     {group}
                   </Link>
@@ -258,7 +262,7 @@ const Header = ({ minimal }) => {
                       key={item}
                       to={`/shop?category=${encodeURIComponent(item)}`}
                       onClick={closeDrawer}
-                      className="block py-1.5 pl-3 text-sm text-gray-600 dark:text-beige-light/70"
+                      className="block py-1.5 pl-3 text-sm text-taupe hover:text-gold hover:underline hover:underline-offset-4 hover:decoration-gold/80"
                     >
                       {item}
                     </Link>
@@ -268,6 +272,9 @@ const Header = ({ minimal }) => {
               <Link to="/shop" onClick={closeDrawer} className="mobile-link">
                 Shop All
               </Link>
+              <Link to="/about" onClick={closeDrawer} className="mobile-link">
+                About Us
+              </Link>
               <Link to="/contact" onClick={closeDrawer} className="mobile-link">
                 Contact
               </Link>
@@ -275,7 +282,7 @@ const Header = ({ minimal }) => {
               {isAuthenticated && (
                 <button
                   onClick={handleLogout}
-                  className="mt-4 flex items-center gap-2 py-2 text-sm font-medium text-red-600"
+                  className="mt-4 flex items-center gap-2 py-2 text-sm font-medium text-terracotta hover:underline hover:underline-offset-4"
                 >
                   <FiLogOut size={16} /> Logout
                 </button>
@@ -289,12 +296,14 @@ const Header = ({ minimal }) => {
 };
 
 const navClass = ({ isActive }) =>
-  `text-sm font-medium transition-colors hover:text-gold ${
-    isActive ? "text-gold" : "text-emerald-900 dark:text-beige-light"
+  `font-sans text-[15px] font-normal leading-[1.45] tracking-[0.4px] transition-colors duration-300 ease-in-out hover:text-gold ${
+    isActive
+      ? "text-gold underline decoration-2 underline-offset-4 decoration-gold font-normal"
+      : "text-[#1F1F1F]"
   }`;
 
 const Badge = ({ children }) => (
-  <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[10px] font-bold text-emerald-950">
+  <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[10px] font-bold text-espresso">
     {children}
   </span>
 );
@@ -303,7 +312,7 @@ const MenuLink = ({ to, children, onClick }) => (
   <Link
     to={to}
     onClick={onClick}
-    className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-beige-light dark:hover:bg-emerald-800"
+    className="flex items-center gap-2 px-4 py-2.5 font-sans text-[14px] font-normal tracking-[0.3px] text-[#1F1F1F] transition-colors duration-300 ease-in-out hover:bg-champagne/60 hover:text-gold"
   >
     {children}
   </Link>
@@ -311,16 +320,16 @@ const MenuLink = ({ to, children, onClick }) => (
 
 const Dropdown = ({ label, items }) => (
   <div className="group relative">
-    <button className="flex items-center text-sm font-medium text-emerald-900 transition-colors hover:text-gold dark:text-beige-light">
+    <button className="flex items-center font-sans text-[15px] font-normal leading-[1.45] tracking-[0.4px] text-[#1F1F1F] transition-colors duration-300 ease-in-out hover:text-gold">
       {label}
     </button>
-    <div className="invisible absolute left-1/2 top-full z-30 w-56 -translate-x-1/2 pt-3 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
-      <div className="overflow-hidden rounded-xl border border-gold/20 bg-white shadow-soft dark:bg-emerald-900">
+    <div className="invisible absolute left-1/2 top-full z-30 w-56 -translate-x-1/2 pt-3 opacity-0 transition-all duration-300 group-hover:visible group-hover:opacity-100">
+      <div className="overflow-hidden rounded-xl border border-sand bg-ivory shadow-soft">
         {items.map((item) => (
           <Link
             key={item}
             to={`/shop?category=${encodeURIComponent(item)}`}
-            className="block px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-beige-light hover:text-emerald-900 dark:text-beige-light/80 dark:hover:bg-emerald-800"
+            className="block px-4 py-2.5 font-sans text-[14px] font-normal tracking-[0.3px] text-[#1F1F1F] transition-colors duration-300 ease-in-out hover:bg-champagne/60 hover:text-gold"
           >
             {item}
           </Link>

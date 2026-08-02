@@ -8,12 +8,14 @@ class ApiFeatures {
   }
 
   search() {
-    const keyword = this.queryStr.keyword
+    const rawKeyword = typeof this.queryStr.keyword === "string" ? this.queryStr.keyword.trim() : "";
+    const sanitizedKeyword = rawKeyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const keyword = sanitizedKeyword
       ? {
           $or: [
-            { name: { $regex: this.queryStr.keyword, $options: "i" } },
-            { categoryName: { $regex: this.queryStr.keyword, $options: "i" } },
-            { material: { $regex: this.queryStr.keyword, $options: "i" } },
+            { name: { $regex: sanitizedKeyword, $options: "i" } },
+            { categoryName: { $regex: sanitizedKeyword, $options: "i" } },
+            { material: { $regex: sanitizedKeyword, $options: "i" } },
           ],
         }
       : {};

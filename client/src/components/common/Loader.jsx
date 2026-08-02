@@ -15,7 +15,7 @@ const Loader = ({ full = false }) => (
       />
     )}
     <div className="relative h-14 w-14">
-      <div className="absolute inset-0 animate-spin rounded-full border-4 border-emerald-900/20 border-t-gold" />
+      <div className="absolute inset-0 animate-spin rounded-full border-4 border-sand border-t-gold" />
     </div>
   </div>
 );

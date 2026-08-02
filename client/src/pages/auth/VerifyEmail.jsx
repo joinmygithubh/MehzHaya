@@ -40,8 +40,8 @@ const VerifyEmail = () => {
         {status === "loading" && <Loader />}
         {status === "success" && (
           <>
-            <FiCheckCircle className="mx-auto text-6xl text-green-500" />
-            <p className="mt-4 text-lg font-medium text-emerald-900 dark:text-gold">
+            <FiCheckCircle className="mx-auto text-6xl text-sage" />
+            <p className="mt-4 text-lg font-serif font-semibold text-espresso">
               {message}
             </p>
             <Link to="/" className="btn-primary mt-6">
@@ -51,8 +51,8 @@ const VerifyEmail = () => {
         )}
         {status === "error" && (
           <>
-            <FiXCircle className="mx-auto text-6xl text-red-500" />
-            <p className="mt-4 text-lg font-medium text-red-600">{message}</p>
+            <FiXCircle className="mx-auto text-6xl text-terracotta" />
+            <p className="mt-4 text-lg font-semibold text-terracotta">{message}</p>
             <Link to="/login" className="btn-outline mt-6">
               Back to Login
             </Link>

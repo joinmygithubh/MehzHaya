@@ -10,6 +10,7 @@ const sendToken = (user, statusCode, res, message = "Success") => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
   };
 
   // never leak sensitive fields

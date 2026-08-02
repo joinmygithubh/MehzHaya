@@ -13,10 +13,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Normalize errors
+// Normalize errors & handle auth termination
 api.interceptors.response.use(
   (res) => res,
   (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("mehzhaya_user");
+      localStorage.removeItem("mehzhaya_token");
+      try {
+        sessionStorage.clear();
+      } catch {
+        /* ignore */
+      }
+    }
     const message =
       error.response?.data?.message || error.message || "Something went wrong";
     return Promise.reject(new Error(message));

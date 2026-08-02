@@ -41,12 +41,14 @@ export const getProducts = asyncHandler(async (req, res) => {
 // @access  Public
 export const getSuggestions = asyncHandler(async (req, res) => {
   const { keyword } = req.query;
-  if (!keyword || keyword.trim().length < 2) {
+  const rawKeyword = typeof keyword === "string" ? keyword.trim() : "";
+  if (!rawKeyword || rawKeyword.length < 2) {
     return res.status(200).json({ success: true, suggestions: [] });
   }
+  const sanitizedKeyword = rawKeyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const suggestions = await Product.find({
     isActive: true,
-    name: { $regex: keyword, $options: "i" },
+    name: { $regex: sanitizedKeyword, $options: "i" },
   })
     .select("name slug images price discount")
     .limit(6);

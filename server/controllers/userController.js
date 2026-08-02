@@ -37,7 +37,8 @@ export const updateAvatar = asyncHandler(async (req, res) => {
 // @access  Private
 export const getAddresses = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
-  res.status(200).json({ success: true, addresses: user.addresses });
+  if (!user) throw new ApiError(404, "User not found");
+  res.status(200).json({ success: true, addresses: user.addresses || [] });
 });
 
 // @desc    Add address
@@ -45,12 +46,30 @@ export const getAddresses = asyncHandler(async (req, res) => {
 // @access  Private
 export const addAddress = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
+  if (!user) throw new ApiError(404, "User not found");
+
+  if (!user.addresses) user.addresses = [];
   const isFirst = user.addresses.length === 0;
-  const newAddress = { ...req.body, isDefault: req.body.isDefault || isFirst };
+
+  const { _id, createdAt, updatedAt, __v, ...addressPayload } = req.body;
+
+  const newAddress = {
+    label: addressPayload.label || "Home",
+    fullName: addressPayload.fullName,
+    phone: addressPayload.phone,
+    line1: addressPayload.line1,
+    line2: addressPayload.line2 || "",
+    city: addressPayload.city,
+    state: addressPayload.state,
+    postalCode: addressPayload.postalCode,
+    country: addressPayload.country || "India",
+    isDefault: Boolean(addressPayload.isDefault || isFirst),
+  };
 
   if (newAddress.isDefault) {
     user.addresses.forEach((a) => (a.isDefault = false));
   }
+
   user.addresses.push(newAddress);
   await user.save({ validateBeforeSave: false });
   res.status(201).json({ success: true, message: "Address added", addresses: user.addresses });
@@ -61,15 +80,40 @@ export const addAddress = asyncHandler(async (req, res) => {
 // @access  Private
 export const updateAddress = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
+  if (!user) throw new ApiError(404, "User not found");
+
   const address = user.addresses.id(req.params.id);
   if (!address) throw new ApiError(404, "Address not found");
 
-  Object.assign(address, req.body);
-  if (req.body.isDefault) {
+  const { _id, createdAt, updatedAt, __v, ...addressPayload } = req.body;
+
+  const allowedFields = [
+    "label",
+    "fullName",
+    "phone",
+    "line1",
+    "line2",
+    "city",
+    "state",
+    "postalCode",
+    "country",
+    "isDefault",
+  ];
+
+  allowedFields.forEach((field) => {
+    if (addressPayload[field] !== undefined) {
+      address[field] = addressPayload[field];
+    }
+  });
+
+  if (addressPayload.isDefault) {
     user.addresses.forEach((a) => {
-      if (a._id.toString() !== req.params.id) a.isDefault = false;
+      if (a._id.toString() !== req.params.id) {
+        a.isDefault = false;
+      }
     });
   }
+
   await user.save({ validateBeforeSave: false });
   res.status(200).json({ success: true, message: "Address updated", addresses: user.addresses });
 });
@@ -79,9 +123,12 @@ export const updateAddress = asyncHandler(async (req, res) => {
 // @access  Private
 export const deleteAddress = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
+  if (!user) throw new ApiError(404, "User not found");
+
   const address = user.addresses.id(req.params.id);
   if (!address) throw new ApiError(404, "Address not found");
-  address.deleteOne();
+
+  user.addresses.pull(req.params.id);
   await user.save({ validateBeforeSave: false });
   res.status(200).json({ success: true, message: "Address removed", addresses: user.addresses });
 });

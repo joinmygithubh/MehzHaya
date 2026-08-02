@@ -45,7 +45,7 @@ const AdminProducts = () => {
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-serif text-2xl font-semibold text-emerald-900 dark:text-gold">
+        <h1 className="font-serif text-2xl font-semibold text-espresso">
           Products ({products.length})
         </h1>
         <Link to="/admin/products/new" className="btn-primary px-4 py-2 text-sm">
@@ -54,7 +54,7 @@ const AdminProducts = () => {
       </div>
 
       <div className="relative mb-4 max-w-sm">
-        <FiSearch className="absolute left-3 top-3 text-gray-400" />
+        <FiSearch className="absolute left-3 top-3 text-taupe" />
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -63,9 +63,9 @@ const AdminProducts = () => {
         />
       </div>
 
-      <div className="card overflow-x-auto">
+      <div className="card overflow-x-auto bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
         <table className="w-full min-w-[760px] text-sm">
-          <thead className="border-b border-gray-100 bg-beige/50 text-left dark:border-emerald-800 dark:bg-emerald-900/40">
+          <thead className="border-b border-sand/60 bg-champagne/80 text-left font-serif text-espresso">
             <tr>
               <th className="p-3">Product</th>
               <th className="p-3">Category</th>
@@ -77,25 +77,25 @@ const AdminProducts = () => {
           </thead>
           <tbody>
             {filtered.map((p) => (
-              <tr key={p._id} className="border-b border-gray-50 hover:bg-beige/30 dark:border-emerald-800/50">
+              <tr key={p._id} className="border-b border-sand/40 hover:bg-champagne/40 text-espresso transition-colors">
                 <td className="p-3">
                   <div className="flex items-center gap-3">
-                    <img src={p.images?.[0]?.url} alt="" className="h-12 w-10 rounded object-cover" />
-                    <span className="line-clamp-1 max-w-[200px] font-medium">{p.name}</span>
+                    <img src={p.images?.[0]?.url} alt="" className="h-12 w-10 rounded-lg object-cover bg-champagne" />
+                    <span className="line-clamp-1 max-w-[200px] font-medium text-espresso font-serif">{p.name}</span>
                   </div>
                 </td>
-                <td className="p-3 text-gray-500">{p.categoryName}</td>
-                <td className="p-3 font-medium">{formatPrice(finalPrice(p))}</td>
+                <td className="p-3 text-taupe">{p.categoryName}</td>
+                <td className="p-3 font-semibold text-espresso">{formatPrice(finalPrice(p))}</td>
                 <td className="p-3">
-                  <span className={p.stock < 5 ? "font-semibold text-red-500" : ""}>{p.stock}</span>
+                  <span className={p.stock < 5 ? "font-semibold text-terracotta" : "text-espresso"}>{p.stock}</span>
                 </td>
-                <td className="p-3 text-gray-500">{p.sold}</td>
+                <td className="p-3 text-taupe">{p.sold}</td>
                 <td className="p-3">
                   <div className="flex justify-end gap-2">
-                    <Link to={`/admin/products/${p._id}/edit`} className="rounded p-2 text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800">
+                    <Link to={`/admin/products/${p._id}/edit`} className="rounded-lg p-2 text-gold hover:bg-gold/15 transition-colors">
                       <FiEdit2 size={16} />
                     </Link>
-                    <button onClick={() => remove(p._id)} className="rounded p-2 text-red-500 hover:bg-red-50 dark:hover:bg-emerald-800">
+                    <button onClick={() => remove(p._id)} className="rounded-lg p-2 text-terracotta hover:bg-blush/60 transition-colors">
                       <FiTrash2 size={16} />
                     </button>
                   </div>
@@ -105,7 +105,7 @@ const AdminProducts = () => {
           </tbody>
         </table>
         {filtered.length === 0 && (
-          <p className="py-10 text-center text-sm text-gray-400">No products found.</p>
+          <p className="py-10 text-center text-sm text-taupe">No products found.</p>
         )}
       </div>
     </div>

@@ -40,11 +40,11 @@ const Wishlist = () => {
     return (
       <div className="container-px py-20 text-center">
         <SEO title="Wishlist" />
-        <FiHeart className="mx-auto text-6xl text-gold/40" />
-        <h1 className="mt-4 font-serif text-3xl text-emerald-900 dark:text-gold">
+        <FiHeart className="mx-auto text-6xl text-gold/60" />
+        <h1 className="mt-4 font-serif text-3xl font-semibold text-espresso">
           Your wishlist is empty
         </h1>
-        <p className="mt-2 text-gray-500">Save your favourite items for later.</p>
+        <p className="mt-2 text-taupe">Save your favourite items for later.</p>
         <Link to="/shop" className="btn-primary mt-6">
           Discover Products
         </Link>
@@ -57,36 +57,36 @@ const Wishlist = () => {
       <SEO title="Wishlist" />
       <div className="container-px py-6">
         <Breadcrumb items={[{ label: "Wishlist" }]} />
-        <h1 className="mt-4 font-serif text-3xl font-semibold text-emerald-900 dark:text-gold">
+        <h1 className="mt-4 font-serif text-3xl font-semibold text-espresso">
           My Wishlist ({products.length})
         </h1>
 
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((p) => (
-            <div key={p._id} className="card flex gap-4 p-4">
+            <div key={p._id} className="card flex gap-4 p-4 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
               <Link to={`/product/${p.slug}`} className="shrink-0">
                 <img
                   src={productImage(p)}
                   alt={p.name}
-                  className="h-32 w-28 rounded-lg object-cover"
+                  className="h-32 w-28 rounded-xl object-cover bg-champagne"
                 />
               </Link>
               <div className="flex flex-1 flex-col justify-between">
                 <div>
                   <Link
                     to={`/product/${p.slug}`}
-                    className="font-medium text-emerald-900 hover:text-gold dark:text-beige-light"
+                    className="font-serif text-base font-semibold text-espresso hover:text-gold transition-colors"
                   >
                     {p.name}
                   </Link>
                   <div className="mt-1">
                     <RatingStars value={p.ratings} count={p.numReviews} size={12} />
                   </div>
-                  <p className="mt-1 text-lg font-semibold text-emerald-900 dark:text-gold">
+                  <p className="mt-1 text-lg font-semibold text-espresso">
                     {formatPrice(finalPrice(p))}
                   </p>
                   {p.stock <= 0 && (
-                    <p className="text-xs font-medium text-red-500">Out of stock</p>
+                    <p className="text-xs font-semibold text-terracotta">Out of stock</p>
                   )}
                 </div>
                 <div className="mt-2 flex gap-2">

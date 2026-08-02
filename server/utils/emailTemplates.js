@@ -78,4 +78,20 @@ export const orderConfirmationTemplate = (name, order) => {
   `);
 };
 
-export default { verifyEmailTemplate, resetPasswordTemplate, orderConfirmationTemplate };
+export const contactInquiryTemplate = (name, email, message, createdAt) =>
+  wrapper(`
+    <h2 style="color:${BROWN}">New Contact Inquiry Received - MehzHaya 📩</h2>
+    <p>A new customer inquiry has been received through the website contact form.</p>
+    <div style="background:${CREAM};padding:16px;border-radius:8px;margin:20px 0">
+      <p style="margin:4px 0"><strong>Customer Name:</strong> ${name}</p>
+      <p style="margin:4px 0"><strong>Customer Email:</strong> <a href="mailto:${email}">${email}</a></p>
+      <p style="margin:4px 0"><strong>Submitted Date:</strong> ${new Date(createdAt).toLocaleString("en-IN")}</p>
+    </div>
+    <div style="background:#f9f9f9;border-left:4px solid ${CAMEL};padding:16px;border-radius:4px;margin:20px 0">
+      <p style="margin:0 0 6px;font-weight:bold;color:${BROWN}">Message:</p>
+      <p style="margin:0;white-space:pre-wrap;color:#444">${message}</p>
+    </div>
+    <p style="font-size:13px;color:#777">You can manage this message directly inside your MehzHaya Admin Panel.</p>
+  `);
+
+export default { verifyEmailTemplate, resetPasswordTemplate, orderConfirmationTemplate, contactInquiryTemplate };

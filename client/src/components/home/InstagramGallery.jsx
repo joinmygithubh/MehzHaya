@@ -11,28 +11,29 @@ const images = [
 ];
 
 const InstagramGallery = () => (
-  <section className="container-px py-14">
-    <div className="mb-8 text-center">
-      <p className="text-xs uppercase tracking-[0.25em] text-gold-dark">@mehzhaya</p>
-      <h2 className="section-title mt-1">Follow Us on Instagram</h2>
+  <section className="container-px py-16">
+    <div className="mb-10 text-center">
+      <p className="eyebrow">@mehzhaya</p>
+      <div className="gold-divider mx-auto my-2" />
+      <h2 className="section-title">Follow Us on Instagram</h2>
     </div>
-    <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+    <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
       {images.map((img, i) => (
         <a
           key={i}
           href={STORE.social.instagram}
           target="_blank"
           rel="noreferrer"
-          className="group relative aspect-square overflow-hidden rounded-xl"
+          className="group relative aspect-square overflow-hidden rounded-xl bg-champagne shadow-soft"
         >
           <img
             src={img}
             alt="Instagram post"
             loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-          <div className="absolute inset-0 flex items-center justify-center bg-emerald-950/0 transition group-hover:bg-emerald-950/50">
-            <FiInstagram className="text-2xl text-beige-light opacity-0 transition group-hover:opacity-100" />
+          <div className="absolute inset-0 flex items-center justify-center bg-espresso/0 transition-all duration-300 group-hover:bg-espresso/40">
+            <FiInstagram className="text-2xl text-ivory opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </div>
         </a>
       ))}

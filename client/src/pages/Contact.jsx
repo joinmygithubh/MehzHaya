@@ -7,14 +7,24 @@ import SEO from "../components/common/SEO";
 import Breadcrumb from "../components/common/Breadcrumb";
 import { STORE } from "../utils/constants";
 import { whatsappLink } from "../utils/helpers";
+import api from "../api/axios";
 
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [loading, setLoading] = useState(false);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    toast.success("Thank you! We'll get back to you shortly. 💚");
-    setForm({ name: "", email: "", message: "" });
+    setLoading(true);
+    try {
+      const res = await api.post("/contact", form);
+      toast.success(res.data?.message || "Thank you! We'll get back to you shortly. 💚");
+      setForm({ name: "", email: "", message: "" });
+    } catch (err) {
+      toast.error(err.message || "Failed to send message. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const info = [
@@ -45,19 +55,20 @@ const Contact = () => {
         <Breadcrumb items={[{ label: "Contact" }]} />
 
         <div className="mt-6 text-center">
-          <p className="text-xs uppercase tracking-[0.25em] text-gold-dark">
+          <p className="eyebrow text-gold">
             We'd love to hear from you
           </p>
-          <h1 className="section-title mt-1">Get in Touch</h1>
+          <div className="gold-divider mx-auto my-2" />
+          <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-espresso">Get in Touch</h1>
         </div>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {info.map(({ Icon, title, lines, href, external }) => (
-            <div key={title} className="card p-6 text-center">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-900 text-gold">
+            <div key={title} className="card p-6 text-center bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gold text-espresso shadow-xs">
                 <Icon size={24} />
               </div>
-              <h3 className="mt-4 font-serif text-lg font-semibold text-emerald-900 dark:text-gold">
+              <h3 className="mt-4 font-serif text-lg font-semibold text-espresso">
                 {title}
               </h3>
               {lines.map((l, i) =>
@@ -66,12 +77,12 @@ const Contact = () => {
                     key={i}
                     href={href}
                     {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="mt-1 block text-sm text-gray-600 hover:text-gold dark:text-beige-light/70"
+                    className="mt-1 block text-sm text-taupe hover:text-gold transition-colors font-medium"
                   >
                     {l}
                   </a>
                 ) : (
-                  <p key={i} className="mt-1 text-sm text-gray-600 dark:text-beige-light/70">
+                  <p key={i} className="mt-1 text-sm text-taupe font-sans">
                     {l}
                   </p>
                 )
@@ -82,8 +93,8 @@ const Contact = () => {
 
         <div className="mt-12 grid gap-8 lg:grid-cols-2">
           {/* Form */}
-          <div className="card p-8">
-            <h2 className="font-serif text-2xl font-semibold text-emerald-900 dark:text-gold">
+          <div className="card p-8 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+            <h2 className="font-serif text-2xl font-semibold text-espresso">
               Send us a Message
             </h2>
             <form onSubmit={submit} className="mt-6 space-y-4">
@@ -119,8 +130,8 @@ const Contact = () => {
                   placeholder="How can we help you?"
                 />
               </div>
-              <button type="submit" className="btn-primary w-full">
-                <FiSend /> Send Message
+              <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
+                <FiSend /> {loading ? "Sending Message..." : "Send Message"}
               </button>
             </form>
           </div>

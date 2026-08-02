@@ -47,12 +47,12 @@ const AdminCustomers = () => {
 
   return (
     <div>
-      <h1 className="mb-6 font-serif text-2xl font-semibold text-emerald-900 dark:text-gold">
+      <h1 className="mb-6 font-serif text-2xl font-semibold text-espresso">
         Customers ({users.length})
       </h1>
-      <div className="card overflow-x-auto">
+      <div className="card overflow-x-auto bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
         <table className="w-full min-w-[760px] text-sm">
-          <thead className="border-b border-gray-100 bg-beige/50 text-left dark:border-emerald-800 dark:bg-emerald-900/40">
+          <thead className="border-b border-sand/60 bg-champagne/80 text-left font-serif text-espresso">
             <tr>
               <th className="p-3">Name</th>
               <th className="p-3">Email</th>
@@ -65,30 +65,30 @@ const AdminCustomers = () => {
           </thead>
           <tbody>
             {users.map((u) => (
-              <tr key={u._id} className="border-b border-gray-50 hover:bg-beige/30 dark:border-emerald-800/50">
-                <td className="p-3 font-medium">{u.name}</td>
-                <td className="p-3 text-gray-500">{u.email}</td>
-                <td className="p-3 text-gray-500">{u.phone || "—"}</td>
+              <tr key={u._id} className="border-b border-sand/40 hover:bg-champagne/40 text-espresso transition-colors">
+                <td className="p-3 font-serif font-semibold">{u.name}</td>
+                <td className="p-3 text-taupe">{u.email}</td>
+                <td className="p-3 text-taupe">{u.phone || "—"}</td>
                 <td className="p-3">
                   {u.isEmailVerified ? (
-                    <span className="text-green-600">✓</span>
+                    <span className="text-sage font-bold">✓</span>
                   ) : (
-                    <span className="text-gray-300">✗</span>
+                    <span className="text-sand font-bold">✗</span>
                   )}
                 </td>
                 <td className="p-3">
                   <select
                     value={u.role}
                     onChange={(e) => changeRole(u._id, e.target.value)}
-                    className="rounded border border-gray-300 px-2 py-1 text-xs dark:bg-emerald-900"
+                    className="rounded-lg border border-sand bg-ivory text-espresso px-2 py-1 text-xs font-medium"
                   >
                     <option value="user">user</option>
                     <option value="admin">admin</option>
                   </select>
                 </td>
-                <td className="p-3 text-gray-500">{new Date(u.createdAt).toLocaleDateString()}</td>
+                <td className="p-3 text-taupe">{new Date(u.createdAt).toLocaleDateString()}</td>
                 <td className="p-3 text-right">
-                  <button onClick={() => remove(u._id)} className="rounded p-2 text-red-500 hover:bg-red-50 dark:hover:bg-emerald-800">
+                  <button onClick={() => remove(u._id)} className="rounded-lg p-2 text-terracotta hover:bg-blush/60 transition-colors">
                     <FiTrash2 size={16} />
                   </button>
                 </td>

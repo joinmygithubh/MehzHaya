@@ -132,11 +132,11 @@ const ProductDetail = () => {
                 <button
                   key={i}
                   onClick={() => setActiveImg(i)}
-                  className={`h-20 w-16 shrink-0 overflow-hidden rounded-lg border-2 ${
-                    activeImg === i ? "border-gold" : "border-transparent"
+                  className={`h-20 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition ${
+                    activeImg === i ? "border-gold shadow-xs" : "border-sand/60 opacity-80 hover:opacity-100"
                   }`}
                 >
-                  <img src={img.url} alt="" className="h-full w-full object-cover" />
+                  <img src={img.url} alt="" className="h-full w-full object-cover bg-champagne/40" />
                 </button>
               ))}
             </div>
@@ -144,7 +144,7 @@ const ProductDetail = () => {
               key={activeImg}
               initial={{ opacity: 0.4 }}
               animate={{ opacity: 1 }}
-              className="relative flex-1 overflow-hidden rounded-2xl bg-beige"
+              className="relative flex-1 overflow-hidden rounded-xl bg-champagne/60 border border-sand/70 shadow-soft"
             >
               <img
                 src={productImage(product, activeImg)}
@@ -152,7 +152,7 @@ const ProductDetail = () => {
                 className="aspect-[3/4] w-full object-cover"
               />
               {product.discount > 0 && (
-                <span className="absolute left-4 top-4 rounded-full bg-red-500 px-3 py-1 text-sm font-bold text-white">
+                <span className="absolute left-4 top-4 rounded-full border border-terracotta bg-ivory/95 px-3 py-1 text-xs font-semibold text-terracotta uppercase tracking-wider shadow-xs">
                   -{product.discount}% OFF
                 </span>
               )}
@@ -161,52 +161,53 @@ const ProductDetail = () => {
 
           {/* Info */}
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-gold-dark">
+            <p className="eyebrow text-xs">
               {product.categoryName} · {product.group}
             </p>
-            <h1 className="mt-2 font-serif text-3xl font-bold text-emerald-900 dark:text-gold sm:text-4xl">
+            <div className="gold-divider my-2" />
+            <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-espresso">
               {product.name}
             </h1>
 
             <div className="mt-3 flex items-center gap-3">
               <RatingStars value={ratings} count={numReviews} size={16} />
-              <span className="text-sm text-gray-400">·</span>
-              <span className="text-sm text-gray-500">SKU: {product.sku}</span>
+              <span className="text-sm text-sand">·</span>
+              <span className="text-sm text-taupe">SKU: {product.sku}</span>
             </div>
 
             <div className="mt-4 flex items-end gap-3">
-              <span className="text-3xl font-bold text-emerald-900 dark:text-gold">
+              <span className="text-3xl font-semibold text-espresso">
                 {formatPrice(price)}
               </span>
               {product.discount > 0 && (
                 <>
-                  <span className="text-lg text-gray-400 line-through">
+                  <span className="text-lg text-taupe line-through">
                     {formatPrice(product.price)}
                   </span>
-                  <span className="mb-1 text-sm font-semibold text-green-600">
+                  <span className="mb-1 text-sm font-semibold text-sage">
                     Save {formatPrice(product.price - price)}
                   </span>
                 </>
               )}
             </div>
 
-            <p className="mt-4 text-sm leading-relaxed text-gray-600 dark:text-beige-light/80">
+            <p className="mt-4 text-sm leading-relaxed text-taupe font-sans">
               {product.description}
             </p>
 
             {/* Material */}
             {product.material && (
               <p className="mt-4 text-sm">
-                <span className="font-medium text-emerald-900 dark:text-gold">Material: </span>
-                {product.material}
+                <span className="font-medium text-espresso font-serif text-base">Material: </span>
+                <span className="text-taupe">{product.material}</span>
               </p>
             )}
 
             {/* Colors */}
             {product.colors?.length > 0 && (
               <div className="mt-5">
-                <p className="mb-2 text-sm font-medium text-emerald-900 dark:text-gold">
-                  Color: <span className="text-gray-500">{color}</span>
+                <p className="mb-2 text-sm font-semibold text-espresso font-serif text-base">
+                  Color: <span className="font-sans text-sm font-normal text-taupe">{color}</span>
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {product.colors.map((c) => (
@@ -215,7 +216,7 @@ const ProductDetail = () => {
                       title={c}
                       onClick={() => setColor(c)}
                       className={`h-9 w-9 rounded-full border-2 transition ${
-                        color === c ? "border-gold scale-110" : "border-gray-200"
+                        color === c ? "border-gold scale-110 shadow-xs" : "border-sand/70"
                       }`}
                       style={{ backgroundColor: COLOR_HEX[c] || "#ccc" }}
                     />
@@ -227,7 +228,7 @@ const ProductDetail = () => {
             {/* Sizes */}
             {product.sizes?.length > 0 && (
               <div className="mt-5">
-                <p className="mb-2 text-sm font-medium text-emerald-900 dark:text-gold">
+                <p className="mb-2 text-sm font-semibold text-espresso font-serif text-base">
                   Size
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -235,10 +236,10 @@ const ProductDetail = () => {
                     <button
                       key={s}
                       onClick={() => setSize(s)}
-                      className={`min-w-[3rem] rounded-lg border px-3 py-2 text-sm transition ${
+                      className={`min-w-[3rem] rounded-xl border px-3 py-2 text-sm font-medium transition ${
                         size === s
-                          ? "border-emerald-900 bg-emerald-900 text-gold"
-                          : "border-gray-300 text-gray-600 dark:text-beige-light/70"
+                          ? "border-gold bg-gold text-espresso font-semibold shadow-xs"
+                          : "border-sand text-taupe hover:border-gold hover:text-espresso"
                       }`}
                     >
                       {s}
@@ -251,29 +252,29 @@ const ProductDetail = () => {
             {/* Stock counter */}
             <div className="mt-5 text-sm">
               {outOfStock ? (
-                <span className="font-medium text-red-500">Out of stock</span>
+                <span className="font-medium text-terracotta">Out of stock</span>
               ) : product.stock < 10 ? (
-                <span className="font-medium text-orange-500">
+                <span className="font-medium text-terracotta">
                   Hurry! Only {product.stock} left in stock
                 </span>
               ) : (
-                <span className="font-medium text-green-600">In stock</span>
+                <span className="font-medium text-sage">In stock</span>
               )}
             </div>
 
             {/* Qty + actions */}
             <div className="mt-6 flex flex-wrap items-center gap-4">
-              <div className="flex items-center rounded-full border border-gray-300">
+              <div className="flex items-center rounded-xl border border-sand bg-ivory">
                 <button
                   onClick={() => setQty((q) => Math.max(1, q - 1))}
-                  className="p-3"
+                  className="p-3 text-espresso hover:text-gold"
                 >
                   <FiMinus />
                 </button>
-                <span className="w-10 text-center font-medium">{qty}</span>
+                <span className="w-10 text-center font-semibold text-espresso">{qty}</span>
                 <button
                   onClick={() => setQty((q) => Math.min(product.stock, q + 1))}
-                  className="p-3"
+                  className="p-3 text-espresso hover:text-gold"
                 >
                   <FiPlus />
                 </button>
@@ -288,7 +289,7 @@ const ProductDetail = () => {
               </button>
 
               <button onClick={handleWishlist} className="btn-outline px-4">
-                {wished ? <FaHeart className="text-red-500" /> : <FiHeart />}
+                {wished ? <FaHeart className="text-terracotta" /> : <FiHeart />}
               </button>
 
               <button onClick={handleShare} className="btn-outline px-4">
@@ -306,13 +307,13 @@ const ProductDetail = () => {
               )}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] py-3 font-medium text-white transition hover:brightness-95"
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] py-3 font-semibold text-white shadow-soft transition hover:brightness-95"
             >
               <FaWhatsapp size={20} /> Book on WhatsApp
             </a>
 
             {/* Trust badges */}
-            <div className="mt-8 grid grid-cols-3 gap-3 border-t border-gray-100 pt-6 text-center dark:border-emerald-800">
+            <div className="mt-8 grid grid-cols-3 gap-3 border-t border-sand/60 pt-6 text-center">
               {[
                 { Icon: FiTruck, t: "Free Shipping", s: "Above ₹999" },
                 { Icon: FiRefreshCw, t: "Easy Returns", s: "7 days" },
@@ -320,8 +321,8 @@ const ProductDetail = () => {
               ].map(({ Icon, t, s }) => (
                 <div key={t} className="flex flex-col items-center gap-1">
                   <Icon className="text-gold" size={22} />
-                  <span className="text-xs font-medium">{t}</span>
-                  <span className="text-[11px] text-gray-400">{s}</span>
+                  <span className="text-xs font-semibold text-espresso">{t}</span>
+                  <span className="text-[11px] text-taupe">{s}</span>
                 </div>
               ))}
             </div>
@@ -341,7 +342,8 @@ const ProductDetail = () => {
         {/* Related */}
         {related?.length > 0 && (
           <section className="mt-16">
-            <h2 className="section-title mb-6 text-2xl">You May Also Like</h2>
+            <h2 className="section-title mb-2 text-2xl">You May Also Like</h2>
+            <div className="gold-divider mb-6" />
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {related.map((p, i) => (
                 <ProductCard key={p._id} product={p} index={i} />
@@ -353,7 +355,8 @@ const ProductDetail = () => {
         {/* Recently viewed */}
         {recent.length > 0 && (
           <section className="mt-16">
-            <h2 className="section-title mb-6 text-2xl">Recently Viewed</h2>
+            <h2 className="section-title mb-2 text-2xl">Recently Viewed</h2>
+            <div className="gold-divider mb-6" />
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {recent.slice(0, 4).map((p, i) => (
                 <ProductCard key={p._id} product={p} index={i} />

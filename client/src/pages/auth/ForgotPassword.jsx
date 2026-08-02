@@ -31,14 +31,14 @@ const ForgotPassword = () => {
       title="Forgot Password"
       subtitle="We'll send you a reset link"
       footer={
-        <Link to="/login" className="font-medium text-gold-dark hover:underline">
+        <Link to="/login" className="font-semibold text-gold hover:underline">
           Back to login
         </Link>
       }
     >
       <SEO title="Forgot Password" />
       {sent ? (
-        <div className="rounded-lg bg-green-50 p-4 text-sm text-green-700 dark:bg-emerald-900/40">
+        <div className="rounded-xl bg-blush/60 border border-sand p-4 text-sm text-espresso">
           A password reset link has been sent to <strong>{email}</strong>. Please
           check your inbox (and spam folder).
         </div>
@@ -47,7 +47,7 @@ const ForgotPassword = () => {
           <div>
             <label className="label">Email</label>
             <div className="relative">
-              <FiMail className="pointer-events-none absolute left-3 top-3.5 text-gray-400" />
+              <FiMail className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
               <input
                 type="email"
                 required

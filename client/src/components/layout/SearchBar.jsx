@@ -59,14 +59,14 @@ const SearchBar = ({ open, onClose }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/40"
+            className="fixed inset-0 z-50 bg-espresso/40 backdrop-blur-xs"
             onClick={onClose}
           />
           <motion.div
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
-            className="fixed inset-x-0 top-0 z-50 bg-white p-4 shadow-soft dark:bg-emerald-950 sm:p-6"
+            className="fixed inset-x-0 top-0 z-50 bg-ivory border-b border-sand p-4 shadow-soft sm:p-6"
           >
             <div className="container-px mx-auto max-w-3xl">
               <form onSubmit={submit} className="flex items-center gap-3">
@@ -76,18 +76,18 @@ const SearchBar = ({ open, onClose }) => {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search hijabs, abayas, accessories..."
-                  className="flex-1 bg-transparent text-lg outline-none"
+                  className="flex-1 bg-transparent text-lg text-espresso placeholder:text-taupe/60 outline-none font-sans"
                 />
-                <button type="button" onClick={onClose} className="text-gray-400 hover:text-gold">
+                <button type="button" onClick={onClose} className="text-taupe hover:text-gold">
                   <FiX size={24} />
                 </button>
               </form>
 
               {query.length >= 2 && (
                 <div className="mt-4 max-h-[60vh] overflow-y-auto">
-                  {loading && <p className="py-4 text-center text-sm text-gray-400">Searching…</p>}
+                  {loading && <p className="py-4 text-center text-sm text-taupe">Searching…</p>}
                   {!loading && suggestions.length === 0 && (
-                    <p className="py-4 text-center text-sm text-gray-400">
+                    <p className="py-4 text-center text-sm text-taupe">
                       No products found for "{query}"
                     </p>
                   )}
@@ -95,16 +95,16 @@ const SearchBar = ({ open, onClose }) => {
                     <button
                       key={s._id}
                       onClick={() => goToProduct(s.slug)}
-                      className="flex w-full items-center gap-3 rounded-lg p-2 text-left transition hover:bg-beige-light dark:hover:bg-emerald-900"
+                      className="flex w-full items-center gap-3 rounded-xl p-2 text-left transition hover:bg-champagne/60"
                     >
                       <img
                         src={productImage(s)}
                         alt={s.name}
-                        className="h-12 w-12 rounded-md object-cover"
+                        className="h-12 w-12 rounded-lg bg-champagne object-cover"
                       />
                       <div className="flex-1">
-                        <p className="text-sm font-medium">{s.name}</p>
-                        <p className="text-xs text-gold-dark">
+                        <p className="text-sm font-medium text-espresso">{s.name}</p>
+                        <p className="text-xs text-gold font-semibold">
                           {formatPrice(finalPrice(s))}
                         </p>
                       </div>

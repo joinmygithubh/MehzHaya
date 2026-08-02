@@ -30,11 +30,11 @@ const ChangePassword = () => {
   const field = (key) => (e) => setForm({ ...form, [key]: e.target.value });
 
   return (
-    <div className="card max-w-lg p-8">
-      <h1 className="font-serif text-2xl font-semibold text-emerald-900 dark:text-gold">
+    <div className="card max-w-lg p-8 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+      <h1 className="font-serif text-2xl font-semibold text-espresso">
         Change Password
       </h1>
-      <p className="mt-1 text-sm text-gray-500">Keep your account secure</p>
+      <p className="mt-1 text-sm text-taupe">Keep your account secure</p>
       <form onSubmit={submit} className="mt-6 space-y-4">
         <div>
           <label className="label">Current Password</label>

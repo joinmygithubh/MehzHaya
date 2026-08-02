@@ -15,16 +15,16 @@ import Newsletter from "../home/Newsletter";
 import Logo from "../common/Logo";
 
 const Footer = () => (
-  <footer className="mt-16 bg-emerald-950 text-beige-light">
+  <footer className="mt-16 bg-champagne border-t border-sand text-espresso">
     <Newsletter />
     <div className="container-px grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
       {/* Brand */}
       <div>
         <Logo to={null} className="h-16" plate />
-        <p className="mt-3 text-xs tracking-[0.2em] text-beige-light/60">
+        <p className="mt-3 text-xs tracking-[0.2em] text-taupe font-semibold">
           {STORE.tagline.toUpperCase()}
         </p>
-        <p className="mt-4 text-sm text-beige-light/70">
+        <p className="mt-4 text-sm text-taupe leading-relaxed">
           Premium Hijabs, Niqabs, Abayas & Islamic fashion — crafted for the
           modern modest wardrobe.
         </p>
@@ -40,7 +40,7 @@ const Footer = () => (
               href={url}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full border border-gold/30 p-2 text-gold transition hover:bg-gold hover:text-emerald-950"
+              className="rounded-full border border-sand bg-ivory p-2 text-gold transition hover:bg-gold hover:text-espresso"
             >
               <Icon size={16} />
             </a>
@@ -50,17 +50,17 @@ const Footer = () => (
 
       {/* Shop */}
       <div>
-        <h4 className="mb-4 font-serif text-lg text-gold">Shop</h4>
-        <ul className="space-y-2 text-sm text-beige-light/70">
+        <h4 className="mb-4 font-serif text-lg font-semibold text-gold">Shop</h4>
+        <ul className="space-y-2 text-sm text-taupe">
           {Object.keys(CATEGORY_GROUPS).map((g) => (
             <li key={g}>
-              <Link to={`/shop?group=${encodeURIComponent(g)}`} className="hover:text-gold">
+              <Link to={`/shop?group=${encodeURIComponent(g)}`} className="hover:text-gold transition-colors">
                 {g}
               </Link>
             </li>
           ))}
           <li>
-            <Link to="/shop?isFlashSale=true" className="hover:text-gold">
+            <Link to="/shop?isFlashSale=true" className="hover:text-gold transition-colors">
               Flash Sale
             </Link>
           </li>
@@ -69,20 +69,20 @@ const Footer = () => (
 
       {/* Help */}
       <div>
-        <h4 className="mb-4 font-serif text-lg text-gold">Help</h4>
-        <ul className="space-y-2 text-sm text-beige-light/70">
-          <li><Link to="/about" className="hover:text-gold">About Us</Link></li>
-          <li><Link to="/contact" className="hover:text-gold">Contact</Link></li>
-          <li><Link to="/account/orders" className="hover:text-gold">Track Order</Link></li>
-          <li><Link to="/account" className="hover:text-gold">My Account</Link></li>
-          <li><Link to="/wishlist" className="hover:text-gold">Wishlist</Link></li>
+        <h4 className="mb-4 font-serif text-lg font-semibold text-gold">Help</h4>
+        <ul className="space-y-2 text-sm text-taupe">
+          <li><Link to="/about" className="hover:text-gold transition-colors">About Us</Link></li>
+          <li><Link to="/contact" className="hover:text-gold transition-colors">Contact</Link></li>
+          <li><Link to="/account/orders" className="hover:text-gold transition-colors">Track Order</Link></li>
+          <li><Link to="/account" className="hover:text-gold transition-colors">My Account</Link></li>
+          <li><Link to="/wishlist" className="hover:text-gold transition-colors">Wishlist</Link></li>
         </ul>
       </div>
 
       {/* Contact */}
       <div>
-        <h4 className="mb-4 font-serif text-lg text-gold">Get in Touch</h4>
-        <ul className="space-y-3 text-sm text-beige-light/70">
+        <h4 className="mb-4 font-serif text-lg font-semibold text-gold">Get in Touch</h4>
+        <ul className="space-y-3 text-sm text-taupe">
           <li className="flex items-start gap-2">
             <FiMapPin className="mt-0.5 shrink-0 text-gold" />
             <span>
@@ -92,7 +92,7 @@ const Footer = () => (
           </li>
           <li className="flex items-center gap-2">
             <FiPhone className="text-gold" />
-            <a href={`tel:${STORE.phone}`} className="hover:text-gold">
+            <a href={`tel:${STORE.phone}`} className="hover:text-gold transition-colors">
               {STORE.phone}
             </a>
           </li>
@@ -102,14 +102,14 @@ const Footer = () => (
               href={whatsappLink("Hello MehzHaya! 🌸 I'd like to book / enquire about your products.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-gold"
+              className="hover:text-gold transition-colors"
             >
               Book on WhatsApp
             </a>
           </li>
           <li className="flex items-center gap-2">
             <FiMail className="text-gold" />
-            <a href={`mailto:${STORE.email}`} className="hover:text-gold">
+            <a href={`mailto:${STORE.email}`} className="hover:text-gold transition-colors">
               {STORE.email}
             </a>
           </li>
@@ -117,8 +117,8 @@ const Footer = () => (
       </div>
     </div>
 
-    <div className="border-t border-gold/10 py-5 text-center text-xs text-beige-light/50">
-      © {new Date().getFullYear()} MehzHaya. All rights reserved. · Made with 💚 for modest fashion.
+    <div className="border-t border-sand/70 py-5 text-center text-xs text-taupe">
+      © {new Date().getFullYear()} MehzHaya. All rights reserved. · Crafted with ✦ for modest fashion.
     </div>
   </footer>
 );

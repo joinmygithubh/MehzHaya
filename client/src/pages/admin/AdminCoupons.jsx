@@ -69,7 +69,7 @@ const AdminCoupons = () => {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-semibold text-emerald-900 dark:text-gold">
+        <h1 className="font-serif text-2xl font-semibold text-espresso">
           Coupons ({coupons.length})
         </h1>
         <button onClick={() => setShowForm(true)} className="btn-primary px-4 py-2 text-sm">
@@ -81,25 +81,25 @@ const AdminCoupons = () => {
         {coupons.map((c) => {
           const expired = new Date(c.expiresAt) < new Date();
           return (
-            <div key={c._id} className="card relative overflow-hidden p-5">
+            <div key={c._id} className="card relative overflow-hidden p-5 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="font-mono text-lg font-bold text-emerald-900 dark:text-gold">{c.code}</p>
-                  <p className="text-xs text-gray-500">{c.description}</p>
+                  <p className="font-mono text-lg font-bold text-espresso">{c.code}</p>
+                  <p className="text-xs text-taupe">{c.description}</p>
                 </div>
-                <button onClick={() => remove(c._id)} className="text-red-500"><FiTrash2 size={16} /></button>
+                <button onClick={() => remove(c._id)} className="text-terracotta hover:opacity-80"><FiTrash2 size={16} /></button>
               </div>
-              <p className="mt-3 text-2xl font-bold text-gold-dark">
+              <p className="mt-3 text-2xl font-bold text-gold">
                 {c.discountType === "percentage" ? `${c.discountValue}% OFF` : `${formatPrice(c.discountValue)} OFF`}
               </p>
-              <p className="mt-1 text-xs text-gray-400">
+              <p className="mt-1 text-xs text-taupe">
                 Min purchase: {formatPrice(c.minPurchase)} · Used: {c.usedCount}
               </p>
               <div className="mt-2 flex items-center gap-2">
-                <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${expired || !c.isActive ? "bg-red-100 text-red-600" : "bg-green-100 text-green-700"}`}>
+                <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${expired || !c.isActive ? "border-terracotta bg-blush text-terracotta" : "border-sage bg-ivory text-sage"}`}>
                   {expired ? "Expired" : c.isActive ? "Active" : "Inactive"}
                 </span>
-                <span className="text-[10px] text-gray-400">
+                <span className="text-[10px] text-taupe font-medium">
                   Exp: {new Date(c.expiresAt).toLocaleDateString()}
                 </span>
               </div>
@@ -110,11 +110,11 @@ const AdminCoupons = () => {
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setShowForm(false)} />
-          <div className="card relative z-10 max-h-[90vh] w-full max-w-md overflow-y-auto p-6">
+          <div className="absolute inset-0 bg-espresso/40 backdrop-blur-xs" onClick={() => setShowForm(false)} />
+          <div className="card relative z-10 max-h-[90vh] w-full max-w-md overflow-y-auto p-6 bg-ivory border border-sand rounded-2xl shadow-soft">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-serif text-xl font-semibold text-emerald-900 dark:text-gold">Add Coupon</h2>
-              <button onClick={() => setShowForm(false)}><FiX size={22} /></button>
+              <h2 className="font-serif text-xl font-semibold text-espresso">Add Coupon</h2>
+              <button onClick={() => setShowForm(false)} className="text-taupe hover:text-espresso"><FiX size={22} /></button>
             </div>
             <form onSubmit={create} className="space-y-4">
               <div>

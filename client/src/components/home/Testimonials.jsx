@@ -23,13 +23,14 @@ const testimonials = [
 ];
 
 const Testimonials = () => (
-  <section className="bg-beige py-16 dark:bg-emerald-900/40">
+  <section className="bg-champagne/40 py-16 border-y border-sand/50">
     <div className="container-px">
       <div className="mb-10 text-center">
-        <p className="text-xs uppercase tracking-[0.25em] text-gold-dark">
+        <p className="eyebrow">
           Loved by thousands
         </p>
-        <h2 className="section-title mt-1">What Our Customers Say</h2>
+        <div className="gold-divider mx-auto my-2" />
+        <h2 className="section-title">What Our Customers Say</h2>
       </div>
       <div className="grid gap-6 md:grid-cols-3">
         {testimonials.map((t, i) => (
@@ -39,22 +40,22 @@ const Testimonials = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            className="card p-6"
+            className="card p-6 bg-ivory/90 border border-sand/80 shadow-soft"
           >
-            <FaQuoteLeft className="mb-4 text-2xl text-gold/50" />
-            <p className="text-sm leading-relaxed text-gray-600 dark:text-beige-light/80">
-              {t.text}
+            <FaQuoteLeft className="mb-4 text-2xl text-gold/60" />
+            <p className="text-sm leading-relaxed text-taupe font-sans">
+              "{t.text}"
             </p>
             <div className="mt-4 flex gap-0.5">
               {Array.from({ length: t.rating }).map((_, j) => (
                 <FaStar key={j} className="text-gold" size={14} />
               ))}
             </div>
-            <div className="mt-3">
-              <p className="font-semibold text-emerald-900 dark:text-gold">
+            <div className="mt-3 border-t border-sand/40 pt-3">
+              <p className="font-serif text-base font-semibold text-espresso">
                 {t.name}
               </p>
-              <p className="text-xs text-gray-400">{t.location}</p>
+              <p className="text-xs text-taupe">{t.location}</p>
             </div>
           </motion.div>
         ))}

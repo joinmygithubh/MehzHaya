@@ -13,13 +13,13 @@ import Loader from "../../components/common/Loader";
 import { formatPrice } from "../../utils/helpers";
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
-  <div className="card flex items-center gap-4 p-5">
-    <div className={`flex h-12 w-12 items-center justify-center rounded-xl text-white ${color}`}>
+  <div className="card flex items-center gap-4 p-5 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+    <div className={`flex h-12 w-12 items-center justify-center rounded-xl font-bold shadow-xs ${color}`}>
       <Icon size={22} />
     </div>
     <div>
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="text-2xl font-bold text-emerald-900 dark:text-gold">{value}</p>
+      <p className="text-xs text-taupe">{label}</p>
+      <p className="text-2xl font-bold text-espresso">{value}</p>
     </div>
   </div>
 );
@@ -48,44 +48,44 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <h1 className="mb-6 font-serif text-2xl font-semibold text-emerald-900 dark:text-gold">
+      <h1 className="mb-6 font-serif text-2xl font-semibold text-espresso">
         Dashboard Overview
       </h1>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={FiDollarSign} label="Total Revenue" value={formatPrice(stats.totalRevenue)} color="bg-emerald-700" />
-        <StatCard icon={FiShoppingCart} label="Total Orders" value={stats.totalOrders} color="bg-blue-600" />
-        <StatCard icon={FiBox} label="Products" value={stats.totalProducts} color="bg-gold-dark" />
-        <StatCard icon={FiUsers} label="Customers" value={stats.totalUsers} color="bg-purple-600" />
+        <StatCard icon={FiDollarSign} label="Total Revenue" value={formatPrice(stats.totalRevenue)} color="bg-gold text-espresso" />
+        <StatCard icon={FiShoppingCart} label="Total Orders" value={stats.totalOrders} color="bg-espresso text-ivory" />
+        <StatCard icon={FiBox} label="Products" value={stats.totalProducts} color="bg-sage text-ivory" />
+        <StatCard icon={FiUsers} label="Customers" value={stats.totalUsers} color="bg-[#8C6B3F] text-ivory" />
       </div>
 
       {stats.lowStock > 0 && (
-        <div className="mt-4 flex items-center gap-2 rounded-lg bg-orange-50 p-4 text-sm text-orange-700 dark:bg-emerald-900/40">
+        <div className="mt-4 flex items-center gap-2 rounded-xl bg-blush/60 border border-terracotta/40 p-4 text-sm text-terracotta font-medium">
           <FiAlertTriangle /> {stats.lowStock} products are low on stock (less than 5 units).
-          <Link to="/admin/products" className="font-medium underline">Review</Link>
+          <Link to="/admin/products" className="font-semibold underline">Review</Link>
         </div>
       )}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         {/* Sales chart */}
-        <div className="card p-6 lg:col-span-2">
-          <h2 className="mb-4 font-semibold text-emerald-900 dark:text-gold">
+        <div className="card p-6 lg:col-span-2 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+          <h2 className="mb-4 font-serif text-lg font-semibold text-espresso">
             Sales (Last 6 Months)
           </h2>
           {stats.monthlySales.length === 0 ? (
-            <p className="py-10 text-center text-sm text-gray-400">No sales data yet.</p>
+            <p className="py-10 text-center text-sm text-taupe">No sales data yet.</p>
           ) : (
             <div className="flex h-48 items-end justify-around gap-2">
               {stats.monthlySales.map((m, i) => (
                 <div key={i} className="flex flex-1 flex-col items-center gap-2">
                   <div className="flex w-full items-end justify-center" style={{ height: "150px" }}>
                     <div
-                      className="w-8 rounded-t-md bg-emerald-700 transition-all hover:bg-gold"
+                      className="w-8 rounded-t-md bg-gold transition-all hover:bg-[#8C6B3F]"
                       style={{ height: `${(m.total / maxSale) * 100}%` }}
                       title={formatPrice(m.total)}
                     />
                   </div>
-                  <span className="text-[10px] text-gray-400">{monthName(m._id.month)}</span>
+                  <span className="text-[10px] text-taupe font-medium">{monthName(m._id.month)}</span>
                 </div>
               ))}
             </div>
@@ -93,13 +93,13 @@ const AdminDashboard = () => {
         </div>
 
         {/* Orders by status */}
-        <div className="card p-6">
-          <h2 className="mb-4 font-semibold text-emerald-900 dark:text-gold">Orders by Status</h2>
+        <div className="card p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+          <h2 className="mb-4 font-serif text-lg font-semibold text-espresso">Orders by Status</h2>
           <div className="space-y-3">
             {stats.ordersByStatus.map((s) => (
               <div key={s._id} className="flex items-center justify-between text-sm">
-                <span className="text-gray-600 dark:text-beige-light/70">{s._id}</span>
-                <span className="font-semibold">{s.count}</span>
+                <span className="text-taupe">{s._id}</span>
+                <span className="font-semibold text-espresso">{s.count}</span>
               </div>
             ))}
           </div>
@@ -108,14 +108,14 @@ const AdminDashboard = () => {
 
       {/* Recent orders + top products */}
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <div className="card p-6">
-          <h2 className="mb-4 font-semibold text-emerald-900 dark:text-gold">Recent Orders</h2>
+        <div className="card p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+          <h2 className="mb-4 font-serif text-lg font-semibold text-espresso">Recent Orders</h2>
           <div className="space-y-3">
             {stats.recentOrders.map((o) => (
-              <Link key={o._id} to="/admin/orders" className="flex items-center justify-between text-sm hover:text-gold">
+              <Link key={o._id} to="/admin/orders" className="flex items-center justify-between text-sm text-espresso hover:text-gold transition-colors">
                 <div>
-                  <p className="font-mono font-medium">{o.orderId}</p>
-                  <p className="text-xs text-gray-400">{o.user?.name}</p>
+                  <p className="font-mono font-semibold">{o.orderId}</p>
+                  <p className="text-xs text-taupe">{o.user?.name}</p>
                 </div>
                 <span className="font-semibold">{formatPrice(o.totalPrice)}</span>
               </Link>
@@ -123,14 +123,14 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="card p-6">
-          <h2 className="mb-4 font-semibold text-emerald-900 dark:text-gold">Top Products</h2>
+        <div className="card p-6 bg-champagne/60 border border-sand/70 rounded-xl shadow-soft">
+          <h2 className="mb-4 font-serif text-lg font-semibold text-espresso">Top Products</h2>
           <div className="space-y-3">
             {stats.topProducts.map((p) => (
               <div key={p._id} className="flex items-center gap-3 text-sm">
-                <img src={p.images?.[0]?.url} alt="" className="h-10 w-10 rounded object-cover" />
-                <span className="flex-1 truncate">{p.name}</span>
-                <span className="text-xs text-gray-400">{p.sold} sold</span>
+                <img src={p.images?.[0]?.url} alt="" className="h-10 w-10 rounded-lg object-cover bg-champagne" />
+                <span className="flex-1 truncate font-medium text-espresso">{p.name}</span>
+                <span className="text-xs text-taupe">{p.sold} sold</span>
               </div>
             ))}
           </div>

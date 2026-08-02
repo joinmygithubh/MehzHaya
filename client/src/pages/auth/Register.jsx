@@ -23,6 +23,8 @@ const Register = () => {
 
   const submit = async (e) => {
     e.preventDefault();
+    if (!form.phone || !form.phone.trim())
+      return toast.error("Phone number is required");
     if (form.password !== form.confirm)
       return toast.error("Passwords do not match");
     if (form.password.length < 6)
@@ -48,7 +50,7 @@ const Register = () => {
       footer={
         <>
           Already have an account?{" "}
-          <Link to="/login" className="font-medium text-gold-dark hover:underline">
+          <Link to="/login" className="font-semibold text-gold hover:underline">
             Sign in
           </Link>
         </>
@@ -59,28 +61,35 @@ const Register = () => {
         <div>
           <label className="label">Full Name</label>
           <div className="relative">
-            <FiUser className="pointer-events-none absolute left-3 top-3.5 text-gray-400" />
+            <FiUser className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
             <input required value={form.name} onChange={field("name")} className="input pl-10" placeholder="Your name" />
           </div>
         </div>
         <div>
           <label className="label">Email</label>
           <div className="relative">
-            <FiMail className="pointer-events-none absolute left-3 top-3.5 text-gray-400" />
+            <FiMail className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
             <input type="email" required value={form.email} onChange={field("email")} className="input pl-10" placeholder="you@example.com" />
           </div>
         </div>
         <div>
-          <label className="label">Phone (optional)</label>
+          <label className="label">Phone Number</label>
           <div className="relative">
-            <FiPhone className="pointer-events-none absolute left-3 top-3.5 text-gray-400" />
-            <input value={form.phone} onChange={field("phone")} className="input pl-10" placeholder="9876543210" />
+            <FiPhone className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
+            <input
+              type="tel"
+              required
+              value={form.phone}
+              onChange={field("phone")}
+              className="input pl-10"
+              placeholder="10-digit phone number"
+            />
           </div>
         </div>
         <div>
           <label className="label">Password</label>
           <div className="relative">
-            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-gray-400" />
+            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
             <input
               type={show ? "text" : "password"}
               required
@@ -89,7 +98,7 @@ const Register = () => {
               className="input px-10"
               placeholder="At least 6 characters"
             />
-            <button type="button" onClick={() => setShow((s) => !s)} className="absolute right-3 top-3.5 text-gray-400">
+            <button type="button" onClick={() => setShow((s) => !s)} className="absolute right-3 top-3.5 text-taupe hover:text-espresso">
               {show ? <FiEyeOff /> : <FiEye />}
             </button>
           </div>
@@ -97,7 +106,7 @@ const Register = () => {
         <div>
           <label className="label">Confirm Password</label>
           <div className="relative">
-            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-gray-400" />
+            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
             <input
               type={show ? "text" : "password"}
               required

@@ -8,21 +8,22 @@ const ProductSection = ({ title, subtitle, products = [], viewAll, loading }) =>
 
   return (
     <section className="container-px py-14">
-      <div className="mb-8 flex items-end justify-between">
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           {subtitle && (
-            <p className="text-xs uppercase tracking-[0.25em] text-gold-dark">
+            <p className="eyebrow">
               {subtitle}
             </p>
           )}
-          <h2 className="section-title mt-1">{title}</h2>
+          <div className="gold-divider my-1.5" />
+          <h2 className="section-title">{title}</h2>
         </div>
         {viewAll && (
           <Link
             to={viewAll}
-            className="flex items-center gap-1 text-sm font-medium text-emerald-900 hover:text-gold dark:text-gold"
+            className="flex items-center gap-1.5 text-sm font-semibold text-espresso hover:text-gold transition-colors"
           >
-            View All <FiArrowRight />
+            View All <FiArrowRight className="text-gold" />
           </Link>
         )}
       </div>
