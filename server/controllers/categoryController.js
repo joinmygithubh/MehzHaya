@@ -65,8 +65,13 @@ export const updateCategory = asyncHandler(async (req, res) => {
   }
   await category.save();
 
-  // keep denormalized names in sync
-  if (name) await Product.updateMany({ category: category._id }, { categoryName: name });
+  // keep denormalized names and groups in sync
+  const updatePayload = {};
+  if (name) updatePayload.categoryName = name;
+  if (group) updatePayload.group = group;
+  if (Object.keys(updatePayload).length > 0) {
+    await Product.updateMany({ category: category._id }, updatePayload);
+  }
 
   res.status(200).json({ success: true, message: "Category updated", category });
 });

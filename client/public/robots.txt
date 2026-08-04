@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /my-account/
+Disallow: /orders/
+
+Sitemap: https://mehzhaya.com/sitemap.xml

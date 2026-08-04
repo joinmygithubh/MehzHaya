@@ -10,6 +10,9 @@ import {
   getUserById,
   updateUserRole,
   deleteUser,
+  getRecentlyViewed,
+  addRecentlyViewed,
+  syncRecentlyViewed,
 } from "../controllers/userController.js";
 import { protect, authorize } from "../middleware/authMiddleware.js";
 import upload from "../middleware/multer.js";
@@ -20,6 +23,10 @@ router.use(protect);
 
 router.put("/profile", updateProfile);
 router.put("/avatar", upload.single("avatar"), updateAvatar);
+
+router.get("/recently-viewed", getRecentlyViewed);
+router.post("/recently-viewed", addRecentlyViewed);
+router.post("/recently-viewed/sync", syncRecentlyViewed);
 
 router
   .route("/addresses")

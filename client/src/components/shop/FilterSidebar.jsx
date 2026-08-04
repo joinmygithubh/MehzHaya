@@ -1,5 +1,6 @@
 import { FiX } from "react-icons/fi";
-import { CATEGORY_GROUPS, COLORS, MATERIALS, COLOR_HEX } from "../../utils/constants";
+import { useSelector } from "react-redux";
+import { COLORS, MATERIALS, COLOR_HEX } from "../../utils/constants";
 
 const Section = ({ title, children }) => (
   <div className="border-b border-sand/60 py-4">
@@ -9,6 +10,8 @@ const Section = ({ title, children }) => (
 );
 
 const FilterSidebar = ({ filters, setFilter, clearFilters, onClose }) => {
+  const { grouped: categoryGroups } = useSelector((s) => s.categories);
+
   return (
     <div className="h-full overflow-y-auto">
       <div className="flex items-center justify-between lg:hidden pb-3 border-b border-sand">
@@ -30,7 +33,7 @@ const FilterSidebar = ({ filters, setFilter, clearFilters, onClose }) => {
 
       {/* Category groups */}
       <Section title="Category">
-        {Object.entries(CATEGORY_GROUPS).map(([group, items]) => (
+        {Object.entries(categoryGroups).map(([group, items]) => (
           <div key={group} className="mb-3">
             <button
               onClick={() => setFilter("group", filters.group === group ? "" : group)}

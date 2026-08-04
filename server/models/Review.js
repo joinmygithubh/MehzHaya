@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 
 /**
- * Standalone Review collection (in addition to embedded reviews on Product).
- * Useful for admin moderation and aggregate queries.
+ * Verified Review collection for MehzHaya E-commerce.
  */
 const reviewSchema = new mongoose.Schema(
   {
@@ -12,20 +11,43 @@ const reviewSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    order: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order",
+      required: true,
+      index: true,
+    },
+    orderItem: { type: String, default: "" },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
     name: { type: String, required: true },
     rating: { type: Number, required: true, min: 1, max: 5 },
-    comment: { type: String, required: true },
-    isApproved: { type: Boolean, default: true },
+    title: { type: String, default: "" },
+    comment: { type: String, default: "" },
+    images: [
+      {
+        public_id: { type: String, default: "" },
+        url: { type: String, required: true },
+      },
+    ],
+    isVerifiedPurchase: { type: Boolean, default: true },
+    status: {
+      type: String,
+      enum: ["Approved", "Hidden", "Pending"],
+      default: "Approved",
+      index: true,
+    },
+    helpfulCount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
 
-reviewSchema.index({ product: 1, user: 1 }, { unique: true });
+// Prevent duplicate review per user, product, and order
+reviewSchema.index({ order: 1, product: 1, user: 1 }, { unique: true });
 
 const Review = mongoose.model("Review", reviewSchema);
 export default Review;

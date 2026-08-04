@@ -17,7 +17,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { toast } from "react-toastify";
 
-import { CATEGORY_GROUPS } from "../../utils/constants";
 import { toggleTheme } from "../../redux/slices/uiSlice";
 import { logout, clearAuth } from "../../redux/slices/authSlice";
 import SearchBar from "./SearchBar";
@@ -30,6 +29,7 @@ const Header = ({ minimal }) => {
   const { summary } = useSelector((s) => s.cart);
   const { ids } = useSelector((s) => s.wishlist);
   const { theme } = useSelector((s) => s.ui);
+  const { grouped: categoryGroups } = useSelector((s) => s.categories);
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -71,8 +71,8 @@ const Header = ({ minimal }) => {
             <NavLink to="/" className={navClass} end>
               Home
             </NavLink>
-            {Object.keys(CATEGORY_GROUPS).map((group) => (
-              <Dropdown key={group} label={group} items={CATEGORY_GROUPS[group]} />
+            {Object.keys(categoryGroups).map((group) => (
+              <Dropdown key={group} label={group} items={categoryGroups[group]} />
             ))}
             <NavLink to="/shop" className={navClass}>
               Shop All
@@ -248,7 +248,7 @@ const Header = ({ minimal }) => {
               <Link to="/" onClick={closeDrawer} className="mobile-link">
                 Home
               </Link>
-              {Object.entries(CATEGORY_GROUPS).map(([group, items]) => (
+              {Object.entries(categoryGroups).map(([group, items]) => (
                 <div key={group} className="mb-3">
                   <Link
                     to={`/shop?group=${encodeURIComponent(group)}`}

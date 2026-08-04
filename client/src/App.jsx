@@ -11,6 +11,7 @@ import Loader from "./components/common/Loader";
 import { loadUser } from "./redux/slices/authSlice";
 import { fetchCart } from "./redux/slices/cartSlice";
 import { fetchWishlist } from "./redux/slices/wishlistSlice";
+import { fetchCategories } from "./redux/slices/categorySlice";
 
 // Lazy-loaded pages (code splitting)
 const Home = lazy(() => import("./pages/Home"));
@@ -38,6 +39,7 @@ const Orders = lazy(() => import("./pages/dashboard/Orders"));
 const OrderDetail = lazy(() => import("./pages/dashboard/OrderDetail"));
 const Addresses = lazy(() => import("./pages/dashboard/Addresses"));
 const ChangePassword = lazy(() => import("./pages/dashboard/ChangePassword"));
+const RecentlyViewedTab = lazy(() => import("./pages/dashboard/RecentlyViewedTab"));
 
 // Admin
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
@@ -48,6 +50,11 @@ const AdminCustomers = lazy(() => import("./pages/admin/AdminCustomers"));
 const AdminCategories = lazy(() => import("./pages/admin/AdminCategories"));
 const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
 const AdminContactMessages = lazy(() => import("./pages/admin/AdminContactMessages"));
+const AdminReturns = lazy(() => import("./pages/admin/AdminReturns"));
+const AdminExchanges = lazy(() => import("./pages/admin/AdminExchanges"));
+const AdminReviews = lazy(() => import("./pages/admin/AdminReviews"));
+const AdminAbandonedCarts = lazy(() => import("./pages/admin/AdminAbandonedCarts"));
+const AdminReports = lazy(() => import("./pages/admin/AdminReports"));
 
 function App() {
   const dispatch = useDispatch();
@@ -62,6 +69,7 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
+    dispatch(fetchCategories());
     if (isAuthenticated) {
       dispatch(loadUser());
       dispatch(fetchCart());
@@ -121,6 +129,7 @@ function App() {
               <Route index element={<Profile />} />
               <Route path="orders" element={<Orders />} />
               <Route path="orders/:id" element={<OrderDetail />} />
+              <Route path="recently-viewed" element={<RecentlyViewedTab />} />
               <Route path="addresses" element={<Addresses />} />
               <Route path="password" element={<ChangePassword />} />
             </Route>
@@ -149,6 +158,11 @@ function App() {
             <Route path="products/new" element={<AdminProductForm />} />
             <Route path="products/:id/edit" element={<AdminProductForm />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="returns" element={<AdminReturns />} />
+            <Route path="exchanges" element={<AdminExchanges />} />
+            <Route path="reviews" element={<AdminReviews />} />
+            <Route path="abandoned-carts" element={<AdminAbandonedCarts />} />
+            <Route path="reports" element={<AdminReports />} />
             <Route path="customers" element={<AdminCustomers />} />
             <Route path="categories" element={<AdminCategories />} />
             <Route path="coupons" element={<AdminCoupons />} />

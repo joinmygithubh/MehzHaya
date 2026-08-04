@@ -30,6 +30,10 @@ const cartSchema = new mongoose.Schema(
       code: { type: String, default: "" },
       discount: { type: Number, default: 0 }, // amount in currency
     },
+    isAbandoned: { type: Boolean, default: false },
+    abandonedAt: Date,
+    recoveryToken: { type: String, default: "" },
+    recoveryStatus: { type: String, enum: ["None", "Sent", "Recovered"], default: "None" },
   },
   { timestamps: true }
 );

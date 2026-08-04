@@ -13,6 +13,11 @@ import {
   FiX,
   FiHome,
   FiMail,
+  FiRotateCcw,
+  FiRefreshCw,
+  FiClock,
+  FiBarChart2,
+  FiStar,
 } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { logout, clearAuth } from "../../redux/slices/authSlice";
@@ -21,6 +26,11 @@ const links = [
   { to: "/admin", label: "Dashboard", icon: FiGrid, end: true },
   { to: "/admin/products", label: "Products", icon: FiBox },
   { to: "/admin/orders", label: "Orders", icon: FiShoppingCart },
+  { to: "/admin/returns", label: "Returns", icon: FiRotateCcw },
+  { to: "/admin/exchanges", label: "Size Exchanges", icon: FiRefreshCw },
+  { to: "/admin/reviews", label: "Product Reviews", icon: FiStar },
+  { to: "/admin/abandoned-carts", label: "Abandoned Carts", icon: FiClock },
+  { to: "/admin/reports", label: "Sales Reports", icon: FiBarChart2 },
   { to: "/admin/customers", label: "Customers", icon: FiUsers },
   { to: "/admin/categories", label: "Categories", icon: FiLayers },
   { to: "/admin/coupons", label: "Coupons", icon: FiTag },
@@ -55,11 +65,11 @@ const AdminLayout = () => {
     <div className="flex min-h-screen bg-ivory text-espresso font-sans">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 transform bg-champagne/80 backdrop-blur-md border-r border-sand/70 text-espresso transition-transform lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 w-64 flex flex-col transform bg-champagne/80 backdrop-blur-md border-r border-sand/70 text-espresso transition-transform lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between border-b border-sand/60 p-5">
+        <div className="flex items-center justify-between border-b border-sand/60 p-5 shrink-0">
           <Link to="/admin" className="flex items-center gap-2">
             <img
               src="/logo.jpg"
@@ -72,7 +82,7 @@ const AdminLayout = () => {
             <FiX size={22} />
           </button>
         </div>
-        <nav className="space-y-1 p-4">
+        <nav className="flex-1 space-y-1 p-4 overflow-y-auto min-h-0">
           {links.map(({ to, label, icon: Icon, end }) => (
             <NavLink
               key={to}
@@ -91,7 +101,7 @@ const AdminLayout = () => {
             </NavLink>
           ))}
         </nav>
-        <div className="absolute inset-x-0 bottom-0 space-y-1 border-t border-sand/60 p-4">
+        <div className="shrink-0 border-t border-sand/60 p-4 space-y-1 bg-champagne/90">
           <Link
             to="/"
             className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-taupe hover:bg-champagne hover:text-espresso transition-colors font-medium"

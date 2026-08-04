@@ -13,6 +13,8 @@ const orderItemSchema = new mongoose.Schema(
     color: { type: String, default: "" },
     size: { type: String, default: "" },
     quantity: { type: Number, required: true, min: 1 },
+    isReturnRequested: { type: Boolean, default: false },
+    returnStatus: { type: String, default: "None" },
   },
   { _id: false }
 );
@@ -74,6 +76,40 @@ const orderSchema = new mongoose.Schema(
       ],
       default: "Pending",
     },
+    isReturnRequested: { type: Boolean, default: false },
+    returnStatus: {
+      type: String,
+      enum: [
+        "None",
+        "Requested",
+        "Pending Review",
+        "Approved",
+        "Rejected",
+        "Received",
+        "Refunded",
+        "Completed",
+        "Cancelled",
+      ],
+      default: "None",
+    },
+    returnRequestId: { type: mongoose.Schema.Types.ObjectId, ref: "Return" },
+    isExchangeRequested: { type: Boolean, default: false },
+    exchangeStatus: {
+      type: String,
+      enum: [
+        "None",
+        "EXCHANGE_REQUESTED",
+        "EXCHANGE_APPROVED",
+        "PRODUCT_PICKUP_PENDING",
+        "PRODUCT_RECEIVED",
+        "NEW_PRODUCT_SHIPPED",
+        "EXCHANGE_COMPLETED",
+        "EXCHANGE_REJECTED",
+        "EXCHANGE_CANCELLED",
+      ],
+      default: "None",
+    },
+    exchangeRequestId: { type: mongoose.Schema.Types.ObjectId, ref: "Exchange" },
     statusHistory: [
       {
         status: String,

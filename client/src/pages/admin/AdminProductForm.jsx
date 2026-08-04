@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { FiArrowLeft, FiX, FiUploadCloud } from "react-icons/fi";
 
 import api from "../../api/axios";
 import Loader from "../../components/common/Loader";
 import { COLORS, MATERIALS } from "../../utils/constants";
+import { fetchCategories } from "../../redux/slices/categorySlice";
 
 const SIZES = ["XS", "S", "M", "L", "XL", "Free Size"];
 
@@ -28,6 +30,7 @@ const blank = {
 };
 
 const AdminProductForm = () => {
+  const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
@@ -111,6 +114,7 @@ const AdminProductForm = () => {
       if (isEdit) await api.put(`/products/${id}`, fd, config);
       else await api.post("/products", fd, config);
 
+      dispatch(fetchCategories());
       toast.success(isEdit ? "Product updated" : "Product created");
       navigate("/admin/products");
     } catch (err) {

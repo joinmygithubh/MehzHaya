@@ -4,9 +4,23 @@ import slugify from "slugify";
 const reviewSubSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    order: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
     name: { type: String, required: true },
     rating: { type: Number, required: true, min: 1, max: 5 },
-    comment: { type: String, required: true },
+    title: { type: String, default: "" },
+    comment: { type: String, default: "" },
+    images: [
+      {
+        public_id: { type: String, default: "" },
+        url: { type: String, required: true },
+      },
+    ],
+    isVerifiedPurchase: { type: Boolean, default: true },
+    status: {
+      type: String,
+      enum: ["Approved", "Hidden", "Pending"],
+      default: "Approved",
+    },
   },
   { timestamps: true }
 );
@@ -102,14 +116,15 @@ productSchema.pre("save", function (next) {
 
 // Recalculate aggregate rating
 productSchema.methods.calculateRatings = function () {
-  if (this.reviews.length === 0) {
+  const approved = this.reviews.filter((r) => r.status !== "Hidden");
+  if (approved.length === 0) {
     this.ratings = 0;
     this.numReviews = 0;
     return;
   }
-  const total = this.reviews.reduce((acc, r) => acc + r.rating, 0);
-  this.ratings = Math.round((total / this.reviews.length) * 10) / 10;
-  this.numReviews = this.reviews.length;
+  const total = approved.reduce((acc, r) => acc + r.rating, 0);
+  this.ratings = Math.round((total / approved.length) * 10) / 10;
+  this.numReviews = approved.length;
 };
 
 const Product = mongoose.model("Product", productSchema);

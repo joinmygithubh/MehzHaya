@@ -4,6 +4,7 @@ import cartReducer from "./slices/cartSlice";
 import productReducer from "./slices/productSlice";
 import wishlistReducer from "./slices/wishlistSlice";
 import uiReducer from "./slices/uiSlice";
+import categoryReducer from "./slices/categorySlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     products: productReducer,
     wishlist: wishlistReducer,
     ui: uiReducer,
+    categories: categoryReducer,
   },
   middleware: (getDefault) =>
     getDefault({ serializableCheck: false }),

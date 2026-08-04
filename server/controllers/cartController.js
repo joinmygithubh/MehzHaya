@@ -143,4 +143,47 @@ export const removeCoupon = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: "Coupon removed", cart, summary: buildSummary(cart) });
 });
 
+// @desc    Restore abandoned cart via recovery token
+// @route   GET /api/v1/cart/restore/:token
+// @access  Public
+export const restoreAbandonedCart = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+  const cart = await Cart.findOne({ recoveryToken: token }).populate("items.product");
+
+  if (!cart) throw new ApiError(404, "Invalid or expired recovery link");
+
+  cart.recoveryStatus = "Recovered";
+  await cart.save();
+
+  res.status(200).json({ success: true, message: "Cart restored successfully", cart, summary: buildSummary(cart) });
+});
+
+// @desc    Get all abandoned carts (Admin)
+// @route   GET /api/v1/cart/admin/abandoned
+// @access  Admin
+export const getAdminAbandonedCarts = asyncHandler(async (req, res) => {
+  const carts = await Cart.find({ isAbandoned: true })
+    .populate("user", "name email phone")
+    .populate("items.product", "name price images")
+    .sort("-abandonedAt");
+
+  const totalAbandoned = carts.length;
+  const recoveredCount = carts.filter((c) => c.recoveryStatus === "Recovered").length;
+  const recoveryRate = totalAbandoned > 0 ? Math.round((recoveredCount / totalAbandoned) * 100) : 0;
+  const recoveredRevenue = carts
+    .filter((c) => c.recoveryStatus === "Recovered")
+    .reduce((sum, c) => sum + (c.items?.reduce((a, b) => a + b.price * b.quantity, 0) || 0), 0);
+
+  res.status(200).json({
+    success: true,
+    stats: {
+      totalAbandoned,
+      recoveredCount,
+      recoveryRate,
+      recoveredRevenue,
+    },
+    carts,
+  });
+});
+
 export { buildSummary, SHIPPING_FEE, SHIPPING_THRESHOLD };

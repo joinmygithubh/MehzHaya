@@ -110,6 +110,23 @@
   scrollbar-width: none;
 }
 
+/* React Toastify overrides — force high contrast text and disable default white text */
+.Toastify__toast-container {
+  z-index: 99999 !important;
+}
+.Toastify__toast {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: inherit !important;
+}
+.Toastify__toast-body {
+  padding: 0 !important;
+  margin: 0 !important;
+  color: inherit !important;
+  font-family: inherit !important;
+}
+
 
 /* ============================================================
    Explicit responsive breakpoints (mobile-first)

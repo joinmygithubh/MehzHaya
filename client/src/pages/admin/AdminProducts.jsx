@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { FiPlus, FiEdit2, FiTrash2, FiSearch } from "react-icons/fi";
 
 import api from "../../api/axios";
 import Loader from "../../components/common/Loader";
 import { formatPrice, finalPrice } from "../../utils/helpers";
+import { fetchCategories } from "../../redux/slices/categorySlice";
 
 const AdminProducts = () => {
+  const dispatch = useDispatch();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -31,6 +34,7 @@ const AdminProducts = () => {
       await api.delete(`/products/${id}`);
       toast.success("Product deleted");
       setProducts((p) => p.filter((x) => x._id !== id));
+      dispatch(fetchCategories());
     } catch (err) {
       toast.error(err.message);
     }

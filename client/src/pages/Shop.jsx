@@ -26,6 +26,14 @@ const emptyFilters = {
   isFlashSale: "",
 };
 
+const getInitialFilters = (params) => {
+  const next = { ...emptyFilters };
+  for (const key of Object.keys(emptyFilters)) {
+    if (params.get(key)) next[key] = params.get(key);
+  }
+  return next;
+};
+
 const Shop = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,23 +41,18 @@ const Shop = () => {
     (s) => s.products
   );
 
-  const [filters, setFilters] = useState({ ...emptyFilters });
-  const [sort, setSort] = useState("newest");
+  const [filters, setFilters] = useState(() => getInitialFilters(searchParams));
+  const [sort, setSort] = useState(() => searchParams.get("sort") || "newest");
   const [view, setView] = useState("grid");
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const loaderRef = useRef(null);
 
-  // Hydrate filters from URL on mount / param change
+  // Hydrate filters from URL on param change
   useEffect(() => {
-    const next = { ...emptyFilters };
-    for (const key of Object.keys(emptyFilters)) {
-      if (searchParams.get(key)) next[key] = searchParams.get(key);
-    }
-    setFilters(next);
+    setFilters(getInitialFilters(searchParams));
     if (searchParams.get("sort")) setSort(searchParams.get("sort"));
     setPage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const buildParams = useCallback(

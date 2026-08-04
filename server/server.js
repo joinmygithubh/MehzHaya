@@ -3,6 +3,7 @@ dotenv.config();
 
 import app from "./app.js";
 import connectDB from "./config/db.js";
+import { startCartScheduler } from "./utils/cartScheduler.js";
 
 const PORT = process.env.PORT || 5000;
 
@@ -14,6 +15,7 @@ process.on("uncaughtException", (err) => {
 
 const start = async () => {
   await connectDB();
+  startCartScheduler();
   const server = app.listen(PORT, () => {
     console.log(
       `\x1b[36m🌿 MehzHaya API running in ${process.env.NODE_ENV || "development"} mode on port ${PORT}\x1b[0m`

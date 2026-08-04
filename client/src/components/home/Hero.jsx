@@ -24,7 +24,7 @@ const Hero = () => (
         className="ml-auto lg:ml-0 max-w-[280px] sm:max-w-md lg:max-w-xl space-y-4 sm:space-y-5 text-right lg:text-left"
       >
         <div className="inline-flex items-center gap-2">
-          <span className="eyebrow text-gold font-semibold tracking-[0.2em]">
+          <span className="eyebrow text-black font-semibold tracking-[0.2em]">
             ELEGANCE. MODESTY. YOU.
           </span>
         </div>

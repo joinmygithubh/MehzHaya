@@ -54,6 +54,7 @@ const userSchema = new mongoose.Schema(
       default: "user",
     },
     addresses: [addressSubSchema],
+    recentlyViewed: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     isEmailVerified: { type: Boolean, default: false },
 
     // tokens (hashed) for verification / password reset

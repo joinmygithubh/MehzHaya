@@ -177,3 +177,52 @@ export const deleteUser = asyncHandler(async (req, res) => {
   await user.deleteOne();
   res.status(200).json({ success: true, message: "User deleted" });
 });
+
+/* ---------------- Recently Viewed Products ---------------- */
+
+// @desc    Get user's recently viewed products
+// @route   GET /api/v1/users/recently-viewed
+// @access  Private
+export const getRecentlyViewed = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).populate({
+    path: "recentlyViewed",
+    match: { isActive: true },
+    select: "name slug price discount images categoryName ratings numReviews stock",
+  });
+
+  const products = user?.recentlyViewed?.filter(Boolean) || [];
+  res.status(200).json({ success: true, products });
+});
+
+// @desc    Add product to user's recently viewed
+// @route   POST /api/v1/users/recently-viewed
+// @access  Private
+export const addRecentlyViewed = asyncHandler(async (req, res) => {
+  const { productId } = req.body;
+  if (!productId) throw new ApiError(400, "Product ID required");
+
+  const user = await User.findById(req.user._id);
+  if (!user) throw new ApiError(404, "User not found");
+
+  const list = [productId, ...(user.recentlyViewed || []).map((id) => id.toString()).filter((id) => id !== productId.toString())].slice(0, 10);
+  user.recentlyViewed = list;
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({ success: true, recentlyViewed: user.recentlyViewed });
+});
+
+// @desc    Sync local storage recently viewed products on login
+// @route   POST /api/v1/users/recently-viewed/sync
+// @access  Private
+export const syncRecentlyViewed = asyncHandler(async (req, res) => {
+  const { productIds = [] } = req.body;
+  const user = await User.findById(req.user._id);
+  if (!user) throw new ApiError(404, "User not found");
+
+  const existing = (user.recentlyViewed || []).map((id) => id.toString());
+  const combined = Array.from(new Set([...productIds, ...existing])).slice(0, 10);
+  user.recentlyViewed = combined;
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({ success: true, recentlyViewed: user.recentlyViewed });
+});

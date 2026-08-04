@@ -1,0 +1,15 @@
+{
+  "short_name": "MehzHaya",
+  "name": "MehzHaya - Timeless Hijabs & Islamic Fashion",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "type": "image/jpeg",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FBF7F1",
+  "theme_color": "#2D2623",
+  "display": "standalone"
+}

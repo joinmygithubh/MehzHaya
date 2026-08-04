@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { FiUser, FiPackage, FiMapPin, FiLock, FiHeart, FiLogOut } from "react-icons/fi";
+import { FiUser, FiPackage, FiMapPin, FiLock, FiHeart, FiClock, FiLogOut } from "react-icons/fi";
 
 import { toast } from "react-toastify";
 import SEO from "../../components/common/SEO";
@@ -9,6 +9,7 @@ import { logout, clearAuth } from "../../redux/slices/authSlice";
 const links = [
   { to: "/account", label: "Profile", icon: FiUser, end: true },
   { to: "/account/orders", label: "My Orders", icon: FiPackage },
+  { to: "/account/recently-viewed", label: "Recently Viewed", icon: FiClock },
   { to: "/account/addresses", label: "Addresses", icon: FiMapPin },
   { to: "/wishlist", label: "Wishlist", icon: FiHeart },
   { to: "/account/password", label: "Change Password", icon: FiLock },

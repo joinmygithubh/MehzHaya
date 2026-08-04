@@ -40,6 +40,7 @@ const FeatureStrip = () => (
 const Home = () => {
   const dispatch = useDispatch();
   const { sections, loading } = useSelector((s) => s.products);
+  const { recentlyViewed } = useSelector((s) => s.ui);
 
   useEffect(() => {
     dispatch(fetchHomeSections());
@@ -68,6 +69,15 @@ const Home = () => {
         viewAll="/shop?sort=bestselling"
         loading={isLoading}
       />
+      {recentlyViewed?.length > 0 && (
+        <ProductSection
+          subtitle="Pick up where you left off"
+          title="Recently Viewed"
+          products={recentlyViewed.slice(0, 4)}
+          viewAll="/shop"
+          loading={false}
+        />
+      )}
       <ProductSection
         subtitle="Fresh in store"
         title="New Arrivals"

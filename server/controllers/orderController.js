@@ -4,10 +4,12 @@ import Order from "../models/Order.js";
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
 import Coupon from "../models/Coupon.js";
+import Review from "../models/Review.js";
 import ApiError from "../utils/ApiError.js";
 import sendEmail from "../utils/sendEmail.js";
 import { orderConfirmationTemplate } from "../utils/emailTemplates.js";
 import { SHIPPING_FEE, SHIPPING_THRESHOLD } from "./cartController.js";
+import { sendOrderConfirmationWhatsApp, sendOrderStatusWhatsApp } from "../utils/whatsappService.js";
 
 const genOrderId = () =>
   "MH-" +
@@ -89,12 +91,14 @@ export const createOrder = asyncHandler(async (req, res) => {
   cart.coupon = { code: "", discount: 0 };
   await cart.save();
 
-  // confirmation email (non-blocking)
+  // confirmation email & whatsapp (non-blocking)
   sendEmail({
     to: req.user.email,
     subject: `MehzHaya Order Confirmation - ${order.orderId}`,
     html: orderConfirmationTemplate(req.user.name, order),
   }).catch((e) => console.error("Order email failed:", e.message));
+
+  sendOrderConfirmationWhatsApp(order, req.user).catch((e) => console.warn("WhatsApp notification warning:", e.message));
 
   res.status(201).json({ success: true, message: "Order placed successfully", order });
 });
@@ -107,7 +111,7 @@ export const getMyOrders = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, count: orders.length, orders });
 });
 
-// @desc    Get single order
+// @desc    Get single order with customer's item reviews
 // @route   GET /api/v1/orders/:id
 // @access  Private
 export const getOrder = asyncHandler(async (req, res) => {
@@ -117,7 +121,34 @@ export const getOrder = asyncHandler(async (req, res) => {
   if (order.user._id.toString() !== req.user._id.toString() && req.user.role !== "admin") {
     throw new ApiError(403, "Not authorized to view this order");
   }
-  res.status(200).json({ success: true, order });
+
+  // Fetch logged-in customer's reviews for this order
+  const userReviews = await Review.find({
+    order: order._id,
+    user: req.user._id,
+  });
+
+  const orderObj = order.toObject();
+  orderObj.items = orderObj.items.map((item) => {
+    const pId = (item.product?._id || item.product)?.toString();
+    const rev = userReviews.find((r) => r.product?.toString() === pId);
+
+    return {
+      ...item,
+      review: rev
+        ? {
+            _id: rev._id,
+            rating: rev.rating,
+            title: rev.title,
+            comment: rev.comment,
+            images: rev.images,
+            createdAt: rev.createdAt,
+          }
+        : null,
+    };
+  });
+
+  res.status(200).json({ success: true, order: orderObj });
 });
 
 // @desc    Cancel order (user)
@@ -166,7 +197,7 @@ export const getAllOrders = asyncHandler(async (req, res) => {
 // @access  Admin
 export const updateOrderStatus = asyncHandler(async (req, res) => {
   const { status, note } = req.body;
-  const order = await Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id).populate("user", "name email phone");
   if (!order) throw new ApiError(404, "Order not found");
 
   order.orderStatus = status;
@@ -176,5 +207,8 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
     if (order.paymentMethod === "COD") order.paymentInfo.status = "Paid";
   }
   await order.save();
+
+  sendOrderStatusWhatsApp(order, order.user).catch((e) => console.warn("WhatsApp notification warning:", e.message));
+
   res.status(200).json({ success: true, message: "Order status updated", order });
 });

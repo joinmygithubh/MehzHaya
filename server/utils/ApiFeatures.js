@@ -32,7 +32,12 @@ class ApiFeatures {
 
     // group / category
     if (queryCopy.group) filter.group = queryCopy.group;
-    if (queryCopy.category) filter.categoryName = queryCopy.category;
+    if (this.queryStr.categoryResolvedId) {
+      filter.category = this.queryStr.categoryResolvedId;
+    } else if (queryCopy.category) {
+      const escaped = String(queryCopy.category).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      filter.categoryName = new RegExp("^" + escaped + "$", "i");
+    }
 
     // color / material (comma separated supported)
     if (queryCopy.color) filter.colors = { $in: queryCopy.color.split(",") };

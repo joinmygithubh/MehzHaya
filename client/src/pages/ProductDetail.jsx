@@ -21,6 +21,7 @@ import RatingStars from "../components/common/RatingStars";
 import Loader from "../components/common/Loader";
 import ProductCard from "../components/product/ProductCard";
 import Reviews from "../components/product/Reviews";
+import ProductImageZoom from "../components/product/ProductImageZoom";
 import { fetchProduct } from "../redux/slices/productSlice";
 import { addToCart } from "../redux/slices/cartSlice";
 import { toggleWishlist } from "../redux/slices/wishlistSlice";
@@ -125,39 +126,14 @@ const ProductDetail = () => {
         />
 
         <div className="mt-6 grid gap-10 lg:grid-cols-2">
-          {/* Gallery */}
-          <div className="flex flex-col-reverse gap-4 sm:flex-row">
-            <div className="flex gap-3 overflow-x-auto sm:flex-col">
-              {product.images.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImg(i)}
-                  className={`h-20 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition ${
-                    activeImg === i ? "border-gold shadow-xs" : "border-sand/60 opacity-80 hover:opacity-100"
-                  }`}
-                >
-                  <img src={img.url} alt="" className="h-full w-full object-cover bg-champagne/40" />
-                </button>
-              ))}
-            </div>
-            <motion.div
-              key={activeImg}
-              initial={{ opacity: 0.4 }}
-              animate={{ opacity: 1 }}
-              className="relative flex-1 overflow-hidden rounded-xl bg-champagne/60 border border-sand/70 shadow-soft"
-            >
-              <img
-                src={productImage(product, activeImg)}
-                alt={product.name}
-                className="aspect-[3/4] w-full object-cover"
-              />
-              {product.discount > 0 && (
-                <span className="absolute left-4 top-4 rounded-full border border-terracotta bg-ivory/95 px-3 py-1 text-xs font-semibold text-terracotta uppercase tracking-wider shadow-xs">
-                  -{product.discount}% OFF
-                </span>
-              )}
-            </motion.div>
-          </div>
+          {/* Gallery with Zoom & Fullscreen Lightbox */}
+          <ProductImageZoom
+            images={product.images || []}
+            activeIndex={activeImg}
+            onSelectIndex={setActiveImg}
+            alt={product.name}
+            discount={product.discount}
+          />
 
           {/* Info */}
           <div>

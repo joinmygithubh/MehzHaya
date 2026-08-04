@@ -11,6 +11,28 @@ import { uploadToCloudinary, deleteFromCloudinary } from "../utils/uploadImage.j
 export const getProducts = asyncHandler(async (req, res) => {
   const resultsPerPage = Number(req.query.limit) || 12;
 
+  if (req.query.category) {
+    const catParam = String(req.query.category).trim();
+    let catFilter = {};
+    if (catParam.match(/^[0-9a-fA-F]{24}$/)) {
+      catFilter = { _id: catParam };
+    } else {
+      const escaped = catParam.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      catFilter = {
+        $or: [
+          { slug: catParam.toLowerCase() },
+          { name: new RegExp("^" + escaped + "$", "i") },
+          { name: new RegExp(escaped, "i") },
+        ],
+      };
+    }
+    const catDoc = await Category.findOne(catFilter);
+    if (catDoc) {
+      req.query.categoryResolvedId = catDoc._id;
+      req.query.categoryResolvedName = catDoc.name;
+    }
+  }
+
   // count after filters (without pagination)
   const countFeatures = new ApiFeatures(Product.find({ isActive: true }), req.query)
     .search()
@@ -146,11 +168,18 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
   const updates = { ...req.body };
 
-  if (req.body.category) {
-    const category = await Category.findById(req.body.category);
-    if (!category) throw new ApiError(400, "Invalid category");
-    updates.categoryName = category.name;
-    updates.group = category.group;
+  if (req.body.category && req.body.category.toString() !== product.category?.toString()) {
+    const newCategory = await Category.findById(req.body.category);
+    if (!newCategory) throw new ApiError(400, "Invalid category");
+    
+    // Adjust productCounts
+    if (product.category) {
+      await Category.updateOne({ _id: product.category }, { $inc: { productCount: -1 } });
+    }
+    await Category.updateOne({ _id: newCategory._id }, { $inc: { productCount: 1 } });
+
+    updates.categoryName = newCategory.name;
+    updates.group = newCategory.group;
   }
 
   ["colors", "sizes"].forEach((k) => {

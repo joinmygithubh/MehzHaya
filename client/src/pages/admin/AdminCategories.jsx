@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { FiPlus, FiTrash2, FiX } from "react-icons/fi";
 
 import api from "../../api/axios";
 import Loader from "../../components/common/Loader";
+import { fetchCategories } from "../../redux/slices/categorySlice";
 
 const GROUPS = ["Hijabs", "Islamic Wear", "Accessories"];
 
 const AdminCategories = () => {
+  const dispatch = useDispatch();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -34,6 +37,7 @@ const AdminCategories = () => {
       setShowForm(false);
       setForm({ name: "", group: "Hijabs", description: "", image: "" });
       load();
+      dispatch(fetchCategories());
     } catch (err) {
       toast.error(err.message);
     }
@@ -45,6 +49,7 @@ const AdminCategories = () => {
       await api.delete(`/categories/${id}`);
       toast.success("Category deleted");
       setCategories((prev) => prev.filter((c) => c._id !== id));
+      dispatch(fetchCategories());
     } catch (err) {
       toast.error(err.message);
     }

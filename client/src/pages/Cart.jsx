@@ -1,12 +1,14 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { FiMinus, FiPlus, FiTrash2, FiShoppingBag, FiTag, FiX } from "react-icons/fi";
 
 import SEO from "../components/common/SEO";
 import Breadcrumb from "../components/common/Breadcrumb";
+import api from "../api/axios";
 import {
+  fetchCart,
   updateCartItem,
   removeCartItem,
   applyCoupon,
@@ -17,9 +19,26 @@ import { formatPrice } from "../utils/helpers";
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { items, coupon, summary } = useSelector((s) => s.cart);
   const { isAuthenticated } = useSelector((s) => s.auth);
   const [code, setCode] = useState("");
+
+  const restoreToken = searchParams.get("restore");
+
+  useEffect(() => {
+    if (restoreToken) {
+      (async () => {
+        try {
+          const { data } = await api.get(`/cart/restore/${restoreToken}`);
+          toast.success(data.message || "Your cart has been restored!");
+          dispatch(fetchCart());
+        } catch (err) {
+          toast.error("Cart restoration link expired or invalid.");
+        }
+      })();
+    }
+  }, [restoreToken, dispatch]);
 
   const handleQty = (itemId, quantity) => {
     if (quantity < 1) return;
