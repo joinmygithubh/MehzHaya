@@ -24,7 +24,7 @@ const Login = () => {
 
   const clientId =
     import.meta.env.VITE_GOOGLE_CLIENT_ID ||
-    "985780332686-mf06t9heosccohuh0rcn8r8ncso4igqi.apps.googleusercontent.com";
+    "531694371899-278oi1b70rcojr5mqa9vqibnmqlen069.apps.googleusercontent.com";
 
   useEffect(() => {
     // Initialize Google OAuth Token Client for custom button trigger

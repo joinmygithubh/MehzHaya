@@ -29,7 +29,7 @@ import reportRoutes from "./routes/reportRoutes.js";
 
 const app = express();
 
-// Security & parsing
+// Security & parsing middleware
 app.use(helmet());
 app.use(compression());
 app.use(express.json({ limit: "10mb" }));
@@ -49,11 +49,13 @@ app.use(
       if (
         allowedOrigins.includes(origin) ||
         /\.netlify\.app$/.test(origin) ||
-        /\.onrender\.com$/.test(origin)
+        /\.onrender\.com$/.test(origin) ||
+        origin.startsWith("http://localhost:") ||
+        origin.startsWith("http://127.0.0.1:")
       ) {
         return callback(null, true);
       }
-      return callback(null, true); // Fallback to allow during deployment transition
+      return callback(new Error("CORS policy violation: Origin not allowed"), false);
     },
     credentials: true,
   })
@@ -65,11 +67,11 @@ if (process.env.NODE_ENV === "development") {
 
 // Global Rate limiting on all API routes
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 1000,
   message: { success: false, message: "Too many requests, please try again later." },
 });
-app.use("/api/v1", apiLimiter);
+app.use(["/api/v1", "/api"], apiLimiter);
 
 // Strict Rate limiting on auth routes
 const authLimiter = rateLimit({
@@ -78,35 +80,44 @@ const authLimiter = rateLimit({
   message: { success: false, message: "Too many authentication requests, please try again later." },
 });
 
-// Health check endpoint for Render monitoring
-app.get("/api/v1/health", (req, res) =>
-  res.json({
+// Root Health Check Route
+app.get("/", (req, res) =>
+  res.status(200).json({
     success: true,
-    message: "MehzHaya API is running 🌿",
+    message: "MehzHaya API running",
+    environment: process.env.NODE_ENV || "development",
+  })
+);
+
+// API Health check endpoints
+app.get(["/api/v1/health", "/api/health"], (req, res) =>
+  res.status(200).json({
+    success: true,
+    message: "MehzHaya API running",
     environment: process.env.NODE_ENV || "development",
     time: new Date(),
   })
 );
 
-// Mount routes
-app.use("/api/v1/auth", authLimiter, authRoutes);
-app.use("/api/v1/users", userRoutes);
-app.use("/api/v1/products", productRoutes);
-app.use("/api/v1/categories", categoryRoutes);
-app.use("/api/v1/cart", cartRoutes);
-app.use("/api/v1/wishlist", wishlistRoutes);
-app.use("/api/v1/orders", orderRoutes);
-app.use("/api/v1/reviews", reviewRoutes);
-app.use("/api/v1/coupons", couponRoutes);
-app.use("/api/v1/payment", paymentRoutes);
-app.use("/api/v1/banners", bannerRoutes);
-app.use("/api/v1/admin", adminRoutes);
-app.use("/api/v1/contact", contactRoutes);
-app.use("/api/v1/returns", returnRoutes);
-app.use("/api/v1/exchanges", exchangeRoutes);
-app.use("/api/v1/admin/reports", reportRoutes);
+// Mount API routes (supports both /api/v1/... and /api/... endpoints)
+app.use(["/api/v1/auth", "/api/auth"], authLimiter, authRoutes);
+app.use(["/api/v1/users", "/api/users"], userRoutes);
+app.use(["/api/v1/products", "/api/products"], productRoutes);
+app.use(["/api/v1/categories", "/api/categories"], categoryRoutes);
+app.use(["/api/v1/cart", "/api/cart"], cartRoutes);
+app.use(["/api/v1/wishlist", "/api/wishlist"], wishlistRoutes);
+app.use(["/api/v1/orders", "/api/orders"], orderRoutes);
+app.use(["/api/v1/reviews", "/api/reviews"], reviewRoutes);
+app.use(["/api/v1/coupons", "/api/coupons"], couponRoutes);
+app.use(["/api/v1/payment", "/api/payment"], paymentRoutes);
+app.use(["/api/v1/banners", "/api/banners"], bannerRoutes);
+app.use(["/api/v1/admin", "/api/admin"], adminRoutes);
+app.use(["/api/v1/contact", "/api/contact"], contactRoutes);
+app.use(["/api/v1/returns", "/api/returns"], returnRoutes);
+app.use(["/api/v1/exchanges", "/api/exchanges"], exchangeRoutes);
+app.use(["/api/v1/admin/reports", "/api/admin/reports"], reportRoutes);
 
-// Error handlers
+// Error handling middleware (AFTER all routes)
 app.use(notFound);
 app.use(errorHandler);
 

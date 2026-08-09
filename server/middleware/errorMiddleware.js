@@ -42,9 +42,11 @@ export const errorHandler = (err, req, res, next) => {
     error = new ApiError(401, "Token expired. Please log in again.");
   }
 
+  const isDev = process.env.NODE_ENV === "development";
+
   res.status(error.statusCode || 500).json({
     success: false,
     message: error.message || "Internal Server Error",
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+    ...(isDev && { stack: err.stack }),
   });
 };

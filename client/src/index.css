@@ -46,6 +46,29 @@
   }
 }
 
+/* Announcement Bar Marquee Animation */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.announcement-track {
+  display: inline-flex;
+  width: max-content;
+  white-space: nowrap;
+  will-change: transform;
+  animation: scroll-left 18s linear infinite;
+}
+
+.announcement-track:hover,
+.announcement-track:focus {
+  animation-play-state: paused;
+}
+
 @layer components {
   .container-px {
     @apply mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-10 xl:px-16;
