@@ -119,24 +119,6 @@ const ProductCard = ({ product, index = 0 }) => {
           >
             {wished ? <FaHeart className="text-terracotta" /> : <FiHeart />}
           </button>
-
-          {/* Quick add / Buy Now hover overlay */}
-          {!outOfStock && (
-            <div className="absolute inset-x-2 bottom-2 z-10 hidden sm:flex gap-1.5 opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-              <button
-                onClick={handleAddToCart}
-                className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gold py-2 text-xs font-semibold text-espresso shadow-soft hover:bg-gold-dark hover:text-ivory transition-colors"
-              >
-                <FiShoppingBag size={14} /> Cart
-              </button>
-              <button
-                onClick={handleBuyNow}
-                className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-espresso py-2 text-xs font-semibold text-ivory shadow-soft hover:bg-gold hover:text-espresso transition-colors"
-              >
-                <FiZap size={14} /> Buy Now
-              </button>
-            </div>
-          )}
         </div>
 
         <div className="p-4">
@@ -160,14 +142,14 @@ const ProductCard = ({ product, index = 0 }) => {
             )}
           </div>
 
-          {/* Card footer action buttons (mobile + desktop) */}
+          {/* Single action buttons set for desktop, tablet & mobile */}
           <div className="mt-3 flex items-center gap-2 pt-2 border-t border-sand/40">
             <button
               onClick={handleAddToCart}
               disabled={outOfStock}
               className="flex-1 flex items-center justify-center gap-1.5 rounded-lg border border-gold/70 bg-ivory py-1.5 text-xs font-medium text-espresso hover:bg-gold hover:text-espresso transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <FiShoppingBag size={13} /> Cart
+              <FiShoppingBag size={13} /> Add to Cart
             </button>
             <button
               onClick={handleBuyNow}
