@@ -60,22 +60,22 @@ const Register = () => {
       <form onSubmit={submit} className="space-y-4">
         <div>
           <label className="label">Full Name</label>
-          <div className="relative">
-            <FiUser className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
+          <div className="relative flex items-center">
+            <FiUser className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-taupe" />
             <input required value={form.name} onChange={field("name")} className="input pl-10" placeholder="Your name" />
           </div>
         </div>
         <div>
           <label className="label">Email</label>
-          <div className="relative">
-            <FiMail className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
+          <div className="relative flex items-center">
+            <FiMail className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-taupe" />
             <input type="email" required value={form.email} onChange={field("email")} className="input pl-10" placeholder="you@example.com" />
           </div>
         </div>
         <div>
           <label className="label">Phone Number</label>
-          <div className="relative">
-            <FiPhone className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
+          <div className="relative flex items-center">
+            <FiPhone className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-taupe" />
             <input
               type="tel"
               required
@@ -88,8 +88,8 @@ const Register = () => {
         </div>
         <div>
           <label className="label">Password</label>
-          <div className="relative">
-            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
+          <div className="relative flex items-center">
+            <FiLock className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-taupe" />
             <input
               type={show ? "text" : "password"}
               required
@@ -98,15 +98,20 @@ const Register = () => {
               className="input px-10"
               placeholder="At least 6 characters"
             />
-            <button type="button" onClick={() => setShow((s) => !s)} className="absolute right-3 top-3.5 text-taupe hover:text-espresso">
-              {show ? <FiEyeOff /> : <FiEye />}
+            <button
+              type="button"
+              onClick={() => setShow((s) => !s)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-taupe hover:text-espresso flex items-center justify-center p-1 focus:outline-none transition-colors"
+              aria-label={show ? "Hide password" : "Show password"}
+            >
+              {show ? <FiEyeOff size={18} /> : <FiEye size={18} />}
             </button>
           </div>
         </div>
         <div>
           <label className="label">Confirm Password</label>
-          <div className="relative">
-            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
+          <div className="relative flex items-center">
+            <FiLock className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-taupe" />
             <input
               type={show ? "text" : "password"}
               required

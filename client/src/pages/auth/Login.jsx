@@ -155,27 +155,8 @@ const Login = () => {
       return;
     }
 
-    // 4. Demo fallback for local development if Google API script fails to load
-    triggerDemoGoogleLogin();
-  };
-
-  const triggerDemoGoogleLogin = async () => {
-    setLoading(true);
-    const demoGoogleUser = {
-      email: "google.user@mehzhaya.com",
-      name: "Google Customer",
-      picture: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80",
-      googleId: "google_10293847561029384",
-    };
-    const res = await dispatch(googleLogin(demoGoogleUser));
-    setLoading(false);
-    if (googleLogin.fulfilled.match(res)) {
-      dispatch(fetchCart());
-      dispatch(fetchWishlist());
-      navigate(res.payload.user?.role === "admin" ? "/admin" : from, { replace: true });
-    } else {
-      toast.error(res.payload || "Google sign in failed");
-    }
+    // 4. Fallback if GIS script is not yet loaded
+    toast.error("Google Sign-In is initializing. Please try again in a moment.");
   };
 
   return (
@@ -199,8 +180,8 @@ const Login = () => {
       <form onSubmit={submit} className="space-y-4">
         <div>
           <label className="label">Email</label>
-          <div className="relative">
-            <FiMail className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
+          <div className="relative flex items-center">
+            <FiMail className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-taupe" />
             <input
               type="email"
               required
@@ -213,8 +194,8 @@ const Login = () => {
         </div>
         <div>
           <label className="label">Password</label>
-          <div className="relative">
-            <FiLock className="pointer-events-none absolute left-3 top-3.5 text-taupe" />
+          <div className="relative flex items-center">
+            <FiLock className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-taupe" />
             <input
               type={show ? "text" : "password"}
               required
@@ -226,9 +207,10 @@ const Login = () => {
             <button
               type="button"
               onClick={() => setShow((s) => !s)}
-              className="absolute right-3 top-3.5 text-taupe hover:text-espresso"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-taupe hover:text-espresso flex items-center justify-center p-1 focus:outline-none transition-colors"
+              aria-label={show ? "Hide password" : "Show password"}
             >
-              {show ? <FiEyeOff /> : <FiEye />}
+              {show ? <FiEyeOff size={18} /> : <FiEye size={18} />}
             </button>
           </div>
         </div>

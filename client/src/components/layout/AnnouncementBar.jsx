@@ -1,5 +1,5 @@
 const ANNOUNCEMENTS = [
-  { text: "Timeless Hijabs for the Modern You", separator: "✦" },
+  { text: "Timeless Abaya and Hijab for Modern Muslimah", separator: "✦" },
   { text: "Free Shipping on Orders Above ₹999", separator: "•" },
   { text: "Easy Returns & Exchanges", separator: "✦" },
   { text: "Premium Quality Islamic Wear", separator: "•" },

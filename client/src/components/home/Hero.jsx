@@ -30,8 +30,8 @@ const Hero = () => (
         </div>
 
         <h1 className="font-serif text-4xl font-semibold leading-[1.2] text-espresso sm:text-6xl lg:text-7xl">
-          Timeless Hijabs <br className="hidden sm:block" />
-          for the Modern You
+          Timeless Abaya and Hijab <br className="hidden sm:block" />
+          for Modern Muslimah
         </h1>
 
         <div className="gold-divider my-2.5 ml-auto lg:ml-0" />

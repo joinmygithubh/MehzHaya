@@ -1,6 +1,6 @@
 export const STORE = {
   name: "MehzHaya",
-  tagline: "Timeless Hijabs for the Modern You",
+  tagline: "Timeless Abaya and Hijab for Modern Muslimah",
   phone: "8700695794",
   email: "mehzhaya@gmail.com",
   address: {

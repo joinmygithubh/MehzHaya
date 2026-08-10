@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import asyncHandler from "express-async-handler";
+import mongoose from "mongoose";
 import User from "../models/User.js";
 import ApiError from "../utils/ApiError.js";
 import sendToken from "../utils/sendToken.js";
@@ -21,10 +22,12 @@ export const register = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please provide name, email, phone number and password");
   }
 
-  const exists = await User.findOne({ email });
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const exists = await User.findOne({ email: normalizedEmail });
   if (exists) throw new ApiError(400, "Email is already registered");
 
-  const user = await User.create({ name, email, password, phone });
+  const user = await User.create({ name, email: normalizedEmail, password, phone });
 
   // email verification
   const verifyToken = user.getEmailVerificationToken();
@@ -53,7 +56,9 @@ export const login = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please provide email and password");
   }
 
-  const user = await User.findOne({ email }).select("+password");
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const user = await User.findOne({ email: normalizedEmail }).select("+password");
   if (!user || !(await user.comparePassword(password))) {
     throw new ApiError(401, "Invalid email or password");
   }
@@ -92,31 +97,55 @@ export const googleLogin = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Google authentication requires a valid email address");
   }
 
-  // Find user by email or googleId
-  let user = await User.findOne({
-    $or: [{ email: userEmail.toLowerCase() }, ...(userGoogleId ? [{ googleId: userGoogleId }] : [])],
-  });
+  // Normalize email: trim whitespace and convert to lowercase
+  const normalizedEmail = userEmail.trim().toLowerCase();
+
+  // Search existing user by normalized email first using standard User model
+  let user = await User.findOne({ email: normalizedEmail });
+
+  // Fallback search by googleId if present and not found by email
+  if (!user && userGoogleId) {
+    user = await User.findOne({ googleId: userGoogleId });
+  }
+
+  const existingUserFound = !!user;
+
+  console.log("[GOOGLE AUTH]");
+  console.log(`Email: ${normalizedEmail}`);
+  console.log(`Existing MongoDB user: ${existingUserFound}`);
 
   if (user) {
-    // If user exists, update Google metadata if missing
-    if (!user.googleId && userGoogleId) user.googleId = userGoogleId;
+    console.log(`MongoDB User ID: ${user._id}`);
+    console.log(`MongoDB Role: ${user.role}`);
+
+    // User EXISTS: DO NOT create another user, DO NOT overwrite existing role (preserve role = admin)
+    if (!user.googleId && userGoogleId) {
+      user.googleId = userGoogleId;
+    }
     if (userPicture && (!user.avatar || !user.avatar.url)) {
       user.avatar = { public_id: "google_avatar", url: userPicture };
     }
     user.isEmailVerified = true;
     await user.save({ validateBeforeSave: false });
   } else {
-    // Automatically create new user if doesn't exist
-    user = await User.create({
+    // User DOES NOT exist: Create new user in SAME users collection
+    user = new User({
       name: userName,
-      email: userEmail.toLowerCase(),
+      email: normalizedEmail,
       googleId: userGoogleId,
       authProvider: "google",
+      role: "user",
       isEmailVerified: true,
       avatar: userPicture ? { public_id: "google_avatar", url: userPicture } : undefined,
     });
+    await user.save();
+
+    console.log("[GOOGLE AUTH]");
+    console.log(`User saved to MongoDB: true`);
+    console.log(`User ID: ${user._id}`);
   }
 
+  // Return MongoDB database user payload
   sendToken(user, 200, res, "Google login successful");
 });
 
