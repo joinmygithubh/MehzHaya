@@ -8,7 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import AuthShell from "../../components/auth/AuthShell";
 import SEO from "../../components/common/SEO";
 import { login, googleLogin } from "../../redux/slices/authSlice";
-import { fetchCart } from "../../redux/slices/cartSlice";
+import { fetchCart, addToCart } from "../../redux/slices/cartSlice";
 import { fetchWishlist } from "../../redux/slices/wishlistSlice";
 
 const Login = () => {
@@ -25,6 +25,28 @@ const Login = () => {
   const clientId =
     import.meta.env.VITE_GOOGLE_CLIENT_ID ||
     "531694371899-278oi1b70rcojr5mqa9vqibnmqlen069.apps.googleusercontent.com";
+
+  const handlePostLoginSuccess = async (user) => {
+    dispatch(fetchWishlist());
+
+    const pendingBuyNowRaw = sessionStorage.getItem("mehzhaya_buy_now");
+    if (pendingBuyNowRaw) {
+      try {
+        const payload = JSON.parse(pendingBuyNowRaw);
+        sessionStorage.removeItem("mehzhaya_buy_now");
+        const cartRes = await dispatch(addToCart(payload));
+        if (addToCart.fulfilled.match(cartRes)) {
+          await dispatch(fetchCart());
+          return navigate("/checkout", { replace: true });
+        }
+      } catch (err) {
+        console.warn("Buy Now process error:", err);
+      }
+    }
+
+    dispatch(fetchCart());
+    navigate(user?.role === "admin" ? "/admin" : from, { replace: true });
+  };
 
   useEffect(() => {
     // Initialize Google OAuth Token Client for custom button trigger
@@ -58,9 +80,7 @@ const Login = () => {
                   setLoading(false);
 
                   if (googleLogin.fulfilled.match(res)) {
-                    dispatch(fetchCart());
-                    dispatch(fetchWishlist());
-                    navigate(res.payload.user?.role === "admin" ? "/admin" : from, { replace: true });
+                    await handlePostLoginSuccess(res.payload.user);
                   } else {
                     toast.error(res.payload || "Google sign in failed");
                   }
@@ -93,9 +113,7 @@ const Login = () => {
     const res = await dispatch(login(form));
     setLoading(false);
     if (login.fulfilled.match(res)) {
-      dispatch(fetchCart());
-      dispatch(fetchWishlist());
-      navigate(res.payload.user.role === "admin" ? "/admin" : from, { replace: true });
+      await handlePostLoginSuccess(res.payload.user);
     } else {
       toast.error(res.payload || "Login failed");
     }
@@ -132,9 +150,7 @@ const Login = () => {
               );
               setLoading(false);
               if (googleLogin.fulfilled.match(res)) {
-                dispatch(fetchCart());
-                dispatch(fetchWishlist());
-                navigate(res.payload.user?.role === "admin" ? "/admin" : from, { replace: true });
+                await handlePostLoginSuccess(res.payload.user);
               } else {
                 toast.error(res.payload || "Google login failed");
               }

@@ -12,6 +12,7 @@ import {
   FiTruck,
   FiShield,
   FiRefreshCw,
+  FiZap,
 } from "react-icons/fi";
 import { FaHeart, FaWhatsapp } from "react-icons/fa";
 
@@ -23,7 +24,7 @@ import ProductCard from "../components/product/ProductCard";
 import Reviews from "../components/product/Reviews";
 import ProductImageZoom from "../components/product/ProductImageZoom";
 import { fetchProduct } from "../redux/slices/productSlice";
-import { addToCart } from "../redux/slices/cartSlice";
+import { addToCart, fetchCart } from "../redux/slices/cartSlice";
 import { toggleWishlist } from "../redux/slices/wishlistSlice";
 import { addRecentlyViewed } from "../redux/slices/uiSlice";
 import { formatPrice, finalPrice, productImage, whatsappLink } from "../utils/helpers";
@@ -52,12 +53,11 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (product) {
-      setActiveImg(0);
-      setColor(product.colors?.[0] || "");
-      setSize(product.sizes?.[0] || "");
-      setQty(1);
-      setRatings(product.ratings);
+      if (product.colors?.length) setColor(product.colors[0]);
+      if (product.sizes?.length) setSize(product.sizes[0]);
       setNumReviews(product.numReviews);
+      setRatings(product.ratings);
+      setQty(1);
       dispatch(
         addRecentlyViewed({
           _id: product._id,
@@ -91,6 +91,35 @@ const ProductDetail = () => {
     );
     if (addToCart.fulfilled.match(res)) toast.success("Added to cart");
     else toast.error(res.payload || "Could not add to cart");
+  };
+
+  const handleBuyNow = async () => {
+    if (outOfStock) return;
+
+    const payload = {
+      productId: product._id,
+      quantity: qty,
+      color: color || "",
+      size: size || "",
+    };
+
+    if (!isAuthenticated) {
+      sessionStorage.setItem("mehzhaya_buy_now", JSON.stringify(payload));
+      toast.info("Please log in to complete your purchase");
+      return navigate("/login", { state: { from: { pathname: "/checkout" } } });
+    }
+
+    try {
+      const res = await dispatch(addToCart(payload));
+      if (addToCart.fulfilled.match(res)) {
+        await dispatch(fetchCart());
+        navigate("/checkout");
+      } else {
+        toast.error(res.payload || "Could not process Buy Now");
+      }
+    } catch (err) {
+      toast.error(err.message || "Something went wrong");
+    }
   };
 
   const handleWishlist = async () => {
@@ -145,7 +174,7 @@ const ProductDetail = () => {
               {product.name}
             </h1>
 
-            <div className="mt-3 flex items-center gap-3">
+            <div className="mt-2 flex items-center gap-3">
               <RatingStars value={ratings} count={numReviews} size={16} />
               <span className="text-sm text-sand">·</span>
               <span className="text-sm text-taupe">SKU: {product.sku}</span>
@@ -239,7 +268,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Qty + actions */}
-            <div className="mt-6 flex flex-wrap items-center gap-4">
+            <div className="mt-6 flex flex-wrap items-center gap-3 sm:gap-4">
               <div className="flex items-center rounded-xl border border-sand bg-ivory">
                 <button
                   onClick={() => setQty((q) => Math.max(1, q - 1))}
@@ -259,9 +288,17 @@ const ProductDetail = () => {
               <button
                 onClick={handleAddToCart}
                 disabled={outOfStock}
-                className="btn-primary flex-1"
+                className="btn-primary flex-1 min-w-[130px]"
               >
                 <FiShoppingBag /> Add to Cart
+              </button>
+
+              <button
+                onClick={handleBuyNow}
+                disabled={outOfStock}
+                className="flex-1 min-w-[130px] inline-flex items-center justify-center gap-2 rounded-xl bg-espresso text-ivory font-medium px-5 py-2.5 sm:py-3 text-sm sm:text-base border border-espresso hover:bg-gold hover:border-gold hover:text-espresso transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-soft"
+              >
+                <FiZap /> Buy Now
               </button>
 
               <button onClick={handleWishlist} className="btn-outline px-4">

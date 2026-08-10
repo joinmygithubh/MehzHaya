@@ -23,12 +23,6 @@ const Hero = () => (
         transition={{ duration: 0.7, ease: "easeOut" }}
         className="ml-auto lg:ml-0 max-w-[280px] sm:max-w-md lg:max-w-xl space-y-4 sm:space-y-5 text-right lg:text-left"
       >
-        <div className="inline-flex items-center gap-2">
-          <span className="eyebrow text-black font-semibold tracking-[0.2em]">
-            ELEGANCE. MODESTY. YOU.
-          </span>
-        </div>
-
         <h1 className="font-serif text-4xl font-semibold leading-[1.2] text-espresso sm:text-6xl lg:text-7xl">
           Timeless Abaya and Hijab <br className="hidden sm:block" />
           for Modern Muslimah

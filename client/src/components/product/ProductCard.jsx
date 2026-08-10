@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { FiHeart, FiShoppingBag } from "react-icons/fi";
+import { FiHeart, FiShoppingBag, FiZap } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
@@ -8,10 +8,11 @@ import { motion } from "framer-motion";
 import { formatPrice, finalPrice, productImage } from "../../utils/helpers";
 import RatingStars from "../common/RatingStars";
 import { toggleWishlist } from "../../redux/slices/wishlistSlice";
-import { addToCart } from "../../redux/slices/cartSlice";
+import { addToCart, fetchCart } from "../../redux/slices/cartSlice";
 
 const ProductCard = ({ product, index = 0 }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { isAuthenticated } = useSelector((s) => s.auth);
   const { ids } = useSelector((s) => s.wishlist);
   const wished = ids.includes(product._id);
@@ -34,6 +35,36 @@ const ProductCard = ({ product, index = 0 }) => {
     );
     if (addToCart.fulfilled.match(res)) toast.success("Added to cart");
     else toast.error(res.payload || "Could not add to cart");
+  };
+
+  const handleBuyNow = async (e) => {
+    e.preventDefault();
+    if (outOfStock) return;
+
+    const payload = {
+      productId: product._id,
+      quantity: 1,
+      color: product.colors?.[0] || "",
+      size: product.sizes?.[0] || "",
+    };
+
+    if (!isAuthenticated) {
+      sessionStorage.setItem("mehzhaya_buy_now", JSON.stringify(payload));
+      toast.info("Please log in to complete your purchase");
+      return navigate("/login", { state: { from: { pathname: "/checkout" } } });
+    }
+
+    try {
+      const res = await dispatch(addToCart(payload));
+      if (addToCart.fulfilled.match(res)) {
+        await dispatch(fetchCart());
+        navigate("/checkout");
+      } else {
+        toast.error(res.payload || "Could not process Buy Now");
+      }
+    } catch (err) {
+      toast.error(err.message || "Something went wrong");
+    }
   };
 
   return (
@@ -89,14 +120,22 @@ const ProductCard = ({ product, index = 0 }) => {
             {wished ? <FaHeart className="text-terracotta" /> : <FiHeart />}
           </button>
 
-          {/* Quick add */}
+          {/* Quick add / Buy Now hover overlay */}
           {!outOfStock && (
-            <button
-              onClick={handleAddToCart}
-              className="absolute inset-x-3 bottom-3 flex translate-y-4 items-center justify-center gap-2 rounded-xl bg-gold py-2.5 text-sm font-semibold text-espresso opacity-0 shadow-soft transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-gold-dark hover:text-ivory z-10"
-            >
-              <FiShoppingBag size={16} /> Add to Cart
-            </button>
+            <div className="absolute inset-x-2 bottom-2 z-10 hidden sm:flex gap-1.5 opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+              <button
+                onClick={handleAddToCart}
+                className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gold py-2 text-xs font-semibold text-espresso shadow-soft hover:bg-gold-dark hover:text-ivory transition-colors"
+              >
+                <FiShoppingBag size={14} /> Cart
+              </button>
+              <button
+                onClick={handleBuyNow}
+                className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-espresso py-2 text-xs font-semibold text-ivory shadow-soft hover:bg-gold hover:text-espresso transition-colors"
+              >
+                <FiZap size={14} /> Buy Now
+              </button>
+            </div>
           )}
         </div>
 
@@ -119,6 +158,24 @@ const ProductCard = ({ product, index = 0 }) => {
                 {formatPrice(product.price)}
               </span>
             )}
+          </div>
+
+          {/* Card footer action buttons (mobile + desktop) */}
+          <div className="mt-3 flex items-center gap-2 pt-2 border-t border-sand/40">
+            <button
+              onClick={handleAddToCart}
+              disabled={outOfStock}
+              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg border border-gold/70 bg-ivory py-1.5 text-xs font-medium text-espresso hover:bg-gold hover:text-espresso transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <FiShoppingBag size={13} /> Cart
+            </button>
+            <button
+              onClick={handleBuyNow}
+              disabled={outOfStock}
+              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-espresso py-1.5 text-xs font-semibold text-ivory hover:bg-gold hover:text-espresso transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs"
+            >
+              <FiZap size={13} /> Buy Now
+            </button>
           </div>
         </div>
       </Link>
