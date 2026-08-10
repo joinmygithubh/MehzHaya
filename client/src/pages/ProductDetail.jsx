@@ -27,7 +27,7 @@ import { fetchProduct } from "../redux/slices/productSlice";
 import { addToCart, fetchCart } from "../redux/slices/cartSlice";
 import { toggleWishlist } from "../redux/slices/wishlistSlice";
 import { addRecentlyViewed } from "../redux/slices/uiSlice";
-import { formatPrice, finalPrice, productImage, whatsappLink } from "../utils/helpers";
+import { formatPrice, finalPrice, productImage, whatsappLink, buildProductWhatsAppMessage } from "../utils/helpers";
 import { COLOR_HEX } from "../utils/constants";
 
 const ProductDetail = () => {
@@ -313,10 +313,7 @@ const ProductDetail = () => {
             {/* Book on WhatsApp */}
             <a
               href={whatsappLink(
-                `Hello MehzHaya! 🌸 I'd like to book "${product.name}" (SKU: ${product.sku})` +
-                  `${color ? `, Color: ${color}` : ""}${size ? `, Size: ${size}` : ""}.\n${
-                    typeof window !== "undefined" ? window.location.href : ""
-                  }`
+                buildProductWhatsAppMessage({ product, qty, color, size })
               )}
               target="_blank"
               rel="noopener noreferrer"

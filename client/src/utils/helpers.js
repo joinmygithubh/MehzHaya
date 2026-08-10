@@ -38,3 +38,42 @@ export const whatsappLink = (message = "") =>
   `https://wa.me/91${STORE.phone}${
     message ? `?text=${encodeURIComponent(message)}` : ""
   }`;
+
+/**
+ * Build a structured WhatsApp product requirement message.
+ */
+export const buildProductWhatsAppMessage = ({ product, qty = 1, color = "", size = "" }) => {
+  if (!product) return "Hello MehzHaya, I am interested in your products.";
+
+  const price = formatPrice(finalPrice(product));
+  const imgUrl = productImage(product);
+  const prodSlug = product.slug || product._id;
+  const prodLink = `https://mehzhaya.com/product/${prodSlug}`;
+
+  let sizeStr = size || (product.sizes?.length ? product.sizes[0] : "Standard");
+  if (color) {
+    sizeStr = `${sizeStr} (Color: ${color})`;
+  }
+
+  const descriptionText = product.description
+    ? product.description.slice(0, 180).trim() + (product.description.length > 180 ? "..." : "")
+    : "Premium modest wear crafted with care.";
+
+  return `Hello MehzHaya, I am interested in this product:
+
+Product: ${product.name}
+Price: ${price}
+Quantity: ${qty}
+Size: ${sizeStr}
+
+Product Details:
+${descriptionText}
+
+Product Image:
+${imgUrl}
+
+Product Link:
+${prodLink}
+
+Please share the availability and purchase details.`;
+};
