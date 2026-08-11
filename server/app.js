@@ -29,6 +29,10 @@ import reportRoutes from "./routes/reportRoutes.js";
 
 const app = express();
 
+// Trust reverse proxy (Render / NGINX) to enable express-rate-limit client IP resolution
+app.set("trust proxy", 1);
+console.log("Proxy trust enabled: true");
+
 // Security & parsing middleware
 app.use(helmet());
 app.use(compression());
