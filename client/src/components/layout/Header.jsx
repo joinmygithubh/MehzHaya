@@ -36,22 +36,27 @@ const Header = ({ minimal }) => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
 
-  const closeDrawer = () => {
+  const closeMenu = () => {
+    console.log("Closing menu");
     setMobileOpen(false);
     setUserMenu(false);
     document.body.style.overflow = "";
   };
 
-  const handleMobileNav = (path) => {
-    closeDrawer();
+  const handleNav = (path) => {
+    closeMenu();
     if (path) {
       navigate(path);
     }
   };
 
+  useEffect(() => {
+    console.log("Menu state:", mobileOpen);
+  }, [mobileOpen]);
+
   // Automatically close drawer & user menu on route changes
   useEffect(() => {
-    closeDrawer();
+    closeMenu();
   }, [location.pathname, location.search]);
 
   // Lock body scroll when mobile menu is open
@@ -71,7 +76,7 @@ const Header = ({ minimal }) => {
       e.preventDefault();
       e.stopPropagation();
     }
-    closeDrawer();
+    closeMenu();
 
     try {
       if (window.google?.accounts?.id) {
@@ -219,7 +224,7 @@ const Header = ({ minimal }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 bg-espresso/40 backdrop-blur-xs lg:hidden"
-              onClick={() => handleMobileNav(null)}
+              onClick={closeMenu}
             />
           )}
           {mobileOpen && (
@@ -238,7 +243,7 @@ const Header = ({ minimal }) => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleMobileNav(null);
+                    closeMenu();
                   }}
                   className="icon-btn"
                   aria-label="Close menu"
@@ -255,17 +260,17 @@ const Header = ({ minimal }) => {
                       Hello, {user?.name?.split(" ")[0]} 👋
                     </p>
                     <div className="mt-2 grid grid-cols-2 gap-2">
-                      <Link to="/account" onClick={() => handleMobileNav()} className="drawer-chip">
+                      <Link to="/account" onClick={closeMenu} className="drawer-chip">
                         <FiUser size={15} /> Account
                       </Link>
-                      <Link to="/account/orders" onClick={() => handleMobileNav()} className="drawer-chip">
+                      <Link to="/account/orders" onClick={closeMenu} className="drawer-chip">
                         <FiShoppingBag size={15} /> Orders
                       </Link>
-                      <Link to="/wishlist" onClick={() => handleMobileNav()} className="drawer-chip">
+                      <Link to="/wishlist" onClick={closeMenu} className="drawer-chip">
                         <FiHeart size={15} /> Wishlist {ids.length > 0 && `(${ids.length})`}
                       </Link>
                       {user?.role === "admin" && (
-                        <Link to="/admin" onClick={() => handleMobileNav()} className="drawer-chip">
+                        <Link to="/admin" onClick={closeMenu} className="drawer-chip">
                           <FiGrid size={15} /> Admin
                         </Link>
                       )}
@@ -278,14 +283,14 @@ const Header = ({ minimal }) => {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
-                      onClick={() => handleMobileNav("/login")}
+                      onClick={() => handleNav("/login")}
                       className="btn-primary flex items-center justify-center px-3 py-2 text-sm text-center cursor-pointer"
                     >
                       Login
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleMobileNav("/register")}
+                      onClick={() => handleNav("/register")}
                       className="btn-outline flex items-center justify-center px-3 py-2 text-sm text-center cursor-pointer"
                     >
                       Register
@@ -295,14 +300,14 @@ const Header = ({ minimal }) => {
               </div>
 
               {/* Navigation */}
-              <Link to="/" onClick={() => handleMobileNav()} className="mobile-link">
+              <Link to="/" onClick={closeMenu} className="mobile-link">
                 Home
               </Link>
               {Object.entries(categoryGroups).map(([group, items]) => (
                 <div key={group} className="mb-3">
                   <Link
                     to={`/shop?group=${encodeURIComponent(group)}`}
-                    onClick={() => handleMobileNav()}
+                    onClick={closeMenu}
                     className="mb-1 mt-3 block font-serif text-lg font-semibold text-espresso hover:text-gold hover:underline hover:underline-offset-4 hover:decoration-gold/80"
                   >
                     {group}
@@ -311,7 +316,7 @@ const Header = ({ minimal }) => {
                     <Link
                       key={item}
                       to={`/shop?category=${encodeURIComponent(item)}`}
-                      onClick={() => handleMobileNav()}
+                      onClick={closeMenu}
                       className="block py-1.5 pl-3 text-sm text-taupe hover:text-gold hover:underline hover:underline-offset-4 hover:decoration-gold/80"
                     >
                       {item}
@@ -319,13 +324,13 @@ const Header = ({ minimal }) => {
                   ))}
                 </div>
               ))}
-              <Link to="/shop" onClick={() => handleMobileNav()} className="mobile-link">
+              <Link to="/shop" onClick={closeMenu} className="mobile-link">
                 Shop All
               </Link>
-              <Link to="/about" onClick={() => handleMobileNav()} className="mobile-link">
+              <Link to="/about" onClick={closeMenu} className="mobile-link">
                 About Us
               </Link>
-              <Link to="/contact" onClick={() => handleMobileNav()} className="mobile-link">
+              <Link to="/contact" onClick={closeMenu} className="mobile-link">
                 Contact
               </Link>
 
