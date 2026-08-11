@@ -202,21 +202,24 @@ const Header = ({ minimal }) => {
       {/* Mobile / tablet drawer */}
       <AnimatePresence>
         {mobileOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-espresso/40 backdrop-blur-xs lg:hidden"
-              onClick={closeDrawer}
-            />
-            <motion.aside
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "tween" }}
-              className="fixed right-0 top-0 z-50 flex h-full w-80 max-w-[85%] flex-col overflow-y-auto bg-ivory p-6 shadow-soft lg:hidden"
-            >
+          <motion.div
+            key="mobile-menu-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-espresso/40 backdrop-blur-xs lg:hidden"
+            onClick={closeDrawer}
+          />
+        )}
+        {mobileOpen && (
+          <motion.aside
+            key="mobile-menu-drawer"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "tween" }}
+            className="fixed right-0 top-0 z-50 flex h-full w-80 max-w-[85%] flex-col overflow-y-auto bg-ivory p-6 shadow-soft lg:hidden"
+          >
               <div className="mb-4 flex items-center justify-between border-b border-sand/40 pb-3">
                 <Logo className="h-8" />
                 <button
@@ -330,7 +333,6 @@ const Header = ({ minimal }) => {
                 </button>
               )}
             </motion.aside>
-          </>
         )}
       </AnimatePresence>
     </header>
