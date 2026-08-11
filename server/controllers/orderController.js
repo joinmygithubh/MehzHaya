@@ -7,7 +7,7 @@ import Coupon from "../models/Coupon.js";
 import Review from "../models/Review.js";
 import ApiError from "../utils/ApiError.js";
 import sendEmail from "../utils/sendEmail.js";
-import { orderConfirmationTemplate } from "../utils/emailTemplates.js";
+import { orderConfirmationTemplate, ownerOrderNotificationTemplate } from "../utils/emailTemplates.js";
 import { SHIPPING_FEE, SHIPPING_THRESHOLD } from "./cartController.js";
 import { sendOrderConfirmationWhatsApp, sendOrderStatusWhatsApp } from "../utils/whatsappService.js";
 
@@ -91,12 +91,51 @@ export const createOrder = asyncHandler(async (req, res) => {
   cart.coupon = { code: "", discount: 0 };
   await cart.save();
 
-  // confirmation email & whatsapp (non-blocking)
-  sendEmail({
-    to: req.user.email,
-    subject: `MehzHaya Order Confirmation - ${order.orderId}`,
-    html: orderConfirmationTemplate(req.user.name, order),
-  }).catch((e) => console.error("Order email failed:", e.message));
+  // confirmation emails & whatsapp (non-blocking)
+  const ownerEmail = (process.env.OWNER_EMAIL || "mehzhaya@gmail.com").trim();
+  const customerEmail = req.user.email;
+
+  const dispatchOrderEmails = async () => {
+    let emailTriggered = false;
+    let smtpStatus = "Pending";
+    let emailSent = false;
+
+    console.log("[ORDER EMAIL]");
+    console.log(`Order ID: ${order.orderId}`);
+    console.log(`Customer email: ${customerEmail}`);
+    console.log(`Owner email: ${ownerEmail}`);
+
+    try {
+      emailTriggered = true;
+      console.log(`Email function triggered: ${emailTriggered}`);
+
+      // Send owner notification email
+      const ownerRes = await sendEmail({
+        to: ownerEmail,
+        subject: `🚨 New Order Alert - ${order.orderId} (₹${order.totalPrice})`,
+        html: ownerOrderNotificationTemplate(req.user, order),
+      });
+
+      // Send customer confirmation email
+      const customerRes = await sendEmail({
+        to: customerEmail,
+        subject: `MehzHaya Order Confirmation - ${order.orderId}`,
+        html: orderConfirmationTemplate(req.user.name, order),
+      });
+
+      smtpStatus = "Connected & Verified";
+      emailSent = true;
+      console.log(`SMTP connection status: ${smtpStatus}`);
+      console.log(`Email sent successfully: ${emailSent}`);
+      console.log(`[ORDER EMAIL SUCCESS] Owner MsgID: ${ownerRes.messageId}, Customer MsgID: ${customerRes.messageId}`);
+    } catch (err) {
+      console.error(`[ORDER EMAIL ERROR] Failed to send order emails:`, err.message);
+      console.log(`SMTP connection status: Connection Error (${err.message})`);
+      console.log(`Email sent successfully: false`);
+    }
+  };
+
+  dispatchOrderEmails();
 
   sendOrderConfirmationWhatsApp(order, req.user).catch((e) => console.warn("WhatsApp notification warning:", e.message));
 

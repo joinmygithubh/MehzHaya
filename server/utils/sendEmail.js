@@ -8,21 +8,27 @@ import nodemailer from "nodemailer";
  * @param {string} opts.html
  */
 const sendEmail = async ({ to, subject, html }) => {
+  const smtpUser = (process.env.SMTP_USER || "").trim();
+  const smtpPass = (process.env.SMTP_PASS || "").trim();
+  const smtpHost = (process.env.SMTP_HOST || "smtp.gmail.com").trim();
+  const smtpPort = Number(process.env.SMTP_PORT || 587);
+
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: Number(process.env.SMTP_PORT) === 465,
+    host: smtpHost,
+    port: smtpPort,
+    secure: smtpPort === 465,
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      user: smtpUser,
+      pass: smtpPass,
     },
   });
 
+  const fromName = (process.env.EMAIL_FROM_NAME || "MehzHaya").trim();
+  const fromAddress = (process.env.EMAIL_FROM || smtpUser || "mehzhaya@gmail.com").trim();
+
   const message = {
-    from: `"${process.env.EMAIL_FROM_NAME || "MehzHaya"}" <${
-      process.env.EMAIL_FROM || process.env.SMTP_USER
-    }>`,
-    to,
+    from: `"${fromName}" <${fromAddress}>`,
+    to: (to || "").trim(),
     subject,
     html,
   };
