@@ -82,11 +82,11 @@ export const getSuggestions = asyncHandler(async (req, res) => {
 // @access  Public
 export const getHomeSections = asyncHandler(async (req, res) => {
   const [featured, bestSellers, newArrivals, trending, flashSale] = await Promise.all([
-    Product.find({ isActive: true, isFeatured: true }).limit(8).sort("-createdAt"),
-    Product.find({ isActive: true }).sort("-sold").limit(8),
-    Product.find({ isActive: true, isNewArrival: true }).limit(8).sort("-createdAt"),
-    Product.find({ isActive: true, isTrending: true }).limit(8).sort("-views"),
-    Product.find({ isActive: true, isFlashSale: true }).limit(8).sort("-discount"),
+    Product.find({ isActive: true, isFeatured: true }).limit(8).sort("-createdAt").lean(),
+    Product.find({ isActive: true }).sort("-sold").limit(8).lean(),
+    Product.find({ isActive: true, isNewArrival: true }).limit(8).sort("-createdAt").lean(),
+    Product.find({ isActive: true, isTrending: true }).limit(8).sort("-views").lean(),
+    Product.find({ isActive: true, isFlashSale: true }).limit(8).sort("-discount").lean(),
   ]);
   res.status(200).json({
     success: true,

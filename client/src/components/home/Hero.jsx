@@ -8,6 +8,9 @@ const Hero = () => (
       <img
         src="/images/hero-model-ultra.jpg"
         alt="MehzHaya Timeless Hijabs & Islamic Fashion"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
         className="h-full w-full object-cover object-[82%_top] sm:object-[78%_top] lg:object-[70%_top] xl:object-[65%_top] pointer-events-none"
       />
     </div>

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FiHeart, FiShoppingBag, FiZap } from "react-icons/fi";
@@ -10,7 +11,7 @@ import RatingStars from "../common/RatingStars";
 import { toggleWishlist } from "../../redux/slices/wishlistSlice";
 import { addToCart, fetchCart } from "../../redux/slices/cartSlice";
 
-const ProductCard = ({ product, index = 0 }) => {
+const ProductCard = memo(({ product, index = 0 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((s) => s.auth);
@@ -81,6 +82,7 @@ const ProductCard = ({ product, index = 0 }) => {
             src={productImage(product)}
             alt={product.name}
             loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
 
@@ -163,6 +165,6 @@ const ProductCard = ({ product, index = 0 }) => {
       </Link>
     </motion.div>
   );
-};
+});
 
 export default ProductCard;

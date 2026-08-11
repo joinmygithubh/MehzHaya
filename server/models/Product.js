@@ -104,6 +104,16 @@ productSchema.set("toObject", { virtuals: true });
 // Text index for search
 productSchema.index({ name: "text", description: "text", categoryName: "text" });
 
+// High-performance compound indexes for home sections, filtering, and sorting
+productSchema.index({ isActive: 1, isFeatured: 1, createdAt: -1 });
+productSchema.index({ isActive: 1, isNewArrival: 1, createdAt: -1 });
+productSchema.index({ isActive: 1, isTrending: 1, views: -1 });
+productSchema.index({ isActive: 1, isFlashSale: 1, discount: -1 });
+productSchema.index({ isActive: 1, sold: -1 });
+productSchema.index({ isActive: 1, group: 1 });
+productSchema.index({ isActive: 1, categoryName: 1 });
+productSchema.index({ isActive: 1, price: 1 });
+
 productSchema.pre("save", function (next) {
   if (this.isModified("name") || !this.slug) {
     this.slug =
