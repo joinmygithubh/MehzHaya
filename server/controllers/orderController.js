@@ -93,44 +93,53 @@ export const createOrder = asyncHandler(async (req, res) => {
 
   // confirmation emails & whatsapp (non-blocking)
   const ownerEmail = (process.env.OWNER_EMAIL || "mehzhaya@gmail.com").trim();
-  const customerEmail = req.user.email;
+  const customerEmail = req.user?.email || "";
+  const customerUser = {
+    name: req.user?.name || shippingAddress?.fullName || "Customer",
+    email: customerEmail,
+    phone: req.user?.phone || shippingAddress?.phone || "N/A",
+  };
+
+  console.log("[ORDER EMAIL DEBUG]");
+  console.log(`Order ID: ${order.orderId}`);
+  console.log(`Customer: ${customerEmail}`);
+  console.log(`Email function called: true`);
+  console.log(`Email recipient: ${ownerEmail}`);
+  console.log(`SMTP sending started: true`);
 
   const dispatchOrderEmails = async () => {
-    let emailTriggered = false;
-    let smtpStatus = "Pending";
-    let emailSent = false;
-
-    console.log("[ORDER EMAIL]");
-    console.log(`Order ID: ${order.orderId}`);
-    console.log(`Customer email: ${customerEmail}`);
-    console.log(`Owner email: ${ownerEmail}`);
-
     try {
-      emailTriggered = true;
-      console.log(`Email function triggered: ${emailTriggered}`);
+      const [ownerResult, customerResult] = await Promise.allSettled([
+        sendEmail({
+          to: ownerEmail,
+          subject: `🚨 New Order Alert - ${order.orderId} (₹${order.totalPrice})`,
+          html: ownerOrderNotificationTemplate(customerUser, order),
+        }),
+        sendEmail({
+          to: customerEmail,
+          subject: `MehzHaya Order Confirmation - ${order.orderId}`,
+          html: orderConfirmationTemplate(customerUser.name, order),
+        }),
+      ]);
 
-      // Send owner notification email
-      const ownerRes = await sendEmail({
-        to: ownerEmail,
-        subject: `🚨 New Order Alert - ${order.orderId} (₹${order.totalPrice})`,
-        html: ownerOrderNotificationTemplate(req.user, order),
-      });
+      let ownerSent = ownerResult.status === "fulfilled";
+      let customerSent = customerResult.status === "fulfilled";
 
-      // Send customer confirmation email
-      const customerRes = await sendEmail({
-        to: customerEmail,
-        subject: `MehzHaya Order Confirmation - ${order.orderId}`,
-        html: orderConfirmationTemplate(req.user.name, order),
-      });
+      if (ownerSent) {
+        console.log(`[ORDER EMAIL DEBUG] Owner email sent successfully: true (MsgID: ${ownerResult.value.messageId})`);
+      } else {
+        console.error(`[ORDER EMAIL DEBUG] Owner email failed:`, ownerResult.reason?.message || ownerResult.reason);
+      }
 
-      smtpStatus = "Connected & Verified";
-      emailSent = true;
-      console.log(`SMTP connection status: ${smtpStatus}`);
-      console.log(`Email sent successfully: ${emailSent}`);
-      console.log(`[ORDER EMAIL SUCCESS] Owner MsgID: ${ownerRes.messageId}, Customer MsgID: ${customerRes.messageId}`);
+      if (customerSent) {
+        console.log(`[ORDER EMAIL DEBUG] Customer email sent successfully: true (MsgID: ${customerResult.value.messageId})`);
+      } else {
+        console.error(`[ORDER EMAIL DEBUG] Customer email failed:`, customerResult.reason?.message || customerResult.reason);
+      }
+
+      console.log(`Email sent successfully: ${ownerSent || customerSent}`);
     } catch (err) {
-      console.error(`[ORDER EMAIL ERROR] Failed to send order emails:`, err.message);
-      console.log(`SMTP connection status: Connection Error (${err.message})`);
+      console.error(`[ORDER EMAIL DEBUG ERROR] Uncaught error sending order emails:`, err.message);
       console.log(`Email sent successfully: false`);
     }
   };

@@ -108,7 +108,7 @@ export const orderConfirmationTemplate = (name, order) => {
   `);
 };
 
-export const ownerOrderNotificationTemplate = (customerUser, order) => {
+export const ownerOrderNotificationTemplate = (customerUser = {}, order = {}) => {
   const addr = order.shippingAddress || {};
   const shippingStr = [
     addr.fullName,
@@ -121,35 +121,39 @@ export const ownerOrderNotificationTemplate = (customerUser, order) => {
     .filter(Boolean)
     .join("<br/>");
 
-  const rows = order.items
+  const rows = (order.items || [])
     .map(
       (i) => `<tr>
         <td style="padding:10px;border-bottom:1px solid #eee;width:55px">
           ${
             i.image
-              ? `<img src="${i.image}" alt="${i.name}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #ddd" />`
+              ? `<img src="${i.image}" alt="${i.name || "Item"}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #ddd" />`
               : ""
           }
         </td>
         <td style="padding:10px;border-bottom:1px solid #eee">
-          <strong>${i.name}</strong>
+          <strong>${i.name || "Item"}</strong>
           ${i.color || i.size ? `<br/><span style="font-size:12px;color:#666">${i.color || ""}${i.color && i.size ? " | " : ""}${i.size || ""}</span>` : ""}
         </td>
-        <td style="padding:10px;border-bottom:1px solid #eee;text-align:center">${i.quantity}</td>
-        <td style="padding:10px;border-bottom:1px solid #eee;text-align:right">₹${i.price * i.quantity}</td>
+        <td style="padding:10px;border-bottom:1px solid #eee;text-align:center">${i.quantity || 1}</td>
+        <td style="padding:10px;border-bottom:1px solid #eee;text-align:right">₹${(i.price || 0) * (i.quantity || 1)}</td>
       </tr>`
     )
     .join("");
 
+  const custName = customerUser.name || addr.fullName || "Customer";
+  const custEmail = customerUser.email || "N/A";
+  const custPhone = addr.phone || customerUser.phone || "N/A";
+
   return wrapper(`
     <h2 style="color:${BROWN}">New Order Received! 🛍️</h2>
-    <p>A new order <strong>${order.orderId}</strong> has been placed on MehzHaya.</p>
+    <p>A new order <strong>${order.orderId || ""}</strong> has been placed on MehzHaya.</p>
 
     <div style="background:${CREAM};padding:16px;border-radius:8px;margin:20px 0 font-size:14px">
       <h4 style="margin:0 0 8px;color:${BROWN}">Customer Details</h4>
-      <p style="margin:2px 0"><strong>Name:</strong> ${customerUser.name || addr.fullName}</p>
-      <p style="margin:2px 0"><strong>Email:</strong> <a href="mailto:${customerUser.email}">${customerUser.email}</a></p>
-      <p style="margin:2px 0"><strong>Phone:</strong> ${addr.phone || customerUser.phone || "N/A"}</p>
+      <p style="margin:2px 0"><strong>Name:</strong> ${custName}</p>
+      <p style="margin:2px 0"><strong>Email:</strong> <a href="mailto:${custEmail}">${custEmail}</a></p>
+      <p style="margin:2px 0"><strong>Phone:</strong> ${custPhone}</p>
     </div>
 
     <h4 style="margin:16px 0 8px;color:${BROWN}">Order Items</h4>
@@ -165,11 +169,11 @@ export const ownerOrderNotificationTemplate = (customerUser, order) => {
     </table>
 
     <div style="text-align:right;margin:16px 0 font-size:14px">
-      <p style="margin:4px 0">Items Subtotal: ₹${order.itemsPrice}</p>
-      <p style="margin:4px 0">Shipping Fee: ₹${order.shippingPrice}</p>
-      ${order.discountPrice > 0 ? `<p style="margin:4px 0;color:#c00">Discount: -₹${order.discountPrice}</p>` : ""}
-      <p style="margin:8px 0;font-size:18px;color:${BROWN}"><strong>Total Amount: ₹${order.totalPrice}</strong></p>
-      <p style="margin:4px 0">Payment Method: <strong>${order.paymentMethod}</strong> (${order.paymentInfo?.status || "Pending"})</p>
+      <p style="margin:4px 0">Items Subtotal: ₹${order.itemsPrice || 0}</p>
+      <p style="margin:4px 0">Shipping Fee: ₹${order.shippingPrice || 0}</p>
+      ${(order.discountPrice || 0) > 0 ? `<p style="margin:4px 0;color:#c00">Discount: -₹${order.discountPrice}</p>` : ""}
+      <p style="margin:8px 0;font-size:18px;color:${BROWN}"><strong>Total Amount: ₹${order.totalPrice || 0}</strong></p>
+      <p style="margin:4px 0">Payment Method: <strong>${order.paymentMethod || "COD"}</strong> (${order.paymentInfo?.status || "Pending"})</p>
     </div>
 
     <div style="background:#f9f9f9;border-left:4px solid ${CAMEL};padding:16px;border-radius:4px;margin:20px 0 font-size:14px">

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   FiSearch,
@@ -25,6 +25,7 @@ import Logo from "../common/Logo";
 const Header = ({ minimal }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, user } = useSelector((s) => s.auth);
   const { summary } = useSelector((s) => s.cart);
   const { ids } = useSelector((s) => s.wishlist);
@@ -36,6 +37,24 @@ const Header = ({ minimal }) => {
   const [userMenu, setUserMenu] = useState(false);
 
   const closeDrawer = () => setMobileOpen(false);
+
+  // Automatically close drawer & user menu on route changes
+  useEffect(() => {
+    setMobileOpen(false);
+    setUserMenu(false);
+  }, [location.pathname, location.search]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   const handleLogout = async (e) => {
     if (e) {
@@ -200,7 +219,16 @@ const Header = ({ minimal }) => {
             >
               <div className="mb-4 flex items-center justify-between border-b border-sand/40 pb-3">
                 <Logo className="h-8" />
-                <button onClick={closeDrawer} className="icon-btn" aria-label="Close menu">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeDrawer();
+                  }}
+                  className="icon-btn"
+                  aria-label="Close menu"
+                >
                   <FiX size={22} />
                 </button>
               </div>
@@ -234,12 +262,26 @@ const Header = ({ minimal }) => {
                   </>
                 ) : (
                   <div className="grid grid-cols-2 gap-2">
-                    <Link to="/login" onClick={closeDrawer} className="btn-primary px-3 py-2 text-sm">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        closeDrawer();
+                        navigate("/login");
+                      }}
+                      className="btn-primary flex items-center justify-center px-3 py-2 text-sm text-center cursor-pointer"
+                    >
                       Login
-                    </Link>
-                    <Link to="/register" onClick={closeDrawer} className="btn-outline px-3 py-2 text-sm">
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        closeDrawer();
+                        navigate("/register");
+                      }}
+                      className="btn-outline flex items-center justify-center px-3 py-2 text-sm text-center cursor-pointer"
+                    >
                       Register
-                    </Link>
+                    </button>
                   </div>
                 )}
               </div>
