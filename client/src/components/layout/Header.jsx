@@ -37,31 +37,29 @@ const Header = ({ minimal }) => {
   const [userMenu, setUserMenu] = useState(false);
 
   const closeMobileMenu = () => {
-    console.log("MOBILE MENU CLOSED");
     setMobileOpen(false);
     setUserMenu(false);
     document.body.style.overflow = "auto";
   };
 
   const openMobileMenu = () => {
-    console.log("MOBILE MENU OPEN");
     setMobileOpen(true);
   };
 
   const handleNav = (path) => {
     closeMobileMenu();
-    if (path) {
-      navigate(path);
-    }
+    setTimeout(() => {
+      if (path) {
+        navigate(path);
+      }
+    }, 0);
   };
-
-  useEffect(() => {
-    console.log("Current state:", mobileOpen);
-  }, [mobileOpen]);
 
   // Automatically close drawer & user menu on route changes
   useEffect(() => {
-    closeMobileMenu();
+    setMobileOpen(false);
+    setUserMenu(false);
+    document.body.style.overflow = "auto";
   }, [location.pathname, location.search]);
 
   // Lock body scroll when mobile menu is open
@@ -219,137 +217,123 @@ const Header = ({ minimal }) => {
       {/* Search overlay */}
       <SearchBar open={searchOpen} onClose={() => setSearchOpen(false)} />
 
-      {/* Mobile / tablet drawer — only on non-minimal layout */}
-      {!minimal && (
-        <AnimatePresence>
-          {mobileOpen && (
-            <motion.div
-              key="mobile-menu-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-espresso/40 backdrop-blur-xs lg:hidden"
-              onClick={closeMobileMenu}
-            />
-          )}
-          {mobileOpen && (
-            <motion.aside
-              key="mobile-menu-drawer"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "tween", duration: 0.25 }}
-              className="fixed right-0 top-0 z-[60] flex h-full w-80 max-w-[85%] flex-col overflow-y-auto bg-ivory p-6 shadow-soft lg:hidden"
-            >
-              <div className="mb-4 flex items-center justify-between border-b border-sand/40 pb-3">
-                <Logo className="h-8" />
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    closeMobileMenu();
-                  }}
-                  className="relative z-[70] icon-btn"
-                  aria-label="Close menu"
-                >
-                  <FiX size={22} />
-                </button>
-              </div>
+      {/* Mobile / tablet drawer — only when open on non-minimal layout */}
+      {!minimal && mobileOpen && (
+        <>
+          {/* Backdrop overlay */}
+          <div
+            className="fixed inset-0 z-50 bg-espresso/40 backdrop-blur-xs lg:hidden"
+            onClick={closeMobileMenu}
+          />
 
-              {/* Account / quick actions */}
-              <div className="mb-4 border-b border-sand pb-4">
-                {isAuthenticated ? (
-                  <>
-                    <p className="text-sm font-medium text-espresso">
-                      Hello, {user?.name?.split(" ")[0]} 👋
-                    </p>
-                    <div className="mt-2 grid grid-cols-2 gap-2">
-                      <Link to="/account" onClick={closeMobileMenu} className="drawer-chip">
-                        <FiUser size={15} /> Account
+          {/* Drawer sidebar */}
+          <aside className="fixed right-0 top-0 z-[60] flex h-full w-80 max-w-[85%] flex-col overflow-y-auto bg-ivory p-6 shadow-soft lg:hidden">
+            <div className="mb-4 flex items-center justify-between border-b border-sand/40 pb-3">
+              <Link to="/" onClick={(e) => { e.preventDefault(); handleNav("/"); }}>
+                <Logo className="h-8" />
+              </Link>
+              <button
+                type="button"
+                onClick={closeMobileMenu}
+                className="relative z-[70] icon-btn"
+                aria-label="Close menu"
+              >
+                <FiX size={22} />
+              </button>
+            </div>
+
+            {/* Account / quick actions */}
+            <div className="mb-4 border-b border-sand pb-4">
+              {isAuthenticated ? (
+                <>
+                  <p className="text-sm font-medium text-espresso">
+                    Hello, {user?.name?.split(" ")[0]} 👋
+                  </p>
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    <Link to="/account" onClick={(e) => { e.preventDefault(); handleNav("/account"); }} className="drawer-chip">
+                      <FiUser size={15} /> Account
+                    </Link>
+                    <Link to="/account/orders" onClick={(e) => { e.preventDefault(); handleNav("/account/orders"); }} className="drawer-chip">
+                      <FiShoppingBag size={15} /> Orders
+                    </Link>
+                    <Link to="/wishlist" onClick={(e) => { e.preventDefault(); handleNav("/wishlist"); }} className="drawer-chip">
+                      <FiHeart size={15} /> Wishlist {ids.length > 0 && `(${ids.length})`}
+                    </Link>
+                    {user?.role === "admin" && (
+                      <Link to="/admin" onClick={(e) => { e.preventDefault(); handleNav("/admin"); }} className="drawer-chip">
+                        <FiGrid size={15} /> Admin
                       </Link>
-                      <Link to="/account/orders" onClick={closeMobileMenu} className="drawer-chip">
-                        <FiShoppingBag size={15} /> Orders
-                      </Link>
-                      <Link to="/wishlist" onClick={closeMobileMenu} className="drawer-chip">
-                        <FiHeart size={15} /> Wishlist {ids.length > 0 && `(${ids.length})`}
-                      </Link>
-                      {user?.role === "admin" && (
-                        <Link to="/admin" onClick={closeMobileMenu} className="drawer-chip">
-                          <FiGrid size={15} /> Admin
-                        </Link>
-                      )}
-                      <button onClick={handleLogout} className="drawer-chip text-terracotta hover:bg-blush/40">
-                        <FiLogOut size={15} /> Logout
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleNav("/login")}
-                      className="btn-primary flex items-center justify-center px-3 py-2 text-sm text-center cursor-pointer"
-                    >
-                      Login
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleNav("/register")}
-                      className="btn-outline flex items-center justify-center px-3 py-2 text-sm text-center cursor-pointer"
-                    >
-                      Register
+                    )}
+                    <button onClick={handleLogout} className="drawer-chip text-terracotta hover:bg-blush/40">
+                      <FiLogOut size={15} /> Logout
                     </button>
                   </div>
-                )}
-              </div>
-
-              {/* Navigation */}
-              <Link to="/" onClick={closeMobileMenu} className="mobile-link">
-                Home
-              </Link>
-              {Object.entries(categoryGroups).map(([group, items]) => (
-                <div key={group} className="mb-3">
-                  <Link
-                    to={`/shop?group=${encodeURIComponent(group)}`}
-                    onClick={closeMobileMenu}
-                    className="mb-1 mt-3 block font-serif text-lg font-semibold text-espresso hover:text-gold hover:underline hover:underline-offset-4 hover:decoration-gold/80"
+                </>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleNav("/login")}
+                    className="btn-primary flex items-center justify-center px-3 py-2 text-sm text-center cursor-pointer"
                   >
-                    {group}
-                  </Link>
-                  {items.map((item) => (
-                    <Link
-                      key={item}
-                      to={`/shop?category=${encodeURIComponent(item)}`}
-                      onClick={closeMobileMenu}
-                      className="block py-1.5 pl-3 text-sm text-taupe hover:text-gold hover:underline hover:underline-offset-4 hover:decoration-gold/80"
-                    >
-                      {item}
-                    </Link>
-                  ))}
+                    Login
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleNav("/register")}
+                    className="btn-outline flex items-center justify-center px-3 py-2 text-sm text-center cursor-pointer"
+                  >
+                    Register
+                  </button>
                 </div>
-              ))}
-              <Link to="/shop" onClick={closeMobileMenu} className="mobile-link">
-                Shop All
-              </Link>
-              <Link to="/about" onClick={closeMobileMenu} className="mobile-link">
-                About Us
-              </Link>
-              <Link to="/contact" onClick={closeMobileMenu} className="mobile-link">
-                Contact
-              </Link>
-
-              {isAuthenticated && (
-                <button
-                  onClick={handleLogout}
-                  className="mt-4 flex items-center gap-2 py-2 text-sm font-medium text-terracotta hover:underline hover:underline-offset-4"
-                >
-                  <FiLogOut size={16} /> Logout
-                </button>
               )}
-            </motion.aside>
-          )}
-        </AnimatePresence>
+            </div>
+
+            {/* Navigation */}
+            <Link to="/" onClick={(e) => { e.preventDefault(); handleNav("/"); }} className="mobile-link">
+              Home
+            </Link>
+            {Object.entries(categoryGroups).map(([group, items]) => (
+              <div key={group} className="mb-3">
+                <Link
+                  to={`/shop?group=${encodeURIComponent(group)}`}
+                  onClick={(e) => { e.preventDefault(); handleNav(`/shop?group=${encodeURIComponent(group)}`); }}
+                  className="mb-1 mt-3 block font-serif text-lg font-semibold text-espresso hover:text-gold hover:underline hover:underline-offset-4 hover:decoration-gold/80"
+                >
+                  {group}
+                </Link>
+                {items.map((item) => (
+                  <Link
+                    key={item}
+                    to={`/shop?category=${encodeURIComponent(item)}`}
+                    onClick={(e) => { e.preventDefault(); handleNav(`/shop?category=${encodeURIComponent(item)}`); }}
+                    className="block py-1.5 pl-3 text-sm text-taupe hover:text-gold hover:underline hover:underline-offset-4 hover:decoration-gold/80"
+                  >
+                    {item}
+                  </Link>
+                ))}
+              </div>
+            ))}
+            <Link to="/shop" onClick={(e) => { e.preventDefault(); handleNav("/shop"); }} className="mobile-link">
+              Shop All
+            </Link>
+            <Link to="/about" onClick={(e) => { e.preventDefault(); handleNav("/about"); }} className="mobile-link">
+              About Us
+            </Link>
+            <Link to="/contact" onClick={(e) => { e.preventDefault(); handleNav("/contact"); }} className="mobile-link">
+              Contact
+            </Link>
+
+            {isAuthenticated && (
+              <button
+                onClick={handleLogout}
+                className="mt-4 flex items-center gap-2 py-2 text-sm font-medium text-terracotta hover:underline hover:underline-offset-4"
+              >
+                <FiLogOut size={16} /> Logout
+              </button>
+            )}
+          </aside>
+        </>
       )}
     </header>
   );
