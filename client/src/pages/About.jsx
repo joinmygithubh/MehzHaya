@@ -40,29 +40,24 @@ const About = () => {
             Our Story
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-champagne/95 text-sm sm:text-base leading-relaxed font-sans">
-            {STORE.tagline} — MehzHaya was born from a passion for celebrating
-            modesty through timeless, elegant fashion.
+            Timeless Abaya and Hijab for Modern Muslimah — MehzHaya was born from a passion for celebrating modesty through timeless, elegant fashion.
           </p>
         </div>
       </section>
 
       <section className="container-px py-16">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="eyebrow">Our Philosophy</p>
+          <p className="eyebrow">Our Values</p>
           <div className="gold-divider mx-auto my-2" />
-          <h2 className="section-title">Crafting Elegance, Honouring Modesty</h2>
-          <p className="mt-5 leading-relaxed text-taupe font-sans">
-            At MehzHaya, we believe that modesty and style go hand in hand. Our
-            curated collection of hijabs, niqabs, abayas, khimars and accessories
-            is thoughtfully designed to empower women to express their identity
-            with grace and confidence. From luxurious silk hijabs to everyday
-            jersey essentials, each piece is crafted with care, quality, and a
-            deep respect for our heritage.
+          <h2 className="section-title">Built on Trust, Transparency & Security</h2>
+          <p className="mt-5 leading-relaxed text-taupe font-sans text-base sm:text-lg">
+            Today, we're proud to be a trusted name in the industry, known for our exceptional products and outstanding customer service. With a curated selection of designs, fabrics, and styles, we aim to empower women to express their unique identity and faith through modesty.
           </p>
-          <p className="mt-4 leading-relaxed text-taupe font-sans">
-            Based in {STORE.address.city}, {STORE.address.state}, we proudly serve
-            customers across India — delivering premium modest fashion right to
-            your doorstep.
+          <p className="mt-4 leading-relaxed text-taupe font-sans text-base sm:text-lg">
+            We understand that online transactions can raise concerns, but rest assured that our business is built on trust, transparency, and security. We operate with halal business practices, ensuring that every aspect of our operations is genuine, honest, and fair.
+          </p>
+          <p className="mt-4 leading-relaxed text-taupe font-sans text-base sm:text-lg">
+            With over 10,000 satisfied customers and a reputation for reliability, you can shop with confidence. Our secure payment system ensures that your transactions are safe and protected.
           </p>
         </div>
 
