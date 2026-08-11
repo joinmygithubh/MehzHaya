@@ -36,27 +36,32 @@ const Header = ({ minimal }) => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
 
-  const closeMenu = () => {
-    console.log("Closing menu");
+  const closeMobileMenu = () => {
+    console.log("MOBILE MENU CLOSED");
     setMobileOpen(false);
     setUserMenu(false);
-    document.body.style.overflow = "";
+    document.body.style.overflow = "auto";
+  };
+
+  const openMobileMenu = () => {
+    console.log("MOBILE MENU OPEN");
+    setMobileOpen(true);
   };
 
   const handleNav = (path) => {
-    closeMenu();
+    closeMobileMenu();
     if (path) {
       navigate(path);
     }
   };
 
   useEffect(() => {
-    console.log("Menu state:", mobileOpen);
+    console.log("Current state:", mobileOpen);
   }, [mobileOpen]);
 
   // Automatically close drawer & user menu on route changes
   useEffect(() => {
-    closeMenu();
+    closeMobileMenu();
   }, [location.pathname, location.search]);
 
   // Lock body scroll when mobile menu is open
@@ -64,10 +69,10 @@ const Header = ({ minimal }) => {
     if (mobileOpen && !minimal) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = "auto";
     }
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = "auto";
     };
   }, [mobileOpen, minimal]);
 
@@ -76,7 +81,7 @@ const Header = ({ minimal }) => {
       e.preventDefault();
       e.stopPropagation();
     }
-    closeMenu();
+    closeMobileMenu();
 
     try {
       if (window.google?.accounts?.id) {
@@ -202,7 +207,7 @@ const Header = ({ minimal }) => {
           {!minimal && (
             <button
               className="icon-btn lg:hidden"
-              onClick={() => setMobileOpen(true)}
+              onClick={openMobileMenu}
               aria-label="Open menu"
             >
               <FiMenu size={22} />
@@ -224,7 +229,7 @@ const Header = ({ minimal }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 bg-espresso/40 backdrop-blur-xs lg:hidden"
-              onClick={closeMenu}
+              onClick={closeMobileMenu}
             />
           )}
           {mobileOpen && (
@@ -234,7 +239,7 @@ const Header = ({ minimal }) => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.25 }}
-              className="fixed right-0 top-0 z-50 flex h-full w-80 max-w-[85%] flex-col overflow-y-auto bg-ivory p-6 shadow-soft lg:hidden"
+              className="fixed right-0 top-0 z-[60] flex h-full w-80 max-w-[85%] flex-col overflow-y-auto bg-ivory p-6 shadow-soft lg:hidden"
             >
               <div className="mb-4 flex items-center justify-between border-b border-sand/40 pb-3">
                 <Logo className="h-8" />
@@ -243,9 +248,9 @@ const Header = ({ minimal }) => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    closeMenu();
+                    closeMobileMenu();
                   }}
-                  className="icon-btn"
+                  className="relative z-[70] icon-btn"
                   aria-label="Close menu"
                 >
                   <FiX size={22} />
@@ -260,17 +265,17 @@ const Header = ({ minimal }) => {
                       Hello, {user?.name?.split(" ")[0]} 👋
                     </p>
                     <div className="mt-2 grid grid-cols-2 gap-2">
-                      <Link to="/account" onClick={closeMenu} className="drawer-chip">
+                      <Link to="/account" onClick={closeMobileMenu} className="drawer-chip">
                         <FiUser size={15} /> Account
                       </Link>
-                      <Link to="/account/orders" onClick={closeMenu} className="drawer-chip">
+                      <Link to="/account/orders" onClick={closeMobileMenu} className="drawer-chip">
                         <FiShoppingBag size={15} /> Orders
                       </Link>
-                      <Link to="/wishlist" onClick={closeMenu} className="drawer-chip">
+                      <Link to="/wishlist" onClick={closeMobileMenu} className="drawer-chip">
                         <FiHeart size={15} /> Wishlist {ids.length > 0 && `(${ids.length})`}
                       </Link>
                       {user?.role === "admin" && (
-                        <Link to="/admin" onClick={closeMenu} className="drawer-chip">
+                        <Link to="/admin" onClick={closeMobileMenu} className="drawer-chip">
                           <FiGrid size={15} /> Admin
                         </Link>
                       )}
@@ -300,14 +305,14 @@ const Header = ({ minimal }) => {
               </div>
 
               {/* Navigation */}
-              <Link to="/" onClick={closeMenu} className="mobile-link">
+              <Link to="/" onClick={closeMobileMenu} className="mobile-link">
                 Home
               </Link>
               {Object.entries(categoryGroups).map(([group, items]) => (
                 <div key={group} className="mb-3">
                   <Link
                     to={`/shop?group=${encodeURIComponent(group)}`}
-                    onClick={closeMenu}
+                    onClick={closeMobileMenu}
                     className="mb-1 mt-3 block font-serif text-lg font-semibold text-espresso hover:text-gold hover:underline hover:underline-offset-4 hover:decoration-gold/80"
                   >
                     {group}
@@ -316,7 +321,7 @@ const Header = ({ minimal }) => {
                     <Link
                       key={item}
                       to={`/shop?category=${encodeURIComponent(item)}`}
-                      onClick={closeMenu}
+                      onClick={closeMobileMenu}
                       className="block py-1.5 pl-3 text-sm text-taupe hover:text-gold hover:underline hover:underline-offset-4 hover:decoration-gold/80"
                     >
                       {item}
@@ -324,13 +329,13 @@ const Header = ({ minimal }) => {
                   ))}
                 </div>
               ))}
-              <Link to="/shop" onClick={closeMenu} className="mobile-link">
+              <Link to="/shop" onClick={closeMobileMenu} className="mobile-link">
                 Shop All
               </Link>
-              <Link to="/about" onClick={closeMenu} className="mobile-link">
+              <Link to="/about" onClick={closeMobileMenu} className="mobile-link">
                 About Us
               </Link>
-              <Link to="/contact" onClick={closeMenu} className="mobile-link">
+              <Link to="/contact" onClick={closeMobileMenu} className="mobile-link">
                 Contact
               </Link>
 
