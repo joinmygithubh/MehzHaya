@@ -155,7 +155,9 @@ export const createOrder = asyncHandler(async (req, res) => {
 // @route   GET /api/v1/orders/my
 // @access  Private
 export const getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ user: req.user._id }).sort("-createdAt");
+  const orders = await Order.find({ user: req.user._id })
+    .sort("-createdAt")
+    .populate("items.product", "slug name images price");
   res.status(200).json({ success: true, count: orders.length, orders });
 });
 
@@ -163,7 +165,9 @@ export const getMyOrders = asyncHandler(async (req, res) => {
 // @route   GET /api/v1/orders/:id
 // @access  Private
 export const getOrder = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id).populate("user", "name email");
+  const order = await Order.findById(req.params.id)
+    .populate("user", "name email")
+    .populate("items.product", "slug name images price");
   if (!order) throw new ApiError(404, "Order not found");
   // only owner or admin
   if (order.user._id.toString() !== req.user._id.toString() && req.user.role !== "admin") {

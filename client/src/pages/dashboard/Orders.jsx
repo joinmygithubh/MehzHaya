@@ -71,14 +71,30 @@ const Orders = () => {
 
             <div className="mt-4 flex items-center justify-between">
               <div className="flex -space-x-3">
-                {order.items.slice(0, 4).map((item, i) => (
-                  <img
-                    key={i}
-                    src={item.image}
-                    alt=""
-                    className="h-12 w-12 rounded-full border-2 border-ivory object-cover bg-champagne"
-                  />
-                ))}
+                {order.items.slice(0, 4).map((item, i) => {
+                  const prodId = item.product?.slug || item.product?._id || item.product;
+                  return prodId ? (
+                    <Link
+                      key={i}
+                      to={`/product/${prodId}`}
+                      onClick={(e) => e.stopPropagation()}
+                      title={item.name}
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.name || "Product"}
+                        className="h-12 w-12 rounded-full border-2 border-ivory object-cover bg-champagne hover:scale-105 hover:z-10 transition-transform cursor-pointer"
+                      />
+                    </Link>
+                  ) : (
+                    <img
+                      key={i}
+                      src={item.image}
+                      alt={item.name || "Product"}
+                      className="h-12 w-12 rounded-full border-2 border-ivory object-cover bg-champagne"
+                    />
+                  );
+                })}
                 {order.items.length > 4 && (
                   <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-ivory bg-champagne text-xs font-semibold text-espresso">
                     +{order.items.length - 4}

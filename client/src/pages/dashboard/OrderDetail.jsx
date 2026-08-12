@@ -352,6 +352,8 @@ const OrderDetail = () => {
         <div className="space-y-4">
           {order.items.map((item, i) => {
             const pId = item.product?._id || item.product;
+            const prodSlugOrId = item.product?.slug || pId;
+            const productLink = prodSlugOrId ? `/product/${prodSlugOrId}` : null;
             const existingReview = item.review || userReviews.find(
               (r) => (r.product?._id || r.product)?.toString() === pId?.toString() && r.order?.toString() === order._id?.toString()
             );
@@ -360,9 +362,33 @@ const OrderDetail = () => {
               <div key={i} className="p-4 rounded-xl bg-champagne/40 border border-sand/60 space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <img src={item.image} alt="" className="h-16 w-14 rounded-lg object-cover bg-champagne shrink-0" />
+                    {productLink ? (
+                      <Link to={productLink} className="shrink-0" title={`View ${item.name}`}>
+                        <img
+                          src={item.image}
+                          alt={item.name || "Product"}
+                          className="h-16 w-14 rounded-lg object-cover bg-champagne hover:opacity-90 transition cursor-pointer"
+                        />
+                      </Link>
+                    ) : (
+                      <img
+                        src={item.image}
+                        alt={item.name || "Product"}
+                        className="h-16 w-14 rounded-lg object-cover bg-champagne shrink-0"
+                      />
+                    )}
                     <div className="min-w-0 text-sm">
-                      <p className="font-serif font-semibold text-espresso truncate">{item.name}</p>
+                      {productLink ? (
+                        <Link
+                          to={productLink}
+                          className="font-serif font-semibold text-espresso hover:text-gold hover:underline transition truncate block"
+                          title={`View ${item.name}`}
+                        >
+                          {item.name}
+                        </Link>
+                      ) : (
+                        <p className="font-serif font-semibold text-espresso truncate">{item.name}</p>
+                      )}
                       <p className="text-taupe text-xs">
                         Qty: {item.quantity}
                         {item.color && ` · ${item.color}`}
