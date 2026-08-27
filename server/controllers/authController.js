@@ -67,31 +67,20 @@ export const login = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email: normalizedEmail }).select("+password");
 
-  if (process.env.NODE_ENV === "development") {
-    console.log(`[AUTH LOGIN] Connected DB: ${dbName}`);
-    console.log(`[AUTH LOGIN] Normalized Email: ${normalizedEmail}`);
-    console.log(`[AUTH LOGIN] User found in DB: ${!!user}`);
-    if (user) {
-      console.log(`[AUTH LOGIN] User ID: ${user._id}`);
-      console.log(`[AUTH LOGIN] User Role: ${user.role}`);
-      console.log(`[AUTH LOGIN] Auth Provider: ${user.authProvider || "local"}`);
-      console.log(`[AUTH LOGIN] Has Password Hash: ${!!user.password}`);
-    }
+  console.log(`[AUTH LOGIN] Connected DB: ${dbName} | Searching Email: ${normalizedEmail} | Found: ${!!user}`);
+  if (user) {
+    console.log(`[AUTH LOGIN] User ID: ${user._id} | Role: ${user.role} | Provider: ${user.authProvider || "local"} | Has Password Hash: ${!!user.password}`);
   }
 
   if (!user) {
-    if (process.env.NODE_ENV === "development") {
-      console.log(`[AUTH LOGIN FAIL] Reason: User not found`);
-    }
+    console.log(`[AUTH LOGIN FAIL] Reason: User not found in database "${dbName}" for email "${normalizedEmail}"`);
     throw new ApiError(401, "Invalid email or password");
   }
 
   if (!user.password) {
-    if (process.env.NODE_ENV === "development") {
-      console.log(
-        `[AUTH LOGIN FAIL] Reason: No password set for user account (created via ${user.authProvider})`
-      );
-    }
+    console.log(
+      `[AUTH LOGIN FAIL] Reason: No password set for user account (authProvider: ${user.authProvider})`
+    );
     throw new ApiError(401, "Invalid email or password");
   }
 
