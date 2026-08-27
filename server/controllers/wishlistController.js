@@ -18,7 +18,12 @@ export const getWishlist = asyncHandler(async (req, res) => {
     "products",
     "name slug price discount images ratings numReviews stock"
   );
-  res.status(200).json({ success: true, products: wishlist?.products || [] });
+  const validProducts = (wishlist?.products || []).filter(Boolean);
+  if (wishlist && validProducts.length !== wishlist.products.length) {
+    wishlist.products = validProducts.map((p) => p._id);
+    await wishlist.save();
+  }
+  res.status(200).json({ success: true, products: validProducts });
 });
 
 // @desc    Toggle product in wishlist

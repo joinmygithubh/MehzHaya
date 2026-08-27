@@ -9,7 +9,8 @@
     "dev": "nodemon server.js",
     "seed": "node seeder/seed.js",
     "seed:destroy": "node seeder/seed.js --destroy",
-    "create-admin": "node seeder/createAdmin.js"
+    "seed:admin": "node scripts/createAdmin.js",
+    "create-admin": "node scripts/createAdmin.js"
   },
   "keywords": [
     "mern",

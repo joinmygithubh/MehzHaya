@@ -27,6 +27,23 @@ const buildSummary = (cart) => {
 // @access  Private
 export const getCart = asyncHandler(async (req, res) => {
   const cart = await getOrCreateCart(req.user._id);
+
+  if (cart.items && cart.items.length > 0) {
+    const productIds = cart.items.map((i) => i.product);
+    const existingProducts = await Product.find({
+      _id: { $in: productIds },
+      isActive: true,
+    }).distinct("_id");
+    const existingSet = new Set(existingProducts.map((id) => id.toString()));
+
+    const initialLen = cart.items.length;
+    cart.items = cart.items.filter((i) => i.product && existingSet.has(i.product.toString()));
+
+    if (cart.items.length !== initialLen) {
+      await cart.save();
+    }
+  }
+
   res.status(200).json({ success: true, cart, summary: buildSummary(cart) });
 });
 

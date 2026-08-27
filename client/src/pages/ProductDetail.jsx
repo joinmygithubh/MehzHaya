@@ -35,7 +35,7 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { product, related, detailLoading } = useSelector((s) => s.products);
+  const { product, related, detailLoading, error } = useSelector((s) => s.products);
   const { isAuthenticated } = useSelector((s) => s.auth);
   const { ids } = useSelector((s) => s.wishlist);
   const { recentlyViewed } = useSelector((s) => s.ui);
@@ -75,7 +75,32 @@ const ProductDetail = () => {
     }
   }, [product, dispatch]);
 
-  if (detailLoading || !product) return <Loader full />;
+  if (detailLoading) return <Loader full />;
+
+  if (!product || error) {
+    return (
+      <div className="container-px flex min-h-[60vh] flex-col items-center justify-center text-center py-12">
+        <SEO title="Product Not Found" />
+        <span className="eyebrow text-gold">Notice</span>
+        <p className="mt-2 font-serif text-6xl font-semibold text-gold">404</p>
+        <div className="gold-divider mx-auto my-3" />
+        <h1 className="font-serif text-3xl font-semibold text-espresso">
+          Product Not Found
+        </h1>
+        <p className="mt-2 text-taupe font-sans max-w-md">
+          This product is no longer available or has been removed from our catalog.
+        </p>
+        <div className="mt-6 flex gap-4">
+          <Link to="/shop" className="btn-primary">
+            Explore Shop
+          </Link>
+          <Link to="/" className="btn-outline">
+            Go Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const wished = ids.includes(product._id);
   const price = finalPrice(product);

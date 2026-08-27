@@ -110,7 +110,11 @@ const Login = () => {
   const submit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const res = await dispatch(login(form));
+    const payload = {
+      email: form.email.trim(),
+      password: form.password,
+    };
+    const res = await dispatch(login(payload));
     setLoading(false);
     if (login.fulfilled.match(res)) {
       await handlePostLoginSuccess(res.payload.user);

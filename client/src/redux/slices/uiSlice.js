@@ -35,6 +35,16 @@ const uiSlice = createSlice({
         JSON.stringify(state.recentlyViewed)
       );
     },
+    removeRecentlyViewed: (state, action) => {
+      const id = action.payload;
+      state.recentlyViewed = state.recentlyViewed.filter(
+        (p) => p._id !== id
+      );
+      localStorage.setItem(
+        "mehzhaya_recently_viewed",
+        JSON.stringify(state.recentlyViewed)
+      );
+    },
   },
 });
 
@@ -43,5 +53,6 @@ export const {
   setMobileMenu,
   setSearchOpen,
   addRecentlyViewed,
+  removeRecentlyViewed,
 } = uiSlice.actions;
 export default uiSlice.reducer;

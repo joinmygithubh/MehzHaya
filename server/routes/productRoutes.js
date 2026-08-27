@@ -7,6 +7,8 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  restoreProduct,
+  permanentDeleteProduct,
   deleteProductImage,
   getAdminProducts,
 } from "../controllers/productController.js";
@@ -25,6 +27,9 @@ router
   .route("/:id")
   .put(protect, authorize("admin"), upload.array("images", 6), updateProduct)
   .delete(protect, authorize("admin"), deleteProduct);
+
+router.put("/:id/restore", protect, authorize("admin"), restoreProduct);
+router.delete("/:id/permanent", protect, authorize("admin"), permanentDeleteProduct);
 router.delete("/:id/images/:publicId", protect, authorize("admin"), deleteProductImage);
 
 // keep last: matches id or slug

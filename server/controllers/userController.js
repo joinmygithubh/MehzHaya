@@ -158,13 +158,17 @@ export const getUserById = asyncHandler(async (req, res) => {
 export const updateUserRole = asyncHandler(async (req, res) => {
   const { role } = req.body;
   if (!["user", "admin"].includes(role)) throw new ApiError(400, "Invalid role");
-  const user = await User.findByIdAndUpdate(
-    req.params.id,
-    { role },
-    { new: true }
-  );
-  if (!user) throw new ApiError(404, "User not found");
-  res.status(200).json({ success: true, message: "Role updated", user });
+
+  const targetUser = await User.findById(req.params.id);
+  if (!targetUser) throw new ApiError(404, "User not found");
+
+  if (role === "admin" && targetUser.email.toLowerCase().trim() !== "mehzhaya@gmail.com") {
+    throw new ApiError(403, "Only the authorized account (mehzhaya@gmail.com) can be granted admin privileges");
+  }
+
+  targetUser.role = role;
+  await targetUser.save({ validateBeforeSave: false });
+  res.status(200).json({ success: true, message: "Role updated", user: targetUser });
 });
 
 // @desc    Delete user

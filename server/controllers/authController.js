@@ -27,7 +27,13 @@ export const register = asyncHandler(async (req, res) => {
   const exists = await User.findOne({ email: normalizedEmail });
   if (exists) throw new ApiError(400, "Email is already registered");
 
-  const user = await User.create({ name, email: normalizedEmail, password, phone });
+  const user = await User.create({
+    name: name.trim(),
+    email: normalizedEmail,
+    password,
+    phone: phone.trim(),
+    role: "user",
+  });
 
   // email verification
   const verifyToken = user.getEmailVerificationToken();
@@ -57,9 +63,43 @@ export const login = asyncHandler(async (req, res) => {
   }
 
   const normalizedEmail = email.trim().toLowerCase();
+  const dbName = mongoose.connection.name;
 
   const user = await User.findOne({ email: normalizedEmail }).select("+password");
-  if (!user || !(await user.comparePassword(password))) {
+
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[AUTH LOGIN] Connected DB: ${dbName}`);
+    console.log(`[AUTH LOGIN] Normalized Email: ${normalizedEmail}`);
+    console.log(`[AUTH LOGIN] User found in DB: ${!!user}`);
+    if (user) {
+      console.log(`[AUTH LOGIN] User ID: ${user._id}`);
+      console.log(`[AUTH LOGIN] User Role: ${user.role}`);
+      console.log(`[AUTH LOGIN] Auth Provider: ${user.authProvider || "local"}`);
+      console.log(`[AUTH LOGIN] Has Password Hash: ${!!user.password}`);
+    }
+  }
+
+  if (!user) {
+    if (process.env.NODE_ENV === "development") {
+      console.log(`[AUTH LOGIN FAIL] Reason: User not found`);
+    }
+    throw new ApiError(401, "Invalid email or password");
+  }
+
+  if (!user.password) {
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `[AUTH LOGIN FAIL] Reason: No password set for user account (created via ${user.authProvider})`
+      );
+    }
+    throw new ApiError(401, "Invalid email or password");
+  }
+
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) {
+    if (process.env.NODE_ENV === "development") {
+      console.log(`[AUTH LOGIN FAIL] Reason: Password comparison failed`);
+    }
     throw new ApiError(401, "Invalid email or password");
   }
 
@@ -221,7 +261,12 @@ export const resendVerification = asyncHandler(async (req, res) => {
 // @access  Public
 export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
-  const user = await User.findOne({ email });
+  if (!email) {
+    throw new ApiError(400, "Please provide email address");
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+  const user = await User.findOne({ email: normalizedEmail });
   if (!user) throw new ApiError(404, "No user found with that email");
 
   const resetToken = user.getResetPasswordToken();
@@ -275,7 +320,7 @@ export const changePassword = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findById(req.user._id).select("+password");
-  if (!(await user.comparePassword(currentPassword))) {
+  if (!user || !user.password || !(await user.comparePassword(currentPassword))) {
     throw new ApiError(401, "Current password is incorrect");
   }
 

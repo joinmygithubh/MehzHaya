@@ -24,29 +24,33 @@ const log = (msg, color = "36") => console.log(`\x1b[${color}m${msg}\x1b[0m`);
 const run = async () => {
   const [argEmail, argPassword, argName] = process.argv.slice(2);
 
-  const email = (argEmail || process.env.ADMIN_EMAIL || "admin@mehzhaya.com").toLowerCase();
+  const email = (argEmail || process.env.ADMIN_EMAIL || "admin@mehzhaya.com").toLowerCase().trim();
   const password = argPassword || process.env.ADMIN_PASSWORD || "Admin@12345";
   const name = argName || process.env.ADMIN_NAME || "MehzHaya Admin";
+
+  if (!email || !password) {
+    console.error("\x1b[31m✗ Error: Email and password are required.\x1b[0m");
+    process.exit(1);
+  }
 
   try {
     await connectDB();
 
     let admin = await User.findOne({ email }).select("+password");
     if (admin) {
-      admin.password = password; // re-hashed by the pre-save hook
+      admin.name = name;
+      admin.password = password; // re-hashed by the User model pre-save hook
       admin.role = "admin";
       admin.isEmailVerified = true;
       await admin.save();
-      log(`✓ Existing user promoted to admin & password reset`, "32");
+      log(`✓ Existing user updated/promoted to admin (email: ${email}, role: ${admin.role})`, "32");
     } else {
       admin = new User({ name, email, password, role: "admin", isEmailVerified: true });
       await admin.save();
-      log(`✓ Admin created`, "32");
+      log(`✓ Admin user created successfully (email: ${email}, role: ${admin.role})`, "32");
     }
 
-    log(`\n  Admin login credentials:`, "36");
-    log(`  Email:    ${email}`, "36");
-    log(`  Password: ${password}\n`, "36");
+    log(`✓ Password stored using bcrypt hash in MongoDB. Ready for login.`, "32");
 
     await mongoose.connection.close();
     process.exit(0);
@@ -57,3 +61,4 @@ const run = async () => {
 };
 
 run();
+

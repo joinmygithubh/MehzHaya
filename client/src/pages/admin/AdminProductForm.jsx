@@ -8,6 +8,7 @@ import api from "../../api/axios";
 import Loader from "../../components/common/Loader";
 import { COLORS, MATERIALS } from "../../utils/constants";
 import { fetchCategories } from "../../redux/slices/categorySlice";
+import { createProduct, updateProduct, fetchHomeSections } from "../../redux/slices/productSlice";
 
 const SIZES = ["XS", "S", "M", "L", "XL", "Free Size"];
 
@@ -110,13 +111,24 @@ const AdminProductForm = () => {
       if (imageUrls.length) fd.append("images", JSON.stringify(imageUrls));
       files.forEach((f) => fd.append("images", f));
 
-      const config = { headers: { "Content-Type": "multipart/form-data" } };
-      if (isEdit) await api.put(`/products/${id}`, fd, config);
-      else await api.post("/products", fd, config);
+      let res;
+      if (isEdit) {
+        res = await dispatch(updateProduct({ id, formData: fd }));
+      } else {
+        res = await dispatch(createProduct(fd));
+      }
 
-      dispatch(fetchCategories());
-      toast.success(isEdit ? "Product updated" : "Product created");
-      navigate("/admin/products");
+      if (
+        (isEdit && updateProduct.fulfilled.match(res)) ||
+        (!isEdit && createProduct.fulfilled.match(res))
+      ) {
+        dispatch(fetchCategories());
+        dispatch(fetchHomeSections());
+        toast.success(isEdit ? "Product updated" : "Product created");
+        navigate("/admin/products");
+      } else {
+        toast.error(res.payload || "Save failed");
+      }
     } catch (err) {
       toast.error(err.message);
     } finally {

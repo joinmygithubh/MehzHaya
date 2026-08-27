@@ -185,8 +185,8 @@ const importData = async () => {
   log("🖼️  3 banners created", "32");
 
   log("\n✅ Seeding complete!", "32");
-  log(`   Admin login: ${adminEmail} / ${process.env.ADMIN_PASSWORD || "Admin@12345"}`, "36");
-  log(`   Customer:    ${demoEmail} / Customer@123`, "36");
+  log(`   Admin account ready: ${adminEmail}`, "36");
+  log(`   Customer account ready: ${demoEmail}`, "36");
 };
 
 const run = async () => {
