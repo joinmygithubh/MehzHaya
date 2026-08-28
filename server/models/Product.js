@@ -36,8 +36,17 @@ const productSchema = new mongoose.Schema(
     slug: { type: String, unique: true, index: true },
     sku: { type: String, unique: true, required: true, index: true },
     description: {
-      type: String,
+      type: mongoose.Schema.Types.Mixed,
       required: [true, "Please enter product description"],
+      validate: {
+        validator: function (v) {
+          if (!v) return false;
+          if (Array.isArray(v)) return v.length > 0;
+          if (typeof v === "string") return v.trim().length > 0;
+          return true;
+        },
+        message: "Please enter product description",
+      },
     },
     shortDescription: { type: String, default: "" },
 

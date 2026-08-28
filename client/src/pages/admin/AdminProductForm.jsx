@@ -54,10 +54,27 @@ const AdminProductForm = () => {
         try {
           const res = await api.get(`/products/${id}`);
           const p = res.data.product;
+          let descText = "";
+          if (Array.isArray(p.description)) {
+            descText = p.description.join("\n");
+          } else if (typeof p.description === "string") {
+            const trimmed = p.description.trim();
+            if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+              try {
+                const arr = JSON.parse(trimmed);
+                descText = Array.isArray(arr) ? arr.join("\n") : p.description;
+              } catch {
+                descText = p.description;
+              }
+            } else {
+              descText = p.description;
+            }
+          }
+
           setForm({
             name: p.name,
             sku: p.sku,
-            description: p.description,
+            description: descText,
             shortDescription: p.shortDescription || "",
             price: p.price,
             discount: p.discount,
@@ -168,8 +185,18 @@ const AdminProductForm = () => {
               <input className="input" value={form.shortDescription} onChange={field("shortDescription")} />
             </div>
             <div>
-              <label className="label">Description *</label>
-              <textarea rows={4} className="input resize-none" value={form.description} onChange={field("description")} required />
+              <label className="label">Description / Bullet Points *</label>
+              <textarea
+                rows={6}
+                className="input resize-y font-sans leading-relaxed"
+                value={form.description}
+                onChange={field("description")}
+                placeholder={`Premium quality fabric\nSoft and comfortable\nLightweight and breathable\nSuitable for daily wear\nEasy to wash`}
+                required
+              />
+              <p className="mt-1 text-xs text-taupe">
+                Enter multiple points. Each line will automatically be treated as a separate bullet point.
+              </p>
             </div>
           </div>
 

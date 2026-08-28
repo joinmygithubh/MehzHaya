@@ -27,7 +27,7 @@ import { fetchProduct } from "../redux/slices/productSlice";
 import { addToCart, fetchCart } from "../redux/slices/cartSlice";
 import { toggleWishlist } from "../redux/slices/wishlistSlice";
 import { addRecentlyViewed } from "../redux/slices/uiSlice";
-import { formatPrice, finalPrice, productImage, whatsappLink, buildProductWhatsAppMessage } from "../utils/helpers";
+import { formatPrice, finalPrice, productImage, whatsappLink, buildProductWhatsAppMessage, formatDescriptionPoints } from "../utils/helpers";
 import { COLOR_HEX } from "../utils/constants";
 
 const ProductDetail = () => {
@@ -221,9 +221,19 @@ const ProductDetail = () => {
               )}
             </div>
 
-            <p className="mt-4 text-sm leading-relaxed text-taupe font-sans">
-              {product.description}
-            </p>
+            {(() => {
+              const points = formatDescriptionPoints(product.description);
+              if (points.length === 0) return null;
+              return (
+                <ul className="mt-4 space-y-2 list-disc pl-5 text-sm leading-relaxed text-taupe font-sans">
+                  {points.map((point, i) => (
+                    <li key={i} className="pl-1">
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              );
+            })()}
 
             {/* Material */}
             {product.material && (

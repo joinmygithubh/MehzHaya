@@ -40,6 +40,37 @@ export const whatsappLink = (message = "") =>
   }`;
 
 /**
+ * Safely parse/format product description into an array of bullet strings.
+ */
+export const formatDescriptionPoints = (description) => {
+  if (!description) return [];
+  if (Array.isArray(description)) {
+    return description.map((item) => String(item).trim()).filter(Boolean);
+  }
+  if (typeof description === "string") {
+    const trimmed = description.trim();
+    if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+      try {
+        const arr = JSON.parse(trimmed);
+        if (Array.isArray(arr)) {
+          return arr.map((item) => String(item).trim()).filter(Boolean);
+        }
+      } catch {
+        /* fallback */
+      }
+    }
+    if (trimmed.includes("\n")) {
+      return trimmed
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+    }
+    return trimmed ? [trimmed] : [];
+  }
+  return [];
+};
+
+/**
  * Build a structured WhatsApp product requirement message.
  */
 export const buildProductWhatsAppMessage = ({ product, qty = 1, color = "", size = "" }) => {
@@ -55,8 +86,9 @@ export const buildProductWhatsAppMessage = ({ product, qty = 1, color = "", size
     sizeStr = `${sizeStr} (Color: ${color})`;
   }
 
-  const descriptionText = product.description
-    ? product.description.slice(0, 180).trim() + (product.description.length > 180 ? "..." : "")
+  const points = formatDescriptionPoints(product.description);
+  const descriptionText = points.length > 0
+    ? points.map((p) => `• ${p}`).join("\n")
     : "Premium modest wear crafted with care.";
 
   return `Hello MehzHaya, I am interested in this product:

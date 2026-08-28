@@ -131,6 +131,34 @@ export const getProduct = asyncHandler(async (req, res) => {
 
 /* ---------------- Admin ---------------- */
 
+export const parseDescription = (raw) => {
+  if (!raw) return [];
+  let parsed = raw;
+  if (typeof raw === "string") {
+    const trimmed = raw.trim();
+    if ((trimmed.startsWith("[") && trimmed.endsWith("]")) || (trimmed.startsWith('"') && trimmed.endsWith('"'))) {
+      try {
+        parsed = JSON.parse(trimmed);
+      } catch {
+        parsed = raw;
+      }
+    }
+  }
+
+  if (Array.isArray(parsed)) {
+    return parsed.map((item) => String(item).trim()).filter(Boolean);
+  }
+
+  if (typeof parsed === "string") {
+    return parsed
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
 // @desc    Create product
 // @route   POST /api/v1/products
 // @access  Admin
@@ -154,10 +182,12 @@ export const createProduct = asyncHandler(async (req, res) => {
   if (images.length === 0) throw new ApiError(400, "Please provide at least one product image");
 
   const parseArr = (v) => (typeof v === "string" ? JSON.parse(v) : v) || [];
+  const description = parseDescription(req.body.description);
 
   try {
     const product = await Product.create({
       ...req.body,
+      description,
       images,
       colors: parseArr(req.body.colors),
       sizes: parseArr(req.body.sizes),
@@ -210,6 +240,10 @@ export const updateProduct = asyncHandler(async (req, res) => {
   ["colors", "sizes"].forEach((k) => {
     if (updates[k] && typeof updates[k] === "string") updates[k] = JSON.parse(updates[k]);
   });
+
+  if (updates.description !== undefined) {
+    updates.description = parseDescription(updates.description);
+  }
 
   let newlyUploadedCloudinaryImages = [];
 
